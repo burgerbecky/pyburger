@@ -1,0 +1,7 @@
+What's New
+==========
+
+burger 0.9
+--------------
+
+- Initial release
