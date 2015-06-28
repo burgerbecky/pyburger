@@ -21,6 +21,7 @@
 /*.egg-info
 /dist
 /temp
+/burger-*
 
 # Ignore Mac desktop services store files 
 .DS_Store

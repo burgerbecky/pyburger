@@ -1,8 +1,8 @@
-include README.txt LICENSE.txt NEWS.txt
+include README.rst LICENSE.txt NEWS.txt
 
 #recursive-include docs *
 
-global-exclude *.pyc
-global-exclude *.pyo
+#global-exclude *.pyc
+#global-exclude *.pyo
 
 prune upload.py

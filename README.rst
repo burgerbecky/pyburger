@@ -3,6 +3,7 @@ Burgerlib build system.
  
 burger is licensed under the MIT license, for details see LICENSE.txt.
 
+Documentation is found at http://pythonhosted.org/burger/
 
 Compatibility
 -------------

@@ -16,7 +16,6 @@ import os
 import sys
 import burger
 import argparse
-import shutil
 
 #
 # Clean up all the temp files after uploading
@@ -25,10 +24,21 @@ import shutil
 #
 
 def clean(workingDir):
-	shutil.rmtree(os.path.join(workingDir,'burger.egg-info'),ignore_errors=True)
-	shutil.rmtree(os.path.join(workingDir,'dist'),ignore_errors=True)
-	shutil.rmtree(os.path.join(workingDir,'build'),ignore_errors=True)
-	shutil.rmtree(os.path.join(workingDir,'temp'),ignore_errors=True)
+
+	dirlist = [
+		'burger.egg-info',
+		'burger-' + burger.__version__,
+		'dist',
+		'build',
+		'temp'
+	]
+	
+	#
+	# Delete all folders, including read only files
+	#
+	
+	for item in dirlist:
+		burger.deletedirectory(os.path.join(workingDir,item),True)
 
 	#
 	# Delete all *.pyc and *.pyo files
@@ -52,41 +62,49 @@ def main(workingDir):
 	# Parse the command line
 	
 	parser = argparse.ArgumentParser(
-		description='Upload python distribution. Copyright by Rebecca Ann Heineman',
+		description='Build and upload a python distribution. Copyright by Rebecca Ann Heineman',
 		usage='upload [-h] [-d]')
-	parser.add_argument('-d','-dontclean', dest='dont_clean', action='store_true',
-		default=False,
-		help='Don\'t perform a clean after uploading')
 
 	parser.add_argument('-c','-clean', dest='clean', action='store_true',
 		default=False,
-		help='Perform a clean and immediately exit.')
+		help='Perform a clean.')
+
+	parser.add_argument('-u','-upload', dest='upload', action='store_true',
+		default=False,
+		help='Perform a full build and upload to https://pypi.python.org.')
 
 	args = parser.parse_args()
 
+	error = 0
+	
+	#
+	# Perform the upload
+	#
+	
+	if args.upload==True:
+		sys.argv = ['setup.py','sdist','upload']
+		error = execfile('setup.py')
+		
+		if error == 0:
+			
+			# Clean up
+			args.clean = True
+		else:
+			args.clean = False
+
+	else:
+		if not args.clean==True:
+			sys.argv = ['setup.py','build','sdist']
+			error = execfile('setup.py')
+	
 	#
 	# Do a clean and exit
 	#
 	
 	if args.clean==True:
 		clean(workingDir)
-		return 0
-		
-	#
-	# Perform the upload
-	#
-	
-	sys.argv = ['setup.py','sdist','upload']
-	error = execfile('setup.py')
-	if error != 0:
-	
-		#
-		# Clean up afterwards
-		#
-		
-		if args.dont_clean!=True:
-			clean(workingDir)
-	
+		error = 0
+
 	return error
 		
 # 

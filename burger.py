@@ -14,6 +14,8 @@
 
 import os
 import shutil
+import stat
+import errno
 import subprocess
 import platform
 import sys
@@ -60,7 +62,7 @@ from cStringIO import StringIO
 #
 
 ## Current version of the library
-__version__ = '0.9.1'
+__version__ = '0.9.2'
 
 ## Author's name
 __author__ = 'Rebecca Ann Heineman <becky@burgerbecky.com>'
@@ -119,7 +121,9 @@ __all__ = [
 	'isthesourcenewer',
 	'copyfileifneeded',
 	'copyfileandcheckoutifneeded',
-	'copydirectoryifneeded'
+	'copydirectoryifneeded',
+	'shutilreadonlycallback',
+	'deletedirectory'
 ]
 
 #
@@ -917,5 +921,58 @@ def copydirectoryifneeded(src,dest,exceptions = []):
 
 	return 0
 
+#
+## Subroutine for shutil.rmtree() to delete read only files
+#
+# shutil.rmtree() raises an exception if there are read
+# only files in the directory being deleted. Use this 
+# callback to allow read only files to be disposed of
+#
+# \code
+# import burger
+# import shutil
+#
+# shutil.rmtree(PATH_TO_DIRECTORY,onerror = burger.shutilreadonlycallback)
+# \endcode
+#
+# \note This is a callback function
+#
+# \param func Not used
+# \param path pathname of the file that is read only
+# \param exception_info Information about the exception
+#
 
+def shutilreadonlycallback(func,path,exception_info):
+	exctype,value = exception_info[:2]
+	
+	# File not found? Ignore
+	if value.args[0]==errno.ENOENT:
+		return
+		
+	#
+	# Read only?
+	# EACCESS for Linux/MacOSX, EIO for Windows
+	#
+	
+	if value.args[0]==errno.EACCES or value.args[0]==errno.EIO:
+		# Mark as writable
+		os.chmod(path,stat.S_IWRITE)
+		# Try again to get rid of the file
+		os.unlink(path)
 
+#
+## Recursively delete a directory
+#
+# Delete a directory and all of the files and directories
+# within.
+#
+# \param path Pathname of the directory to delete
+# \param deletereadonly True if read only files are to be deleted as well
+#
+
+def deletedirectory(path,deletereadonly=False):
+	if deletereadonly==False:
+		return shutil.rmtree(path,ignore_errors=True)
+	else:
+		return shutil.rmtree(path,onerror = shutilreadonlycallback)
+	
