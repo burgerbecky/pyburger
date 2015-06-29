@@ -62,7 +62,7 @@ from cStringIO import StringIO
 #
 
 ## Current version of the library
-__version__ = '0.9.2'
+__version__ = '0.9.3'
 
 ## Author's name
 __author__ = 'Rebecca Ann Heineman <becky@burgerbecky.com>'
@@ -330,7 +330,7 @@ def hostmachine():
 	
 def fixcsharp(csharpapplicationpath):
 	if hostmachine() != 'windows':
-		csharpapplicationpath = 'mono "' + apppath + '"'
+		csharpapplicationpath = 'mono "' + csharpapplicationpath + '"'
 	else:
 		csharpapplicationpath = '"' + csharpapplicationpath + '"'
 	return csharpapplicationpath
