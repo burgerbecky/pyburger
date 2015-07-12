@@ -62,7 +62,7 @@ from cStringIO import StringIO
 #
 
 ## Current version of the library
-__version__ = '0.9.3'
+__version__ = '0.9.4'
 
 ## Author's name
 __author__ = 'Rebecca Ann Heineman <becky@burgerbecky.com>'
@@ -771,7 +771,7 @@ def iscodewarriormacallowed():
 
 	# Test if a mac
 
-	if os.name == 'posix':
+	if hostmachine() == 'macosx':
 		# Get the Mac OS version number
 		version,_,cpu = platform.mac_ver()
 		
@@ -976,3 +976,43 @@ def deletedirectory(path,deletereadonly=False):
 	else:
 		return shutil.rmtree(path,onerror = shutilreadonlycallback)
 	
+#
+## Find executable tool directory
+#
+# For allowing builds on multiple operating system hosts,
+# it's necessary to query what is the host operating system
+# and glean out which folder to find a executable compiled
+# for that specific host
+#
+# \param toolfolder Pathname to the folder that contains the executables
+# \param toolname Bare name of the tool (Windows will append '.exe')
+# \param encapsulate False if a path is requested, True if it's quoted
+#		to be used as a string to be sent to command line shell
+# \return Full pathname to the tool to execute
+#
+
+def gettoolpath(toolfolder,toolname,encapsulate=False):
+	host = hostmachine()
+	
+	# Macosx uses fat binaries
+	if host == 'macosx':
+		exename = os.path.join(toolfolder,'macosx',toolname)
+		
+	# Linux is currently just 64 bit Intel, will have to update
+	# as more platforms are supported
+	elif host == 'linux':
+		exename = os.path.join(toolfolder,'linux',toolname)
+		
+	# Windows supports 32 and 64 bit Intel
+	elif host == 'windows':
+		exename = os.path.join(toolfolder,'windows',getwindowshosttype(),toolname + '.exe')
+	else:
+	
+	# On unknown platforms, assume the tool is in the path for the fallback
+		exename = toolname
+
+	# Encase in quotes to handle spaces in filenames
+	
+	if encapsulate==True:
+		exename = '"' + exename + '"'
+	return exename
