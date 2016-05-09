@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright 2013-2015 by Rebecca Ann Heineman becky@burgerbecky.com
+# Copyright 2013-2016 by Rebecca Ann Heineman becky@burgerbecky.com
 
 # It is released under an MIT Open Source license. Please see LICENSE
 # for license details. Yes, you can use it in a
@@ -62,7 +62,7 @@ from cStringIO import StringIO
 #
 
 ## Current version of the library
-__version__ = '0.9.4'
+__version__ = '0.9.6'
 
 ## Author's name
 __author__ = 'Rebecca Ann Heineman <becky@burgerbecky.com>'
@@ -83,7 +83,7 @@ __email__ = 'becky@burgerbecky.com'
 __license__ = 'MIT License'
 
 ## Copyright owner
-__copyright__ = 'Copyright 2013-2015 Rebecca Ann Heineman'
+__copyright__ = 'Copyright 2013-2016 Rebecca Ann Heineman'
 
 #
 ## Items to import on "from burger import *"
@@ -123,7 +123,8 @@ __all__ = [
 	'copyfileandcheckoutifneeded',
 	'copydirectoryifneeded',
 	'shutilreadonlycallback',
-	'deletedirectory'
+	'deletedirectory',
+	'traversedirectory'
 ]
 
 #
@@ -284,7 +285,6 @@ class node(object):
 #
 ## Return the high level operating system's name
 #
-#
 # Return the machine this script is running on, 'windows', 'macosx',
 # 'linux' or 'unknown'
 #
@@ -382,6 +382,11 @@ def getmachosttype():
 	version,_,cpu = platform.mac_ver()
 	if cpu=='x86' or cpu=='x86_64':
 		return 'x86'
+
+	if cpu=='PowerPC':
+		return 'ppc'
+		
+	# default to PowerPC
 	return 'ppc'
 
 #
@@ -405,20 +410,31 @@ def whereisdoxygen():
 	# Is Doxygen installed on windows?
 
 	if getwindowshosttype()!=False:
-		doxygenpath = os.getenv('DOXYGEN')
-		if doxygenpath==None:
-			doxygenpath = os.getenv('ProgramFiles')
-			if doxygenpath!=None:
-				doxygenpath = os.path.join(doxygenpath,'doxygen')
-				
+	
+		# Try the environment variable
+		
+		doxygenpath = os.path.expandvars('${DOXYGEN}\\bin\\doxygen.exe')
 		if doxygenpath!=None:
-			doxygenpath = os.path.join(doxygenpath,'bin','doxygen.exe')
 			if not os.path.isfile(doxygenpath):
-				doxygenpath = None
+				doxygenpath=None
+		
+		# Try 64 bit version or native 32 bit version
+		if doxygenpath==None:				
+			doxygenpath = os.path.expandvars('${ProgramFiles}\\doxygen\\bin\\doxygen.exe')
+			if doxygenpath!=None:
+				if not os.path.isfile(doxygenpath):
+					doxygenpath=None
+					
+		# Try 32 bit version on 64 bit system
+				
+		if doxygenpath==None:
+			doxygenpath = os.path.expandvars('${ProgramFiles(x86)}\\doxygen\\bin\\doxygen.exe')
+			if doxygenpath!=None:
+				if not os.path.isfile(doxygenpath):
+					doxygenpath=None
 				
 		if doxygenpath==None:
 			print 'Doxygen needs to be installed to build documentation!'
-			return None
 			
 		return doxygenpath
 		
@@ -430,6 +446,7 @@ def whereisdoxygen():
 			return None
 		return doxygenpath
 		
+	# None of the above
 	return 'doxygen'
 	
 #
@@ -446,28 +463,52 @@ def whereisdoxygen():
 
 def whereisp4():
 
-	#
-	# Is the folder already specified?
-	#
+	# Is Perforce installed on windows?
+
+	if getwindowshosttype()!=False:
 	
-	perforcedirectory = os.getenv('PERFORCE')
-	if perforcedirectory!=None:
-		return '"' + os.path.join(perforcedirectory,'p4') + '"'
+		# Try the environment variable
+		
+		perforcepath = os.path.expandvars('${PERFORCE}\\p4.exe')
+		if perforcepath!=None:
+			if not os.path.isfile(perforcepath):
+				perforcepath=None
+		
+		# Try 64 bit version or native 32 bit version
+		if perforcepath==None:				
+			perforcepath = os.path.expandvars('${ProgramFiles}\\Perforce\\p4.exe')
+			if perforcepath!=None:
+				if not os.path.isfile(perforcepath):
+					perforcepath=None
+					
+		# Try 32 bit version on 64 bit system
+				
+		if perforcepath==None:
+			perforcepath = os.path.expandvars('${ProgramFiles(x86)}\\Perforce\\p4.exe')
+			if perforcepath!=None:
+				if not os.path.isfile(perforcepath):
+					perforcepath=None
+				
+		if perforcepath==None:
+			print 'Perforce needs to be installed for source control!'
+			return None
+			
+		return '"' + perforcepath + '"'
 
 	#
-	# Use the defaults
-	#
+	# Is the path set for Linux or Mac OSX?
 	
-	if hostmachine() == 'windows':
-		# Hard code on windows
-		return '"' + os.path.expandvars('${ProgramFiles}\Perforce\p4') + '"'
+	perforcepath = os.getenv('PERFORCE')
+	if perforcepath!=None:
+		return '"' + os.path.join(perforcepath,'p4') + '"'
+
 
 	# Use the local copy of the p4 client (Universal binary)
 			
 	#if hostmachine() == 'macosx':
 	#	return '"' + os.path.join(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),'macosx','bin'),'p4') + '"'
 
-	# Use the default directory path
+	# Assume it's in the PATH on other systems
 	return 'p4'
 	
 #
@@ -484,7 +525,10 @@ def perforceedit(files):
 	# Get the p4 executable
 
 	perforce = whereisp4()
-
+	# Not found?
+	if perforce==None:
+		return 10
+		
 	if type(files) is not list:
 		files = [files]
 		
@@ -493,7 +537,7 @@ def perforceedit(files):
 		error = subprocess.call(cmd,shell=True)
 		if error!=0:
 			return error
-	return 0	
+	return 0
 
 #
 ## Compare text files for equality
@@ -625,6 +669,17 @@ def comparefiletostring(filename,string):
 
 def makeversionheader(workingdir,outputfilename):
 
+	# Check if perforce is installed
+	p4exe = whereisp4()
+	if p4exe==None:
+		return 10
+
+	# Create the header guard
+	headerguard = os.path.basename(outputfilename).upper()
+	headerguard = headerguard.replace(' ','_')	
+	headerguard = '__' + headerguard.replace('.','_') + '__'
+	
+
 	# Work filename
 	p4tempfilename = 'p4tempfilename1234.h'
 	p4temppathname = os.path.join(workingdir,p4tempfilename)
@@ -637,7 +692,6 @@ def makeversionheader(workingdir,outputfilename):
 	# -l / Print out the entire changelist description
 	#
 
-	p4exe = whereisp4()
 	cmd = p4exe + ' changes -m 1 -t -l ...#have > ' + p4tempfilename
 	error = subprocess.call(cmd,cwd=workingdir,shell=True)
 	if error!=0:
@@ -722,8 +776,8 @@ def makeversionheader(workingdir,outputfilename):
 		'\n'
 		'***************************************/\n'
 		'\n'
-		'#ifndef __P4_VERSION_H__\n'
-		'#define __P4_VERSION_H__\n'
+		'#ifndef ' + headerguard + '\n'
+		'#define ' + headerguard + '\n'
 		'\n')
 	
 	if len(p4changes)>4:
@@ -1016,3 +1070,40 @@ def gettoolpath(toolfolder,toolname,encapsulate=False):
 	if encapsulate==True:
 		exename = '"' + exename + '"'
 	return exename
+
+#
+## Create a list of all copies of a file following a directory
+#
+# Starting with a working directory, test if a file exists
+# and if so, inserted it into a list. The list will be
+# starting from the root with the last entry
+# being at the workingdirectory
+#
+# \param workingdir string with the path of the folder to obtain the perforce version for
+# \param filename string with the path of the generated header
+# \return List of pathnames (With filename appended)
+#
+
+def traversedirectory(workingdir,filename):
+	list = []
+	
+	# Convert into a unpacked pathname
+	tempdir = os.path.abspath(workingdir)
+	
+	# Loop
+	while 1:
+		# Is the file here?
+		temppath = os.path.join(tempdir,filename)
+		if os.path.isfile(temppath):
+			# Insert at the beginning
+			list.insert(0,temppath)
+		# Pop a folder
+		tempdir2 = os.path.dirname(tempdir)
+		# Already at the top of the directory?
+		if tempdir2==None or tempdir2==tempdir:
+			break
+		# Use the new folder
+		tempdir = tempdir2
+
+	# Return the list of files
+	return list
