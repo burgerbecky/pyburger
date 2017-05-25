@@ -16,13 +16,10 @@ burger should work on Python >= 2.7, it was tested on:
 Installation
 ------------
 
-Try one of these:
+Type this command:
 
-    python setup.py install
 
-    easy_install burger
-
-    pip install burger
+    pip install -U burger
 
     putting the file burger.py in some directory listed in sys.path should also work
 

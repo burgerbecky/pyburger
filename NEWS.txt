@@ -1,6 +1,10 @@
 What's New
 ==========
 
+burger 0.9.7
+--------------
+Added TrueFalse()
+
 burger 0.9.3
 --------------
 - Fixed a bug in fixcsharp()

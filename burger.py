@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright 2013-2016 by Rebecca Ann Heineman becky@burgerbecky.com
+# Copyright 2013-2017 by Rebecca Ann Heineman becky@burgerbecky.com
 
 # It is released under an MIT Open Source license. Please see LICENSE
 # for license details. Yes, you can use it in a
@@ -9,7 +9,7 @@
 # Please? It's not like I'm asking you for money!
 
 #
-# Useful subroutines
+# Includes
 #
 
 import os
@@ -34,13 +34,14 @@ from cStringIO import StringIO
 # \li \ref burger.interceptstdout
 #
 #
-# To use:
+# To use the library:
 #
 # \code
+# # Import the burger libary
 # import burger
 # \endcode
 #
-# To install type in 'easy_install burger' from your python command line
+# To install type in 'pip install -U burger' from your shell.
 #
 # The source can be found at github at https://github.com/burgerbecky/pyburger
 #
@@ -50,11 +51,11 @@ from cStringIO import StringIO
 #
 ## \package burger
 # A set of subroutines used by the Burgerlib based scripts
-# written in Python
+# written in Python.
 #
 # For higher level tools like makeprojects, burgerclean and
 # burgerbuild, common subroutines were collected and
-# placed in this module for reuse
+# placed in this module for reuse.
 #
 
 #
@@ -62,7 +63,7 @@ from cStringIO import StringIO
 #
 
 ## Current version of the library
-__version__ = '0.9.6'
+__version__ = '0.9.7'
 
 ## Author's name
 __author__ = 'Rebecca Ann Heineman <becky@burgerbecky.com>'
@@ -83,7 +84,7 @@ __email__ = 'becky@burgerbecky.com'
 __license__ = 'MIT License'
 
 ## Copyright owner
-__copyright__ = 'Copyright 2013-2016 Rebecca Ann Heineman'
+__copyright__ = 'Copyright 2013-2017 Rebecca Ann Heineman'
 
 #
 ## Items to import on "from burger import *"
@@ -103,6 +104,9 @@ __all__ = [
 	'createfolderifneeded',
 	'deletefileifpresent',
 	'converttoarray',
+	'TrueFalse',
+	'truefalse',
+	'TRUEFALSE',
 	'converttowindowsslashes',
 	'converttolinuxslashes',
 	'converttowindowsslasheswithendslash',
@@ -171,7 +175,7 @@ class interceptstdout(list):
 #
 # If the environment variable BURGER_SDKS is set,
 # return the pathname it contains. Otherwise,
-# print a warning and return None
+# print a warning and return None.
 #
 
 def getsdksfolder():
@@ -181,8 +185,8 @@ def getsdksfolder():
 	return sdks
 
 #
-## Given a pathname to a folder, detect if the folder exists
-# If not, create it
+## Given a pathname to a folder, detect if the folder exists,
+# if not, create it.
 #
 # \param foldername A string object with the pathname
 #
@@ -192,7 +196,7 @@ def createfolderifneeded(foldername):
 		os.makedirs(foldername)
 
 #
-## Given a pathname to a file, detect if a file exists. If so, delete it
+## Given a pathname to a file, detect if a file exists. If so, delete it.
 #
 # \param filename A string object with the filename
 #
@@ -206,8 +210,10 @@ def deletefileifpresent(filename):
 #
 # If the input is already a list, return the list as is.
 # Otherwise, convert the string to a single entry list.
+# If the input is None, return an empty list.
 #
 # \param input A list or string object
+# \return The original input if it was a list, or a list with the input object as a single entry
 #
 
 def converttoarray(input):
@@ -218,6 +224,52 @@ def converttoarray(input):
 		# Convert a single entry into an array
 		input = [input]
 	return input
+
+#
+## Convert the input into a boolean and return the string 'True' or 'False'
+#
+# If the input was a string of 'False' (Case insensitive comparision),
+# this function will return 'False'
+#
+# \param input Object to convert to a bool before converting into a string
+# \return 'True' or 'False'
+# \sa truefalse() or TRUEFALSE()
+#
+
+def TrueFalse(input):
+	# Test if it's the string 'False'
+	if isinstance(input,(str,unicode)):
+		if input.upper()=='FALSE':
+			return 'False'
+	return str(bool(input))
+
+#
+## Convert the input into a boolean and return the lower case string 'true' or 'false'
+#
+# If the input was a string of 'False' (Case insensitive comparision),
+# this function will return 'False'
+#
+# \param input Object to convert to a bool before converting into a string
+# \return 'true' or 'false'
+# \sa TRUEFALSE() or TrueFalse()
+#
+
+def truefalse(input):
+	return TrueFalse(input).lower()
+
+#
+## Convert the input into a boolean and return the upper case string 'TRUE' or 'FALSE'
+#
+# If the input was a string of 'False' (Case insensitive comparision),
+# this function will return 'False'
+#
+# \param input Object to convert to a bool before converting into a string
+# \return 'TRUE' or 'FALSE'
+# \sa truefalse() or TrueFalse()
+#
+
+def TRUEFALSE(input):
+	return TrueFalse(input).upper()
 
 #
 ## Convert a filename from linux/mac to windows format
@@ -277,7 +329,7 @@ class node(object):
 		
 	## Convert to string function for node tree
 	def __repr__(self,level=0):
-		ret = "\t"*level+repr(self.value)+"\n"
+		ret = '\t'*level+repr(self.value)+'\n'
 		for child in self.children:
 			ret += child.__repr__(level+1)
 		return ret
