@@ -3,11 +3,11 @@ language: python
 python:
   - "2.6"
   - "2.7"
-	- "3.2"
-	- "3.3"
+  - "3.2"
+  - "3.3"
   - "3.4"
-	- "3.5"
-	- "3.6"
+  - "3.5"
+  - "3.6"
   # PyPy versions
   - "pypy"  # PyPy2 2.5.0
   - "pypy3" # Pypy3 2.4.0
@@ -20,11 +20,26 @@ before_install:
 
 # command to install dependencies
 install: 
-	- pip install -U setuptools
-	- pip install .
+  - pip install tox coverage coveralls
   - virtualenv --version
   - easy_install --version
   - pip --version
+  - tox --version
+  - coverage --version
+
+script:
+  # Test install with current version of setuptools
+  - pip install .
+  # Run the tests with newest version of setuptools
+  - pip install -U setuptools
+  - tox -e coverage-erase,py27
+
+after_success:
+  - tox -e coveralls
+
+after_failure:
+  - more .tox/log/* | cat
+  - more .tox/*/log/* | cat
 
 notifications:
   email:
