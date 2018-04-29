@@ -6,6 +6,15 @@ Configuration file for the Sphinx documentation builder.
 
 #pylint: disable=C0103,W0622
 
+import subprocess
+import os
+import sys
+import errno
+
+# Determine if running on "ReadTheDocs.org"
+
+on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
+
 # -- Project information -----------------------------------------------------
 
 project = u'burger'
@@ -34,6 +43,7 @@ extensions = \
 	'sphinx.ext.ifconfig',
 	'sphinx.ext.viewcode',
 	'sphinx.ext.githubpages',
+	'breathe'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -65,13 +75,16 @@ pygments_style = 'sphinx'
 
 # -- Options for HTML output -------------------------------------------------
 
-# The theme to use for HTML and HTML Help pages.  See the documentation for
+# The theme to use for HTML and HTML Help pages. See the documentation for
 # a list of builtin themes.
-#
-html_theme = 'alabaster'
+
+if on_rtd:
+	html_theme = 'default'
+else:
+	html_theme = 'alabaster'
 
 # Theme options are theme-specific and customize the look and feel of a theme
-# further.  For a list of options available for each theme, see the
+# further. For a list of options available for each theme, see the
 # documentation.
 #
 # html_theme_options = {}
@@ -85,12 +98,12 @@ html_static_path = []
 # to template names.
 #
 # The default sidebars (for documents that don't match any pattern) are
-# defined by theme itself.  Builtin themes are using these templates by
+# defined by theme itself. Builtin themes are using these templates by
 # default: ``['localtoc.html', 'relations.html', 'sourcelink.html',
 # 'searchbox.html']``.
 #
 # html_sidebars = {}
-
+html_show_sourcelink = False
 
 # -- Options for HTMLHelp output ---------------------------------------------
 
@@ -121,7 +134,7 @@ latex_elements = \
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title,
-#  author, documentclass [howto, manual, or own class]).
+# author, documentclass [howto, manual, or own class]).
 latex_documents = \
 [
 	(master_doc, 'burger.tex', u'burger Documentation',
@@ -143,7 +156,7 @@ man_pages = \
 
 # Grouping the document tree into Texinfo files. List of tuples
 # (source start file, target name, title, author,
-#  dir menu entry, description, category)
+# dir menu entry, description, category)
 texinfo_documents = \
 [
 	(master_doc, 'burger', u'burger Documentation',
@@ -175,6 +188,12 @@ epub_exclude_files = ['search.html']
 
 # -- Extension configuration -------------------------------------------------
 
+breathe_projects = {
+	"burger":"temp/xml/"
+}
+
+breathe_default_project = "burger"
+
 # -- Options for intersphinx extension ---------------------------------------
 
 # Example configuration for intersphinx: refer to the Python standard library.
@@ -184,3 +203,48 @@ intersphinx_mapping = {'https://docs.python.org/': None}
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = True
+
+########################################
+
+def run_doxygen(folder):
+	"""
+	Run the doxygen make command in the requested folder
+
+	ReadTheDocs.org has doxygen support
+	"""
+
+	try:
+		retcode = subprocess.call("doxygen", cwd=folder, shell=True)
+		if retcode < 0:
+			sys.stderr.write("doxygen terminated by signal %s" % (-retcode))
+	except OSError as error:
+		sys.stderr.write("doxygen execution failed: %s" % error)
+
+########################################
+
+def generate_doxygen_xml(app):
+	"""
+	Run the doxygen make commands if we're on the ReadTheDocs server
+	"""
+	#pylint: disable=W0613
+
+	# Doxygen can't create a nested folder. Help it by
+	# creating the first folder
+
+	try:
+		os.makedirs('temp')
+	except OSError as error:
+		if error.errno != errno.EEXIST:
+			raise
+
+	run_doxygen(".")
+
+########################################
+
+def setup(app):
+	"""
+	Called by breathe to create the doxygen docs
+	"""
+
+	# Add hook for building doxygen xml when needed
+	app.connect("builder-inited", generate_doxygen_xml)

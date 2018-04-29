@@ -3,7 +3,7 @@ build system.
 
 ``burger`` is licensed under the MIT license, for details see LICENSE.txt.
 
-* Documentation is found at http://pythonhosted.org/burger/
+* Documentation is found at https://pyburger.readthedocs.io
 
 * Python Packing Index (PyPI): https://pypi.python.org/pypi/burger
 
@@ -33,3 +33,10 @@ Bugs
 If you find a bug, issue or have a feature request, please submit a bug report
 by emailing becky@burgerbecky.com and mention python version, integer
 size (32 bit or 64 bit) and what platform was used (Windows / Mac OSX / Linux).
+
+Public functions
+----------------
+
+.. doxygennamespace:: burger
+    :members:
+    :content-only:
