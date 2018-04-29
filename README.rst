@@ -5,6 +5,8 @@ build system.
 
 * Documentation is found at https://pyburger.readthedocs.io
 
+* Doxygen generated documentation is found at https://pyburger.readthedocs.io/en/latest/doxygen
+
 * Python Packing Index (PyPI): https://pypi.python.org/pypi/burger
 
 * Source code and issue tracker: https://github.com/burgerbecky/pyburger
