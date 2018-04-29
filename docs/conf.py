@@ -241,6 +241,14 @@ def generate_doxygen_xml(app):
 
 	run_doxygen(".")
 
+	if on_rtd:
+		try:
+			retcode = subprocess.call("cp -r temp/html _build/html/doxygen", cwd='.', shell=True)
+			if retcode < 0:
+				sys.stderr.write("cp terminated by signal %s" % (-retcode))
+		except OSError as error:
+			sys.stderr.write("cp execution failed: %s" % error)
+
 ########################################
 
 def setup(app):
