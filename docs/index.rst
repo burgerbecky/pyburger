@@ -15,7 +15,8 @@ These library functions were designed to import only built in libraries
 Installation
 ------------
 
-Type in ``pip install -U burger``. Some platforms may require the ``sudo`` prefix.
+Type in ``pip install -U burger``. Some platforms may require the ``sudo``
+prefix.
 
 Putting the file ``burger.py`` in some directory listed in ``sys.path``
 will also work
@@ -32,5 +33,6 @@ Table of contents
 
 .. toctree::
 
+    burger
     functions
     classes

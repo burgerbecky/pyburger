@@ -2,6 +2,6 @@ Classes
 =======
 
 .. doxygenclass:: burger::Node
-	:members:
+    :members:
 .. doxygenclass:: burger::Interceptstdout
-	:members:
+    :members:
