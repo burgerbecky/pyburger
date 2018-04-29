@@ -1,6 +1,11 @@
 What's New
 ==========
 
+burger 1.0.0
+------------
+Official release, tested on Python 2.7.14 and 3.6.5, this is a breaking change from 0.9.9
+since function names were refactored to follow pylint's recommendations.
+
 burger 0.9.7
 --------------
 Added TrueFalse()
@@ -13,13 +18,10 @@ burger 0.9.2
 --------------
 - Added shutilreadonlycallback and deletedirectory
 
-
 burger 0.9.1
 --------------
 - Documented with Doxygen
 
-
 burger 0.9
 --------------
-
 - Initial release
