@@ -1,11 +1,18 @@
-The ``burger`` module is a set of simple subroutines used by the ``Burgerlib``
-build system.
+Burger for Python
+=================
 
+.. image:: https://img.shields.io/pypi/v/burger.svg
+    :target: https://pypi.org/project/burger/
+    :alt: Pypi Version
+.. image:: https://img.shields.io/pypi/l/burger.svg
+    :target: https://github.com/burgerbecky/pyburger/blob/master/LICENSE.txt
+    :alt: License
 .. image:: https://readthedocs.org/projects/pyburger/badge/?version=latest
     :target: http://pyburger.readthedocs.io/en/latest/?badge=latest
     :alt: Documentation Status
 
-``burger`` is licensed under the MIT license, for details see LICENSE.txt.
+The ``burger`` module is a set of simple subroutines used by the ``Burgerlib``
+build system.
 
 * Documentation is found at https://pyburger.readthedocs.io
 
@@ -18,17 +25,16 @@ build system.
 Compatibility
 -------------
 
-``burger`` should work on Python >= 2.7, it was tested on:
-
-* 2.7.14
-* 3.6.5
+* Python 2.7.1 or higher
+* Python 3.0 or higher
 
 Installation
 ------------
 
 Type this command:
 
-``pip install -U burger``
+Type in ``pip install -U burger``. Some platforms may require the ``sudo``
+prefix.
 
 Putting the file ``burger.py`` in some directory listed in ``sys.path``
 will also work
