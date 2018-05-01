@@ -1,6 +1,10 @@
 The ``burger`` module is a set of simple subroutines used by the ``Burgerlib``
 build system.
 
+.. image:: https://readthedocs.org/projects/pyburger/badge/?version=latest
+    :target: http://pyburger.readthedocs.io/en/latest/?badge=latest
+    :alt: Documentation Status
+
 ``burger`` is licensed under the MIT license, for details see LICENSE.txt.
 
 * Documentation is found at https://pyburger.readthedocs.io
