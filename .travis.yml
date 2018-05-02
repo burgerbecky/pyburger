@@ -19,7 +19,8 @@ before_install:
 
 # command to install dependencies
 install: 
-  - pip install tox coverage coveralls
+  - pip install -U setuptools
+  - pip install -U tox coverage coveralls
   - virtualenv --version
   - easy_install --version
   - pip --version
@@ -27,10 +28,6 @@ install:
   - coverage --version
 
 script:
-  # Test install with current version of setuptools
-  - pip install .
-  # Run the tests with newest version of setuptools
-  - pip install -U setuptools
   - tox
 
 after_success:
