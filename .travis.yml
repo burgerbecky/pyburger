@@ -31,7 +31,7 @@ script:
   - pip install .
   # Run the tests with newest version of setuptools
   - pip install -U setuptools
-  - tox -e coverage-erase,py27
+  - tox
 
 after_success:
   - tox -e coveralls
