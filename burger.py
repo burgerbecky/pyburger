@@ -75,7 +75,7 @@ except ImportError:
 	pass
 
 ## Current version of the library
-__version__ = '1.0.1'
+__version__ = '1.0.2'
 
 ## Author's name
 __author__ = 'Rebecca Ann Heineman <becky@burgerbecky.com>'
@@ -1455,7 +1455,7 @@ def encapsulate_path(input_path):
 
 ########################################
 
-def unlock_files(working_dir):
+def unlock_files(working_dir, recursive=False):
 	"""
 	Iterate over a directory and unlock all read-only files.
 
@@ -1474,7 +1474,7 @@ def unlock_files(working_dir):
 
 	Args:
 		working_dir: Pathname to the directory to traverse for read-only files
-
+		recursive: False (default) don't recurse through folders, True, recurse
 	Returns:
 		A list object with the name of every file that was unlocked.
 
@@ -1496,6 +1496,9 @@ def unlock_files(working_dir):
 			if not os.access(path_name, os.W_OK):
 				os.chmod(path_name, stat.S_IWRITE)
 				result.append(path_name)
+		else:
+			if recursive and os.path.isdir(path_name):
+				result += unlock_files(path_name, True)
 	return result
 
 

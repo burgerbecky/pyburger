@@ -39,7 +39,9 @@ def clean(working_dir):
 		'build',
 		'temp',
 		'_build',
-		'__pycache__'
+		'__pycache__',
+		'.pytest_cache',
+		'.tox'
 	]
 
 	# Delete all folders, including read only files
