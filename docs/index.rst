@@ -8,8 +8,10 @@ Burger for Python
     :target: https://github.com/burgerbecky/pyburger/blob/master/LICENSE.txt
     :alt: License
 .. image:: https://readthedocs.org/projects/pyburger/badge/?version=latest
-    :target: http://pyburger.readthedocs.io/en/latest/?badge=latest
+    :target: http://pyburger.readthedocs.io
     :alt: Documentation Status
+.. image:: https://img.shields.io/pypi/pyversions/burger.svg
+    :alt: Supported Python versions
 
 The ``burger`` module is a set of simple subroutines used by the ``Burgerlib``
 build system.
@@ -26,7 +28,7 @@ Compatibility
 -------------
 
 * Python 2.7.1 or higher
-* Python 3.0 or higher
+* Python 3.3 or higher
 
 These library functions were designed to import only built in libraries
 
