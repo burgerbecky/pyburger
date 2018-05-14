@@ -75,7 +75,7 @@ except ImportError:
 	pass
 
 ## Current version of the library
-__version__ = '1.0.2'
+__version__ = '1.0.4'
 
 ## Author's name
 __author__ = 'Rebecca Ann Heineman <becky@burgerbecky.com>'
@@ -831,9 +831,9 @@ def compare_files(filename1, filename2):
 
 	try:
 		with open(filename1, 'r') as filep:
-			file_one_lines = filep.readlines()
+			file_one_lines = filep.read().splitlines()
 		with open(filename2, 'r') as filep:
-			file_two_lines = filep.readlines()
+			file_two_lines = filep.read().splitlines()
 	except IOError as error:
 		# Only deal with file not found
 		if error.errno != errno.ENOENT:
@@ -879,7 +879,7 @@ def compare_file_to_string(filename, data):
 
 	try:
 		with open(filename, 'r') as filep:
-			file_one_lines = filep.readlines()
+			file_one_lines = filep.read().splitlines()
 	except IOError as error:
 		# Only deal with file not found
 		if error.errno != errno.ENOENT:
@@ -892,7 +892,11 @@ def compare_file_to_string(filename, data):
 	# Compare the file contents taking into account
 	# different line endings
 
-	file_two_lines = data.splitlines(True)
+	# Test if this is a StringIO object
+	if hasattr(data, 'getvalue'):
+		file_two_lines = data.getvalue().splitlines()
+	else:
+		file_two_lines = data.splitlines()
 
 	# Compare the file contents
 

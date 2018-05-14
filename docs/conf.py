@@ -15,6 +15,7 @@ import sphinx_rtd_theme
 # Determine if running on "ReadTheDocs.org"
 
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
+CWD = os.path.dirname(os.path.abspath(__file__))
 
 # -- Project information -----------------------------------------------------
 
@@ -25,7 +26,7 @@ author = u'Rebecca Ann Heineman'
 # The short X.Y version
 version = u'1.0'
 # The full version, including alpha/beta/rc tags
-release = u'1.0.2'
+release = u'1.0.4'
 
 
 # -- General configuration ---------------------------------------------------
@@ -216,7 +217,7 @@ def run_doxygen(folder):
 	"""
 
 	try:
-		retcode = subprocess.call("doxygen", cwd=folder, shell=True)
+		retcode = subprocess.call('doxygen', cwd=folder, shell=True)
 		if retcode < 0:
 			sys.stderr.write("doxygen terminated by signal %s" % (-retcode))
 	except OSError as error:
@@ -234,13 +235,14 @@ def generate_doxygen_xml(app):
 	# creating the first folder
 
 	try:
-		os.makedirs('temp')
+		os.makedirs(os.path.join(CWD, 'temp'))
 	except OSError as error:
 		if error.errno != errno.EEXIST:
 			raise
 
-	run_doxygen(".")
+	run_doxygen(CWD)
 
+	# If on ReadTheDocs.org, copy to public folder
 	if on_rtd:
 		try:
 			retcode = subprocess.call("cp -r temp/html _build/html/doxygen", cwd='.', shell=True)
