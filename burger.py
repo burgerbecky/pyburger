@@ -75,7 +75,7 @@ except ImportError:
 	pass
 
 ## Current version of the library
-__version__ = '1.0.4'
+__version__ = '1.0.5'
 
 ## Author's name
 __author__ = 'Rebecca Ann Heineman <becky@burgerbecky.com>'
@@ -1495,13 +1495,21 @@ def unlock_files(working_dir, recursive=False):
 	for item in os.listdir(abs_dir):
 		path_name = os.path.join(abs_dir, item)
 
-		# Only process files, skip directories
-		if os.path.isfile(path_name):
-			if not os.access(path_name, os.W_OK):
-				os.chmod(path_name, stat.S_IWRITE)
+		# Get the status of the file
+		path_stat = os.stat(path_name)
+
+		# Process files
+		if path_stat.st_mode & stat.S_IFREG:
+
+			# Only care about write protected files
+			if not path_stat.st_mode & stat.S_IWRITE:
+
+				# Remove write protection while retaining the other flags
+				os.chmod(path_name, path_stat.st_mode + stat.S_IWRITE + stat.S_IWGRP + stat.S_IWOTH)
 				result.append(path_name)
 		else:
-			if recursive and os.path.isdir(path_name):
+			# Process recursion
+			if recursive and path_stat.st_mode & stat.S_IFDIR:
 				result += unlock_files(path_name, True)
 	return result
 
@@ -1519,4 +1527,9 @@ def lock_files(lock_list):
 		unlock_files()
 	"""
 	for item in lock_list:
-		os.chmod(item, stat.S_IREAD)
+
+		# Get the status of the file
+		path_stat = os.stat(item)
+
+		# Mark it write protected for Perforce
+		os.chmod(item, path_stat.st_mode & (~(stat.S_IWRITE + stat.S_IWGRP + stat.S_IWOTH)))

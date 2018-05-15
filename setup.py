@@ -126,6 +126,7 @@ def clean(working_dir):
 		'dist',
 		'build',
 		'temp',
+		'docs' + os.sep + 'temp',
 		'_build',
 		'__pycache__',
 		'.pytest_cache',
