@@ -74,8 +74,11 @@ try:
 except ImportError:
 	pass
 
+## Numeric version
+__numversion__ = (1, 0, 6)
+
 ## Current version of the library
-__version__ = '1.0.5'
+__version__ = '.'.join([str(num) for num in __numversion__])
 
 ## Author's name
 __author__ = 'Rebecca Ann Heineman <becky@burgerbecky.com>'

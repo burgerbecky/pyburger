@@ -6,6 +6,8 @@ Configuration file for the Sphinx documentation builder.
 
 #pylint: disable=C0103,W0622
 
+from __future__ import absolute_import, unicode_literals
+
 import subprocess
 import os
 import sys
@@ -17,16 +19,24 @@ import sphinx_rtd_theme
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 CWD = os.path.dirname(os.path.abspath(__file__))
 
+# Add this folder to python so it can find the new file
+sys.path.append(os.path.dirname(CWD))
+
+tempmodule = __import__('burger')
+
+# Restore the pathnames
+sys.path.pop()
+
 # -- Project information -----------------------------------------------------
 
-project = u'burger'
-copyright = u'2013-2018, Rebecca Ann Heineman'
-author = u'Rebecca Ann Heineman'
+project = tempmodule.__title__
+copyright = tempmodule.__copyright__
+author = tempmodule.__author__
 
 # The short X.Y version
-version = u'1.0'
+version = '.'.join([str(num) for num in tempmodule.__numversion__[:2]])
 # The full version, including alpha/beta/rc tags
-release = u'1.0.5'
+release = tempmodule.__version__
 
 
 # -- General configuration ---------------------------------------------------
@@ -111,7 +121,7 @@ html_show_sourcelink = False
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'burgerdoc'
+htmlhelp_basename = project + 'doc'
 
 
 # -- Options for LaTeX output ------------------------------------------------
@@ -140,8 +150,8 @@ latex_elements = \
 # author, documentclass [howto, manual, or own class]).
 latex_documents = \
 [
-	(master_doc, 'burger.tex', u'burger Documentation',
-		u'Rebecca Ann Heineman', 'manual'),
+	(master_doc, project + '.tex', project + ' Documentation',
+		author, 'manual'),
 ]
 
 
@@ -151,7 +161,7 @@ latex_documents = \
 # (source start file, name, description, authors, manual section).
 man_pages = \
 [
-	(master_doc, 'burger', u'burger Documentation', [author], 1)
+	(master_doc, project, project + ' Documentation', [author], 1)
 ]
 
 
@@ -162,8 +172,8 @@ man_pages = \
 # dir menu entry, description, category)
 texinfo_documents = \
 [
-	(master_doc, 'burger', u'burger Documentation',
-		author, 'burger', 'One line description of project.',
+	(master_doc, project, project + ' Documentation',
+		author, project, tempmodule.__summary__,
 		'Miscellaneous'),
 ]
 
@@ -192,10 +202,10 @@ epub_exclude_files = ['search.html']
 # -- Extension configuration -------------------------------------------------
 
 breathe_projects = {
-	"burger":"temp/xml/"
+	project:"temp/xml/"
 }
 
-breathe_default_project = "burger"
+breathe_default_project = project
 
 # -- Options for intersphinx extension ---------------------------------------
 
