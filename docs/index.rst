@@ -7,6 +7,9 @@ Burger for Python
 .. image:: https://img.shields.io/pypi/l/burger.svg
     :target: https://github.com/burgerbecky/pyburger/blob/master/LICENSE.txt
     :alt: License
+.. image:: https://img.shields.io/travis/burgerbecky/pyburger.svg
+    :target: https://travis-ci.org/burgerbecky/pyburger
+    :alt: Travis Status
 .. image:: https://readthedocs.org/projects/pyburger/badge/?version=latest
     :target: http://pyburger.readthedocs.io
     :alt: Documentation Status
