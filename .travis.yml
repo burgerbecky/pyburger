@@ -1,24 +1,24 @@
 # https://travis-ci.org/burgerbecky/pyburger
+sudo: false
 language: python
+cache: pip
 python:
-  - "2.7"
-  - "3.4"
-  - "3.5"
-  - "3.6"
-  # PyPy versions
-  - "pypy"  # PyPy2 2.5.0
-  - "pypy3" # Pypy3 2.4.0
-  - "pypy-5.3.1"
+  - 2.7
+  - 3.4
+  - 3.5
+  - 3.6
+  - pypy
 
 # Log these
 before_install:
   - python --version
   - uname -a
+  - pyenv versions
 
 # command to install dependencies
 install: 
   - pip install -U setuptools
-  - pip install -U tox coverage coveralls
+  - pip install -U tox
   - virtualenv --version
   - easy_install --version
   - pip --version
@@ -28,12 +28,9 @@ install:
 script:
   - tox
 
-after_success:
-  - tox -e coveralls
-
 after_failure:
-  - more .tox/log/* | cat
-  - more .tox/*/log/* | cat
+  - more temp/tox/log/* | cat
+  - more temp/tox/*/log/* | cat
 
 notifications:
   email:
