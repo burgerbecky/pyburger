@@ -23,7 +23,6 @@ install:
   - easy_install --version
   - pip --version
   - tox --version
-  - coverage --version
 
 script:
   - tox
