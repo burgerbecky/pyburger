@@ -3,11 +3,15 @@ sudo: false
 language: python
 cache: pip
 python:
+  - 2.6
   - 2.7
+  - 3.2
+  - 3.3
   - 3.4
   - 3.5
   - 3.6
   - pypy
+  - pypy3
 
 # Log these
 before_install:
@@ -35,3 +39,7 @@ notifications:
   email:
     on_success: change
     on_failure: always
+
+addons:
+  apt:
+    update: true
