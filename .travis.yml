@@ -19,7 +19,9 @@ before_install:
   - uname -a
   - pyenv versions
   - readlink -f `which python`
-
+  - echo $PATH
+  - ls $(dirname $(readlink -f `which python`))
+  
 # Install tox-travis for seamless tox integration
 install:
   - pip install tox-travis wheel codecov coverage
