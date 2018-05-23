@@ -18,6 +18,7 @@ before_install:
   - python --version
   - uname -a
   - pyenv versions
+  - readlink -f `which python`
 
 # Install tox-travis for seamless tox integration
 install:
