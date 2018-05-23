@@ -28,8 +28,7 @@ CWD = os.path.dirname(os.path.abspath(__file__))
 
 # Project specific strings
 PROJECT_NAME = 'burger'
-PROJECT_KEYWORDS = \
-[
+PROJECT_KEYWORDS = [
 	'burger',
 	'perforce',
 	'burgerlib',
@@ -44,14 +43,12 @@ with io.open(os.path.join(CWD, 'README.rst'), encoding='utf-8') as filep:
 	LONG_DESCRIPTION = filep.read()
 
 # Create the dependency list
-INSTALL_REQUIRES = \
-[
+INSTALL_REQUIRES = [
 	'setuptools >= 0.7.0'
 ]
 
 # Project classifiers
-CLASSIFIERS = \
-[
+CLASSIFIERS = [
 	'Development Status :: 5 - Production/Stable',
 	'Environment :: Console',
 	'Intended Audience :: Developers',
@@ -71,25 +68,22 @@ CLASSIFIERS = \
 ]
 
 # Extra files to include in the form of this tuple (directory,[files])
-DATA_FILES = \
-[
-	('.', ['LICENSE.txt'])
+DATA_FILES = [
+	# (PROJECT_NAME, ['LICENSE.txt'])
 ]
 
 #
 # Parms for setup
 #
 
-SETUP_ARGS = \
-dict(
-
+SETUP_ARGS = dict(
 	name=PROJECT_NAME,
 	version=PROJECT_MODULE.__version__,
 
 	# Use the readme as the long description
 	description=PROJECT_MODULE.__summary__,
 	long_description=LONG_DESCRIPTION,
-	#long_description_content_type='text/x-rst; charset=UTF-8',
+	# long_description_content_type='text/x-rst; charset=UTF-8',
 	license=PROJECT_MODULE.__license__,
 	url=PROJECT_MODULE.__uri__,
 
@@ -111,6 +105,25 @@ dict(
 
 ########################################
 
+CLEAN_DIR_LIST = [
+	PROJECT_NAME + '.egg-info',
+	PROJECT_NAME + '-' + PROJECT_MODULE.__version__,
+	'dist',
+	'build',
+	'temp',
+	'docs' + os.sep + 'temp',
+	'_build',
+	'__pycache__',
+	'.pytest_cache',
+	'.tox'
+]
+
+CLEAN_EXTENSION_LIST = [
+	'.pyc',
+	'.pyo'
+]
+
+
 def clean(working_dir):
 	"""
 	Clean up all the temp files after uploading
@@ -119,38 +132,21 @@ def clean(working_dir):
 	temp files
 	"""
 
-
-	dirlist = [ \
-		PROJECT_NAME + '.egg-info',
-		PROJECT_NAME + '-' + PROJECT_MODULE.__version__,
-		'dist',
-		'build',
-		'temp',
-		'docs' + os.sep + 'temp',
-		'_build',
-		'__pycache__',
-		'.pytest_cache',
-		'.tox']
-
 	# Delete all folders, including read only files
 
-	for item in dirlist:
+	for item in CLEAN_DIR_LIST:
 		PROJECT_MODULE.delete_directory(os.path.join(working_dir, item))
 
 	#
 	# Delete all *.pyc and *.pyo files
 	#
 
-	extension_list = [ \
-		'.pyc',
-		'.pyo']
-
 	name_list = os.listdir(working_dir)
 	for base_name in name_list:
 		file_name = os.path.join(working_dir, base_name)
 		# Is it a file? (Skip directories)
 		if os.path.isfile(file_name):
-			for item in extension_list:
+			for item in CLEAN_EXTENSION_LIST:
 				if base_name.endswith(item):
 					os.remove(file_name)
 					break
@@ -159,20 +155,18 @@ def clean(working_dir):
 # Perform the setup
 #
 
+
 if __name__ == '__main__':
 	# Ensure the directory is the current one
 	if CWD:
 		os.chdir(CWD)
 
-	LOCK_LIST = []
 	# Perform a thorough cleaning job
 	if 'clean' in sys.argv:
 		clean(CWD)
 
 	# Unlock the files to handle Perforce locking
-	if 'sdist' in sys.argv:
-		LOCK_LIST = PROJECT_MODULE.unlock_files(CWD)
-
+	LOCK_LIST = PROJECT_MODULE.unlock_files(CWD)
 	try:
 		setuptools.setup(**SETUP_ARGS)
 

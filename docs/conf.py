@@ -55,6 +55,9 @@ extensions = \
 	'sphinx.ext.ifconfig',
 	'sphinx.ext.viewcode',
 	'sphinx.ext.githubpages',
+	'sphinx.ext.imgconverter',
+	# rst2pdf has a conflict with sphinx.ext.mathjax
+	#'rst2pdf.pdfbuilder',
 	'breathe'
 ]
 
@@ -198,6 +201,15 @@ epub_copyright = copyright
 # A list of files that should not be packed into the epub file.
 epub_exclude_files = ['search.html']
 
+# -- Options for PDF output -------------------------------------------------
+
+#pdf_documents = \
+#[
+#	('index', u'rst2pdf', project + ' doc', author)
+#]
+
+#rst2pdf has a bug where indexes can't build, this is a workaround
+#pdf_use_index = False
 
 # -- Extension configuration -------------------------------------------------
 

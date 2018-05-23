@@ -75,7 +75,7 @@ except ImportError:
 	pass
 
 ## Numeric version
-__numversion__ = (1, 0, 6)
+__numversion__ = (1, 0, 8)
 
 ## Current version of the library
 __version__ = '.'.join([str(num) for num in __numversion__])
@@ -145,6 +145,7 @@ __all__ = [
 
 ########################################
 
+
 class Interceptstdout(list):
 	"""
 	Handy class for capturing stdout from tools and	python itself
@@ -201,9 +202,10 @@ class Interceptstdout(list):
 
 ########################################
 
+
 try:
 	# Test if basestring exists (Only in Python 2.x)
-	basestring										#pylint: disable=W0104,basestring-builtin
+	basestring										# pylint: disable=W0104,basestring-builtin
 
 	def is_string(item):
 		"""
@@ -218,7 +220,7 @@ try:
 			True if the object is a string instance, False if not.
 		"""
 
-		return isinstance(item, basestring)			#pylint: disable=basestring-builtin
+		return isinstance(item, basestring)			# pylint: disable=basestring-builtin
 
 except NameError:
 
@@ -240,6 +242,7 @@ except NameError:
 
 ########################################
 
+
 def get_sdks_folder():
 	"""
 	Return the path of the BURGER_SDKS folder
@@ -260,6 +263,7 @@ def get_sdks_folder():
 
 ########################################
 
+
 def create_folder_if_needed(path):
 	"""
 	Given a pathname to a folder, detect if the folder exists, if not, create it.
@@ -279,6 +283,7 @@ def create_folder_if_needed(path):
 
 ########################################
 
+
 def delete_file(filename):
 	"""
 	Given a pathname to a file, delete it.
@@ -297,6 +302,7 @@ def delete_file(filename):
 			raise
 
 ########################################
+
 
 def convert_to_array(input_array):
 	"""
@@ -322,13 +328,14 @@ def convert_to_array(input_array):
 
 ########################################
 
-def TrueFalse(item):			#pylint: disable=C0103
+
+def TrueFalse(item):			# pylint: disable=C0103
 	"""
 	Convert the input into a boolean and return the string 'True' or 'False'
 
 	If the input was a string of '0' or 'False' (Case insensitive comparision),
-	this function will return 'False'. Empty dictionary, string or list objects, or the number
-	zero will also return 'False'
+	this function will return 'False'. Empty dictionary, string or list objects,
+	or the number zero will also return 'False'
 
 	Args:
 		item: Object to convert to a bool before converting into a string
@@ -348,13 +355,14 @@ def TrueFalse(item):			#pylint: disable=C0103
 
 ########################################
 
+
 def truefalse(item):
 	"""
 	Convert the input into a boolean and return the string 'true' or 'false'
 
 	If the input was a string of '0' or 'False' (Case insensitive comparision),
-	this function will return 'false'. Empty dictionary, string or list objects, or the number
-	zero will also return 'false'
+	this function will return 'false'. Empty dictionary, string or list objects,
+	or the number zero will also return 'false'
 
 	Args:
 		item: Object to convert to a bool before converting into a string
@@ -374,13 +382,14 @@ def truefalse(item):
 
 ########################################
 
-def TRUEFALSE(item):			#pylint: disable=C0103
+
+def TRUEFALSE(item):			# pylint: disable=C0103
 	"""
 	Convert the input into a boolean and return the string 'TRUE' or 'FALSE'
 
 	If the input was a string of '0' or 'False' (Case insensitive comparision),
-	this function will return 'FALSE'. Empty dictionary, string or list objects, or the number
-	zero will also return 'FALSE'
+	this function will return 'FALSE'. Empty dictionary, string or list objects,
+	or the number zero will also return 'FALSE'
 
 	Args:
 		item: Object to convert to a bool before converting into a string
@@ -400,6 +409,7 @@ def TRUEFALSE(item):			#pylint: disable=C0103
 
 ########################################
 
+
 def convert_to_windows_slashes(path_name, force_ending_slash=False):
 	"""
 	Convert a filename from linux/mac to windows format
@@ -411,7 +421,8 @@ def convert_to_windows_slashes(path_name, force_ending_slash=False):
 
 	Args:
 		path_name: A pathname to be converted to Windows slashes
-		force_ending_slash: True if a '\\' character is to be forced at the end of the output
+		force_ending_slash: True if a '\\' character is to be forced at the end
+			of the output
 
 	Returns:
 		A pathname using Windows type slashes '\\'
@@ -428,6 +439,7 @@ def convert_to_windows_slashes(path_name, force_ending_slash=False):
 
 ########################################
 
+
 def convert_to_linux_slashes(path_name, force_ending_slash=False):
 	"""
 	Convert a filename from windows to linux/mac format
@@ -436,7 +448,8 @@ def convert_to_linux_slashes(path_name, force_ending_slash=False):
 
 	Args:
 		path_name: A string object that text substitution will occur
-		force_ending_slash: True if a '/' character is to be forced at the end of the output
+		force_ending_slash: True if a '/' character is to be forced at the end
+			of the output
 
 	Returns:
 		A pathname using Linux/BSD type slashes '/'
@@ -451,6 +464,7 @@ def convert_to_linux_slashes(path_name, force_ending_slash=False):
 	return result
 
 ########################################
+
 
 class Node(object):
 	"""
@@ -488,15 +502,16 @@ class Node(object):
 			level: Recursion depth (Used internally)
 		"""
 
-		ret = '\t'*level+repr(self.value)+'\n'
+		ret = '\t' * level + repr(self.value) + '\n'
 		for child in self.children:
-			ret += child.__repr__(level+1)
+			ret += child.__repr__(level + 1)
 		return ret
 
 	__str__ = __repr__
 
 
 ########################################
+
 
 def host_machine():
 	"""
@@ -535,6 +550,7 @@ def host_machine():
 
 ########################################
 
+
 def fix_csharp(csharp_application_path):
 	"""
 	Convert pathname to execute a C# exe file
@@ -561,6 +577,7 @@ def fix_csharp(csharp_application_path):
 
 
 ########################################
+
 
 def get_windows_host_type():
 	"""
@@ -589,6 +606,7 @@ def get_windows_host_type():
 	return 'x86'
 
 ########################################
+
 
 def get_mac_host_type():
 	"""
@@ -629,6 +647,7 @@ def get_mac_host_type():
 
 ########################################
 
+
 def where_is_doxygen():
 	"""
 	Return the location of Doxygen's executable
@@ -652,27 +671,29 @@ def where_is_doxygen():
 
 	# Is Doxygen installed on windows?
 
-	if get_windows_host_type() != False:
+	if get_windows_host_type() is not False:
 
 		# Try the environment variable
 
 		doxygenpath = os.path.expandvars('${DOXYGEN}\\bin\\doxygen.exe')
-		if doxygenpath != None:
+		if doxygenpath is not None:
 			if not os.path.isfile(doxygenpath):
 				doxygenpath = None
 
 		# Try 64 bit version or native 32 bit version
 		if doxygenpath is None:
-			doxygenpath = os.path.expandvars('${ProgramFiles}\\doxygen\\bin\\doxygen.exe')
-			if doxygenpath != None:
+			doxygenpath = \
+				os.path.expandvars('${ProgramFiles}\\doxygen\\bin\\doxygen.exe')
+			if doxygenpath is not None:
 				if not os.path.isfile(doxygenpath):
 					doxygenpath = None
 
 		# Try 32 bit version on 64 bit system
 
 			if doxygenpath is None:
-				doxygenpath = os.path.expandvars('${ProgramFiles(x86)}\\doxygen\\bin\\doxygen.exe')
-				if doxygenpath != None:
+				doxygenpath = \
+					os.path.expandvars('${ProgramFiles(x86)}\\doxygen\\bin\\doxygen.exe')
+				if doxygenpath is not None:
 					if not os.path.isfile(doxygenpath):
 						doxygenpath = None
 
@@ -682,10 +703,12 @@ def where_is_doxygen():
 		return doxygenpath
 
 	# MacOSX has it hidden in the application
-	elif get_mac_host_type() != False:
+	elif get_mac_host_type() is not False:
 		doxygenpath = '/Applications/Doxygen.app/Contents/Resources/doxygen'
 		if not os.path.isfile(doxygenpath):
-			print('Doxygen needs to be installed in your Applications folder to build documentation!')
+			print \
+				('Doxygen needs to be installed in your Applications folder '
+					'to build documentation!')
 			return None
 		return doxygenpath
 
@@ -693,6 +716,7 @@ def where_is_doxygen():
 	return 'doxygen'
 
 ########################################
+
 
 def expand_and_verify(file_string):
 	"""
@@ -723,6 +747,7 @@ def expand_and_verify(file_string):
 
 ########################################
 
+
 def where_is_p4(encapsulate=True):
 
 	"""
@@ -737,12 +762,13 @@ def where_is_p4(encapsulate=True):
 	that the executable is in the PATH
 
 	Args:
-		encapsulate: If True, return the path enquoted, otherwise don't encapsulate in quotes.
+		encapsulate: If True, return the path enquoted, otherwise don't
+			encapsulate in quotes.
 	"""
 
 	# Is Perforce installed on windows?
 
-	if get_windows_host_type() != False:
+	if get_windows_host_type() is not False:
 
 		# Try the environment variable
 
@@ -767,7 +793,7 @@ def where_is_p4(encapsulate=True):
 	# Is the path set for Linux or Mac OSX?
 
 	perforce_path = os.getenv('PERFORCE')
-	if perforce_path != None:
+	if perforce_path is not None:
 		perforce_path = os.path.join(perforce_path, 'p4')
 		if encapsulate:
 			return '"{}"'.format(perforce_path)
@@ -777,6 +803,7 @@ def where_is_p4(encapsulate=True):
 	return 'p4'
 
 ########################################
+
 
 def perforce_edit(files):
 
@@ -811,6 +838,7 @@ def perforce_edit(files):
 	return 0
 
 ########################################
+
 
 def compare_files(filename1, filename2):
 	"""
@@ -858,6 +886,7 @@ def compare_files(filename1, filename2):
 	return False
 
 ########################################
+
 
 def compare_file_to_string(filename, data):
 
@@ -914,6 +943,7 @@ def compare_file_to_string(filename, data):
 
 ########################################
 
+
 def run_command(args, working_dir=None, quiet=False):
 	"""
 	Execute a program and capture the return code and text output
@@ -927,8 +957,8 @@ def run_command(args, working_dir=None, quiet=False):
 		The return code, stdout, stderr
 	"""
 	try:
-		tempfp = subprocess.Popen(args, cwd=working_dir, stdout=subprocess.PIPE, stderr=subprocess.PIPE, \
-			universal_newlines=True)
+		tempfp = subprocess.Popen(args, cwd=working_dir, stdout=subprocess.PIPE, \
+			stderr=subprocess.PIPE, universal_newlines=True)
 	except OSError as error:
 		if not quiet:
 			print('Command line "{}" generated {}'.format(args, error))
@@ -938,6 +968,7 @@ def run_command(args, working_dir=None, quiet=False):
 	return (tempfp.returncode, stdoutstr, stderrstr)
 
 ########################################
+
 
 def make_version_header(working_dir, outputfilename):
 	"""
@@ -953,7 +984,8 @@ def make_version_header(working_dir, outputfilename):
 	P4_CLIENT, and P4_USER
 
 	Args:
-		working_dir: string with the path of the folder to obtain the perforce version for
+		working_dir: string with the path of the folder to obtain the perforce
+			version for
 		outputfilename: string with the path of the generated header
 
 	Returns:
@@ -973,12 +1005,15 @@ def make_version_header(working_dir, outputfilename):
 	headerguard = '__{}__'.format(headerguard.replace('.', '_'))
 
 	# Get the last change list
-	# Parse "Change 3361 on 2012/05/15 13:20:12 by burgerbecky@burgeroctocore 'Made a p4 change'"
+	# Parse "Change 3361 on 2012/05/15 13:20:12 by burgerbecky@burgeroctocore
+	# 'Made a p4 change'"
 	# -m 1 / Limit to one entry
 	# -t / Display the time
 	# -l / Print out the entire changelist description
 
-	error, tempdata = run_command("{} changes -m 1 -t -l ...#have".format(p4exe), working_dir)[:2]
+	error, tempdata = run_command( \
+		"{} changes -m 1 -t -l ...#have".format(p4exe),
+		working_dir)[:2]
 	if error != 0:
 		return error
 
@@ -988,7 +1023,8 @@ def make_version_header(working_dir, outputfilename):
 	# Get the p4 client
 	# Parse "P4CLIENT=burgeroctocore (config)"
 
-	error, tempdata = run_command("{} set P4CLIENT".format(p4exe), working_dir)[:2]
+	error, tempdata = \
+		run_command("{} set P4CLIENT".format(p4exe), working_dir)[:2]
 	if error != 0:
 		return error
 
@@ -1039,7 +1075,7 @@ def make_version_header(working_dir, outputfilename):
 
 	filevalue = filep.getvalue()
 	del filep
-	if compare_file_to_string(outputfilename, filevalue) != True:
+	if compare_file_to_string(outputfilename, filevalue) is not True:
 		print('Writing ' + outputfilename)
 		try:
 			with open(outputfilename, 'w') as filep:
@@ -1051,6 +1087,7 @@ def make_version_header(working_dir, outputfilename):
 	return 0
 
 ########################################
+
 
 def is_codewarrior_mac_allowed():
 	"""
@@ -1088,6 +1125,7 @@ def is_codewarrior_mac_allowed():
 	return False
 
 ########################################
+
 
 def is_source_newer(source, destination):
 	"""
@@ -1129,11 +1167,13 @@ def is_source_newer(source, destination):
 
 ########################################
 
+
 def copy_file_if_needed(source, destination, silent=False):
 	"""
 	Copy a file only if newer
 
-	Copy a file only if the destination is missing or is older than the source file
+	Copy a file only if the destination is missing or is older than the source
+	file
 
 	Args:
 		source: string pathname of the file to copy from
@@ -1160,6 +1200,7 @@ def copy_file_if_needed(source, destination, silent=False):
 	return 0
 
 ########################################
+
 
 def copy_file_checkout_if_needed(source, destination, silent=False):
 
@@ -1199,7 +1240,9 @@ def copy_file_checkout_if_needed(source, destination, silent=False):
 
 ########################################
 
-def copy_directory_if_needed(source, destination, exception_list=None, silent=False):
+
+def copy_directory_if_needed(source, destination, exception_list=None, \
+	silent=False):
 
 	"""
 	Copy all of the files in a directory into a new directory
@@ -1241,10 +1284,11 @@ def copy_directory_if_needed(source, destination, exception_list=None, silent=Fa
 			# Handle the directories found
 			if os.path.isdir(file_name):
 				# Recursive!
-				error = copy_directory_if_needed(file_name, os.path.join(destination, base_name), \
-					exception_list, silent)
+				error = copy_directory_if_needed(file_name, \
+					os.path.join(destination, base_name), exception_list, silent)
 			else:
-				error = copy_file_if_needed(file_name, os.path.join(destination, base_name), silent)
+				error = copy_file_if_needed(file_name, os.path.join( \
+					destination, base_name), silent)
 
 			# Exit immediately on error
 			if error != 0:
@@ -1253,6 +1297,7 @@ def copy_directory_if_needed(source, destination, exception_list=None, silent=Fa
 	return 0
 
 ########################################
+
 
 def shutil_readonly_cb(func, path, exception_info):
 
@@ -1297,6 +1342,7 @@ def shutil_readonly_cb(func, path, exception_info):
 
 ########################################
 
+
 def delete_directory(path, delete_read_only=False):
 	"""
 	Recursively delete a directory
@@ -1318,20 +1364,22 @@ def delete_directory(path, delete_read_only=False):
 
 ########################################
 
+
 def get_tool_path(tool_folder, tool_name, encapsulate=False):
 
 	"""
 	Find executable tool directory
 
 	For allowing builds on multiple operating system hosts under the Burgerlib
-	way of project management, it's necessary to query what is the host operating system
-	and glean out which folder to find a executable compiled for that specific host
+	way of project management, it's necessary to query what is the host
+	operating system and glean out which folder to find a executable compiled
+	for that specific host
 
 	Args:
 		tool_folder: Pathname to the folder that contains the executables
 		tool_name: Bare name of the tool (Windows will append '.exe')
-		encapsulate: False if a path is requested, True if it's quoted to be used as a
-			string to be sent to command line shell
+		encapsulate: False if a path is requested, True if it's quoted to be
+			used as a string to be sent to command line shell
 
 	Returns:
 		Full pathname to the tool to execute
@@ -1350,10 +1398,11 @@ def get_tool_path(tool_folder, tool_name, encapsulate=False):
 
 	# Windows supports 32 and 64 bit Intel
 	elif host == 'windows':
-		exename = os.path.join(tool_folder, 'windows', get_windows_host_type(), tool_name + '.exe')
+		exename = os.path.join(tool_folder, 'windows', get_windows_host_type(), \
+			tool_name + '.exe')
 	else:
 
-	# On unknown platforms, assume the tool is in the path for the fallback
+		# On unknown platforms, assume the tool is in the path for the fallback
 		exename = tool_name
 
 	# Encase in quotes to handle spaces in filenames
@@ -1363,6 +1412,7 @@ def get_tool_path(tool_folder, tool_name, encapsulate=False):
 	return exename
 
 ########################################
+
 
 def traverse_directory(working_dir, filename):
 
@@ -1406,8 +1456,10 @@ def traverse_directory(working_dir, filename):
 
 ########################################
 
+
 _WINDOWSSAFESET = frozenset(string.ascii_letters + string.digits + '_-.:\\')
 _LINUXSAFESET = frozenset(string.ascii_letters + string.digits + '@%_-+=:,./')
+
 
 def encapsulate_path(input_path):
 
@@ -1462,6 +1514,7 @@ def encapsulate_path(input_path):
 
 ########################################
 
+
 def unlock_files(working_dir, recursive=False):
 	"""
 	Iterate over a directory and unlock all read-only files.
@@ -1508,7 +1561,8 @@ def unlock_files(working_dir, recursive=False):
 			if not path_stat.st_mode & stat.S_IWRITE:
 
 				# Remove write protection while retaining the other flags
-				os.chmod(path_name, path_stat.st_mode + stat.S_IWRITE + stat.S_IWGRP + stat.S_IWOTH)
+				os.chmod(path_name, path_stat.st_mode + stat.S_IWRITE + \
+					stat.S_IWGRP + stat.S_IWOTH)
 				result.append(path_name)
 		else:
 			# Process recursion
@@ -1518,6 +1572,7 @@ def unlock_files(working_dir, recursive=False):
 
 
 ########################################
+
 
 def lock_files(lock_list):
 	"""
@@ -1535,4 +1590,5 @@ def lock_files(lock_list):
 		path_stat = os.stat(item)
 
 		# Mark it write protected for Perforce
-		os.chmod(item, path_stat.st_mode & (~(stat.S_IWRITE + stat.S_IWGRP + stat.S_IWOTH)))
+		os.chmod(item, path_stat.st_mode & \
+			(~(stat.S_IWRITE + stat.S_IWGRP + stat.S_IWOTH)))

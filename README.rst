@@ -10,7 +10,7 @@ Burger for Python
 .. image:: https://img.shields.io/travis/burgerbecky/pyburger.svg
     :target: https://travis-ci.org/burgerbecky/pyburger
     :alt: Travis Status
-.. image:: https://readthedocs.org/projects/pyburger/badge/?version=latest
+.. image:: https://img.shields.io/readthedocs/pyburger.svg
     :target: http://pyburger.readthedocs.io
     :alt: Documentation Status
 .. image:: https://img.shields.io/pypi/pyversions/burger.svg
@@ -35,8 +35,6 @@ Compatibility
 
 Installation
 ------------
-
-Type this command:
 
 Type in ``pip install -U burger``. Some platforms may require the ``sudo``
 prefix.

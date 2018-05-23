@@ -14,6 +14,8 @@ Please? It's not like I'm asking you for money!
 
 import burger
 
+########################################
+
 def test_truefalse():
 	"""
 	Test burger.truefalse()
@@ -42,6 +44,8 @@ def test_truefalse():
 	assert burger.truefalse((1)) == 'true'
 
 	assert burger.truefalse('testing') == 'true'
+
+########################################
 
 def test_TRUEFALSE():		#pylint: disable=C0103
 	"""
@@ -72,6 +76,7 @@ def test_TRUEFALSE():		#pylint: disable=C0103
 
 	assert burger.TRUEFALSE('testing') == 'TRUE'
 
+########################################
 
 def test_TrueFalse():			#pylint: disable=C0103
 	"""
