@@ -12,9 +12,13 @@ Please? It's not like I'm asking you for money!
 
 """
 
+import sys
 import burger
 
+_PY2 = sys.version_info[0] == 2
+
 ########################################
+
 
 def test_truefalse():
 	"""
@@ -47,7 +51,8 @@ def test_truefalse():
 
 ########################################
 
-def test_TRUEFALSE():		#pylint: disable=C0103
+
+def test_TRUEFALSE():		# pylint: disable=C0103
 	"""
 	Test burger.TRUEFALSE()
 	"""
@@ -78,7 +83,8 @@ def test_TRUEFALSE():		#pylint: disable=C0103
 
 ########################################
 
-def test_TrueFalse():			#pylint: disable=C0103
+
+def test_TrueFalse():			# pylint: disable=C0103
 	"""
 	Test burger.TrueFalse()
 	"""
@@ -106,3 +112,67 @@ def test_TrueFalse():			#pylint: disable=C0103
 	assert burger.TrueFalse((1)) == 'True'
 
 	assert burger.TrueFalse('testing') == 'True'
+
+########################################
+
+
+def test_isstring():
+	"""
+	Test burger.is_string()
+	"""
+
+	# Must return False
+	assert not burger.is_string(0)
+	assert not burger.is_string(None)
+	assert not burger.is_string(True)
+	assert not burger.is_string(False)
+	assert not burger.is_string(1.0)
+	assert not burger.is_string(())
+	assert not burger.is_string({})
+	assert not burger.is_string([])
+	assert not burger.is_string(bytearray())
+	assert not burger.is_string(bytearray(b'abc'))
+
+	# Actual strings
+	assert burger.is_string('a')
+	assert burger.is_string(u'a')
+	assert burger.is_string(b'a')
+	assert burger.is_string(str('a'))
+	assert burger.is_string('abc')
+	assert burger.is_string(u'abc')
+	assert burger.is_string(b'abc')
+	assert burger.is_string(str('abc'))
+
+	# Python 2.x tests (Not supported on 3.x or higher)
+	if _PY2:
+		assert burger.is_string(unicode('a'))
+		assert burger.is_string(unicode(u'a'))
+		assert burger.is_string(unicode(b'a'))
+		assert burger.is_string(unicode('abc'))
+		assert burger.is_string(unicode(u'abc'))
+		assert burger.is_string(unicode(b'abc'))
+
+	# Bytes need specific encoding passed in for Python 3.0 or higher
+	if _PY2:
+		assert burger.is_string(bytes('a'))
+		assert burger.is_string(bytes(u'a'))
+	else:
+		assert burger.is_string(bytes('a', 'ascii'))
+		assert burger.is_string(bytes(u'a', 'utf-8'))
+	assert burger.is_string(bytes(b'a'))
+
+	if _PY2:
+		assert burger.is_string(bytes('abc'))
+		assert burger.is_string(bytes(u'abc'))
+	else:
+		assert burger.is_string(bytes('abc', 'ascii'))
+		assert burger.is_string(bytes(u'abc', 'utf-8'))
+	assert burger.is_string(bytes(b'abc'))
+
+	# False if it's a group of strings
+	assert not burger.is_string(('a',))
+	assert not burger.is_string(['a'])
+	assert not burger.is_string({'a'})
+	assert not burger.is_string(('a', 'b'))
+	assert not burger.is_string(['a', 'b'])
+	assert not burger.is_string({'a', 'b'})

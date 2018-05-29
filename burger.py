@@ -75,7 +75,7 @@ except ImportError:
 	pass
 
 ## Numeric version
-__numversion__ = (1, 0, 8)
+__numversion__ = (1, 0, 9)
 
 ## Current version of the library
 __version__ = '.'.join([str(num) for num in __numversion__])
@@ -238,7 +238,7 @@ except NameError:
 			True if the object is a string instance, False if not.
 		"""
 
-		return isinstance(item, str)
+		return isinstance(item, (str, bytes))
 
 ########################################
 
@@ -1414,7 +1414,7 @@ def get_tool_path(tool_folder, tool_name, encapsulate=False):
 ########################################
 
 
-def traverse_directory(working_dir, filename):
+def traverse_directory(working_dir, filename_list, terminate=False):
 
 	"""
 	Create a list of all copies of a file following a directory
@@ -1426,23 +1426,35 @@ def traverse_directory(working_dir, filename):
 
 	Args:
 		working_dir: string with the path of the folder to start the search
-		filename: string with the name of the file to find in the folder
+		filename_list: string or an iterable of strings with the name(s)
+			of the file(s) to find in the scanned folders
+		terminate: True if searching will end on the first found file
 
 	Returns:
 		List of pathnames (With filename appended)
 	"""
 
+	# Ensure that if the input was a string, that it becomes
+	# an iterable to work below
+	if is_string(filename_list):
+		filename_list = (filename_list,)
+
 	# Convert into a unpacked pathname
 	tempdir = os.path.abspath(working_dir)
+
 	dirlist = []
 
 	# Loop
 	while 1:
-		# Is the file here?
-		temppath = os.path.join(tempdir, filename)
-		if os.path.isfile(temppath):
-			# Insert at the beginning
-			dirlist.insert(0, temppath)
+		# Iterate over the list and detect if these files are present
+		for item in filename_list:
+			temppath = os.path.join(tempdir, item)
+			if os.path.isfile(temppath):
+				# Insert at the beginning
+				dirlist.insert(0, temppath)
+				if terminate:
+					return dirlist
+
 		# Pop a folder
 		tempdir2 = os.path.dirname(tempdir)
 		# Already at the top of the directory?
