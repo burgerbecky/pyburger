@@ -21,7 +21,7 @@ A set of subroutines used by the Burgerlib based scripts written in Python.
 #
 ## \mainpage
 #
-# \htmlinclude readme.html
+# \htmlinclude README.html
 #
 # \par List of Classes
 #
