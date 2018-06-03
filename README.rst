@@ -1,20 +1,7 @@
 Burger for Python
 =================
 
-.. image:: https://img.shields.io/pypi/v/burger.svg
-    :target: https://pypi.org/project/burger/
-    :alt: Pypi Version
-.. image:: https://img.shields.io/pypi/l/burger.svg
-    :target: https://github.com/burgerbecky/pyburger/blob/master/LICENSE.txt
-    :alt: License
-.. image:: https://img.shields.io/travis/burgerbecky/pyburger.svg
-    :target: https://travis-ci.org/burgerbecky/pyburger
-    :alt: Travis Status
-.. image:: https://img.shields.io/readthedocs/pyburger.svg
-    :target: http://pyburger.readthedocs.io
-    :alt: Documentation Status
-.. image:: https://img.shields.io/pypi/pyversions/burger.svg
-    :alt: Supported Python versions
+|PyPi| |License| |Travis| |Docs| |Versions|
 
 The ``burger`` module is a set of simple subroutines used by the ``Burgerlib``
 build system.
@@ -39,12 +26,24 @@ Installation
 Type in ``pip install -U burger``. Some platforms may require the ``sudo``
 prefix.
 
-Putting the file ``burger.py`` in some directory listed in ``sys.path``
-will also work
-
 Bugs
 ----
 
 If you find a bug, issue or have a feature request, please submit a bug report
 by emailing becky@burgerbecky.com and mention python version, integer
 size (32 bit or 64 bit) and what platform was used (Windows / Mac OSX / Linux).
+
+.. |PyPi| image:: https://img.shields.io/pypi/v/burger.svg
+    :target: https://pypi.org/project/burger/
+    :alt: Pypi Version
+.. |License| image:: https://img.shields.io/pypi/l/burger.svg
+    :target: https://github.com/burgerbecky/pyburger/blob/master/LICENSE.txt
+    :alt: License
+.. |Travis| image:: https://img.shields.io/travis/burgerbecky/pyburger.svg
+    :target: https://travis-ci.org/burgerbecky/pyburger
+    :alt: Travis Status
+.. |Docs| image:: https://img.shields.io/readthedocs/pyburger.svg
+    :target: http://pyburger.readthedocs.io
+    :alt: Documentation Status
+.. |Versions| image:: https://img.shields.io/pypi/pyversions/burger.svg
+    :alt: Supported Python versions
