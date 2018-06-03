@@ -97,8 +97,7 @@ SETUP_ARGS = dict(
 	python_requires='>=2.7,!=3.0.*,!=3.1.*,!=3.2.*',
 
 	classifiers=CLASSIFIERS,
-	py_modules=[PROJECT_NAME],
-
+	packages=[PROJECT_NAME],
 	include_package_data=True,
 	data_files=DATA_FILES
 )
