@@ -165,7 +165,7 @@ if __name__ == '__main__':
 		clean(CWD)
 
 	# Unlock the files to handle Perforce locking
-	LOCK_LIST = PROJECT_MODULE.unlock_files(CWD)
+	LOCK_LIST = PROJECT_MODULE.unlock_files(CWD, recursive=True)
 	try:
 		setuptools.setup(**SETUP_ARGS)
 

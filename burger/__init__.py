@@ -10,8 +10,6 @@ A set of subroutines used by the Burgerlib based scripts written in Python.
 
 #
 ## \package burger
-# A set of subroutines used by the Burgerlib based scripts
-# written in Python.
 #
 # For higher level tools like makeprojects, cleanme and
 # buildme, common subroutines were collected and
@@ -23,25 +21,14 @@ A set of subroutines used by the Burgerlib based scripts written in Python.
 #
 # \htmlinclude README.html
 #
-# \par List of Classes
 #
-# \li \ref burger
-# \li \ref burger.Node
-# \li \ref burger.Interceptstdout
+# Module list
+# ===========
 #
-# To use the library:
-# \code
-#
-# # Import the burger libary
-# import burger
-#
-# \endcode
-#
-# To install type in 'pip install burger' from your shell.
-#
-# The source can be found at github at https://github.com/burgerbecky/pyburger
-#
-# Email becky@burgerbecky.com for comments, bugs or coding suggestions.
+# - \ref burger
+# - \ref burger.buildutils
+# - \ref burger.fileutils
+# - \ref burger.strutils
 #
 
 from __future__ import absolute_import, print_function, unicode_literals
@@ -50,9 +37,9 @@ import sys
 
 from .__pkginfo__ import NUMVERSION, VERSION, AUTHOR, TITLE, SUMMARY, URI, \
 	EMAIL, LICENSE, COPYRIGHT
-from .strutils import is_string, convert_to_array, TrueFalse, truefalse, \
-	TRUEFALSE, convert_to_windows_slashes, convert_to_linux_slashes, \
-	encapsulate_path
+from .strutils import unicode_print, is_string, convert_to_array, TrueFalse, \
+	truefalse, TRUEFALSE, convert_to_windows_slashes, convert_to_linux_slashes, \
+	encapsulate_path_windows, encapsulate_path_linux, encapsulate_path
 from .fileutils import create_folder_if_needed, delete_file, is_source_newer, \
 	copy_file_if_needed, copy_file_checkout_if_needed, \
 	copy_directory_if_needed, shutil_readonly_cb, delete_directory, \
@@ -97,6 +84,7 @@ __copyright__ = COPYRIGHT
 #
 
 __all__ = [
+	'unicode_print',
 	'is_string',
 	'convert_to_array',
 	'TrueFalse',
@@ -104,6 +92,8 @@ __all__ = [
 	'TRUEFALSE',
 	'convert_to_windows_slashes',
 	'convert_to_linux_slashes',
+	'encapsulate_path_windows',
+	'encapsulate_path_linux',
 	'encapsulate_path',
 	'create_folder_if_needed',
 	'delete_file',

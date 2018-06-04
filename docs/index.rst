@@ -6,6 +6,6 @@ Topics
 .. toctree::
     :maxdepth: 1
 
-    functions
     classes
+    functions
     license

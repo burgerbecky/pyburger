@@ -1,14 +1,9 @@
 Functions
 =========
 
-File Locators
-^^^^^^^^^^^^^
-.. doxygenfunction:: burger::buildutils::get_sdks_folder
-.. doxygenfunction:: burger::buildutils::where_is_doxygen
-.. doxygenfunction:: burger::buildutils::where_is_p4
-
 String Functions
 ^^^^^^^^^^^^^^^^
+.. doxygenfunction:: burger::strutils::unicode_print
 .. doxygenfunction:: burger::strutils::is_string
 .. doxygenfunction:: burger::strutils::convert_to_array
 .. doxygenfunction:: burger::strutils::TrueFalse
@@ -16,7 +11,15 @@ String Functions
 .. doxygenfunction:: burger::strutils::TRUEFALSE
 .. doxygenfunction:: burger::strutils::convert_to_windows_slashes
 .. doxygenfunction:: burger::strutils::convert_to_linux_slashes
+.. doxygenfunction:: burger::strutils::encapsulate_path_windows
+.. doxygenfunction:: burger::strutils::encapsulate_path_linux
 .. doxygenfunction:: burger::strutils::encapsulate_path
+
+File Locators
+^^^^^^^^^^^^^
+.. doxygenfunction:: burger::buildutils::get_sdks_folder
+.. doxygenfunction:: burger::buildutils::where_is_doxygen
+.. doxygenfunction:: burger::buildutils::where_is_p4
 
 File Functions
 ^^^^^^^^^^^^^^
