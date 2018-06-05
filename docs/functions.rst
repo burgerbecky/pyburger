@@ -44,6 +44,7 @@ Build Helpers
 .. doxygenfunction:: burger::buildutils::get_windows_host_type
 .. doxygenfunction:: burger::buildutils::get_mac_host_type
 .. doxygenfunction:: burger::buildutils::is_exe
+.. doxygenfunction:: burger::buildutils::expand_and_verify
 .. doxygenfunction:: burger::buildutils::perforce_edit
 .. doxygenfunction:: burger::buildutils::compare_files
 .. doxygenfunction:: burger::buildutils::compare_file_to_string

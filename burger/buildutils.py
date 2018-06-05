@@ -274,6 +274,23 @@ def find_in_path(filename, search_path=None, executable=False):
 	"""
 	Using the system PATH environment variable, search for a file
 
+	If the flag executable is False, the file will be found using a
+	simple path search. If the flag is True, the file will be searched
+	for using the extensions in the PATHEXT environment variable in
+	addition to use the filename as is.
+
+	If search_path is a string, it will be seperated using os.pathsep. If
+	not, it will be treated as an interable list of strings of full pathnames
+	to search. If it is None, the PATH environment variable will be used.
+
+	Examples:
+		# Can return 'doxygen', 'doxygen.exe' or 'doxygen.com' depending
+		# on what was found
+		burger.find_in_path('doxygen', executable=True)
+
+		# Will only find 'foo.txt'
+		burger.find_in_path('foo.txt')
+
 	Args:
 		filename: File to locate
 		search_path: Search paths to use instead of PATH
@@ -295,6 +312,14 @@ def find_in_path(filename, search_path=None, executable=False):
 		# Assume it's a tuple/list/dict of strings
 		paths = search_path
 
+	# Set up for added standard extentions
+	if executable and get_windows_host_type():
+		pathext = os.getenv('PATHEXT', None)
+		if pathext:
+			pathext = pathext.split(os.pathsep)
+	else:
+		pathext = False
+
 	# Scan the list of paths to find the file
 	for item in paths:
 		# Try as is
@@ -303,11 +328,22 @@ def find_in_path(filename, search_path=None, executable=False):
 			# Check if executable
 			if not executable or os.access(temp_path, os.X_OK):
 				break
-	else:
-		return os.path.abspath(temp_path)
 
-	# Not found
-	return None
+		# Try all the extensions (Can be an empty list)
+		for ext in pathext:
+			temp_path = os.path.join(item, filename + ext)
+			if is_exe(temp_path):
+				break
+		else:
+			continue
+		break
+
+	else:
+		# Not found in the loops
+		return None
+
+	# Return the path
+	return os.path.abspath(temp_path)
 
 ########################################
 
@@ -362,6 +398,15 @@ def where_is_doxygen(verbose=False, refresh=False, path=None):
 				__DOXYGEN_PATH = doxygenpath
 				return doxygenpath
 
+	# Try the path first
+	doxygenpath = find_in_path('doxygen', executable=True)
+	if doxygenpath:
+		__DOXYGEN_PATH = doxygenpath
+		return doxygenpath
+
+	# Is Doxygen installed on windows?
+	if get_windows_host_type():
+
 		# Try 64 bit version or native 32 bit version
 		if os.getenv('ProgramFiles', None):
 			doxygenpath = os.path.expandvars( \
@@ -384,14 +429,9 @@ def where_is_doxygen(verbose=False, refresh=False, path=None):
 
 	# MacOSX has it hidden in the application
 	elif get_mac_host_type():
-		# Try the hidden file in the application first
-		doxygenpath = '/Applications/Doxygen.app/Contents/Resources/doxygen'
-		if os.path.isfile(doxygenpath):
-			__DOXYGEN_PATH = doxygenpath
-			return doxygenpath
 
-		# Try macports
-		doxygenpath = '/opt/local/bin/doxygen'
+		# Try the hidden file in the application
+		doxygenpath = '/Applications/Doxygen.app/Contents/Resources/doxygen'
 		if os.path.isfile(doxygenpath):
 			__DOXYGEN_PATH = doxygenpath
 			return doxygenpath
@@ -399,10 +439,10 @@ def where_is_doxygen(verbose=False, refresh=False, path=None):
 		if verbose:
 			print( \
 				'Doxygen needs to be installed in your Applications folder '
-				'to build documentation!')
+				'or through brew/macports!')
 
-	# Return the cache value
-	return 'doxygen'
+	# Can't find it
+	return None
 
 ########################################
 
