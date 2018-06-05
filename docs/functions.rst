@@ -18,6 +18,7 @@ String Functions
 File Locators
 ^^^^^^^^^^^^^
 .. doxygenfunction:: burger::buildutils::get_sdks_folder
+.. doxygenfunction:: burger::buildutils::find_in_path
 .. doxygenfunction:: burger::buildutils::where_is_doxygen
 .. doxygenfunction:: burger::buildutils::where_is_p4
 
@@ -42,6 +43,7 @@ Build Helpers
 .. doxygenfunction:: burger::buildutils::fix_csharp
 .. doxygenfunction:: burger::buildutils::get_windows_host_type
 .. doxygenfunction:: burger::buildutils::get_mac_host_type
+.. doxygenfunction:: burger::buildutils::is_exe
 .. doxygenfunction:: burger::buildutils::perforce_edit
 .. doxygenfunction:: burger::buildutils::compare_files
 .. doxygenfunction:: burger::buildutils::compare_file_to_string
