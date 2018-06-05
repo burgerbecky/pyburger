@@ -246,22 +246,27 @@ def test_convert_to_windows_slashes():
 	Test burger.convert_to_windows_slashes()
 	"""
 
-	assert burger.convert_to_windows_slashes('foo', force_ending_slash=False) == 'foo'
-	assert burger.convert_to_windows_slashes('C:/foo\\bar', force_ending_slash=False) == 'C:\\foo\\bar'
-	assert burger.convert_to_windows_slashes('./foo/bar/fug', \
-		force_ending_slash=False) == '.\\foo\\bar\\fug'
-	assert burger.convert_to_windows_slashes('.\\foo\\bar\\fug', \
-		force_ending_slash=False) == '.\\foo\\bar\\fug'
-	assert burger.convert_to_windows_slashes('foo\\', force_ending_slash=False) == 'foo\\'
+	assert burger.convert_to_windows_slashes( \
+		'foo', force_ending_slash=False) == 'foo'
+	assert burger.convert_to_windows_slashes( \
+		'C:/foo\\bar', force_ending_slash=False) == 'C:\\foo\\bar'
+	assert burger.convert_to_windows_slashes( \
+		'./foo/bar/fug', force_ending_slash=False) == '.\\foo\\bar\\fug'
+	assert burger.convert_to_windows_slashes( \
+		'.\\foo\\bar\\fug', force_ending_slash=False) == '.\\foo\\bar\\fug'
+	assert burger.convert_to_windows_slashes( \
+		'foo\\', force_ending_slash=False) == 'foo\\'
 
-	assert burger.convert_to_windows_slashes('foo', force_ending_slash=True) == 'foo\\'
-	assert burger.convert_to_windows_slashes('C:/foo\\bar', \
-		force_ending_slash=True) == 'C:\\foo\\bar\\'
-	assert burger.convert_to_windows_slashes('./foo/bar/fug', \
-		force_ending_slash=True) == '.\\foo\\bar\\fug\\'
-	assert burger.convert_to_windows_slashes('.\\foo\\bar\\fug', \
-		force_ending_slash=True) == '.\\foo\\bar\\fug\\'
-	assert burger.convert_to_windows_slashes('foo\\', force_ending_slash=True) == 'foo\\'
+	assert burger.convert_to_windows_slashes( \
+		'foo', force_ending_slash=True) == 'foo\\'
+	assert burger.convert_to_windows_slashes( \
+		'C:/foo\\bar', force_ending_slash=True) == 'C:\\foo\\bar\\'
+	assert burger.convert_to_windows_slashes( \
+		'./foo/bar/fug', force_ending_slash=True) == '.\\foo\\bar\\fug\\'
+	assert burger.convert_to_windows_slashes( \
+		'.\\foo\\bar\\fug', force_ending_slash=True) == '.\\foo\\bar\\fug\\'
+	assert burger.convert_to_windows_slashes( \
+		'foo\\', force_ending_slash=True) == 'foo\\'
 
 ########################################
 
@@ -271,22 +276,27 @@ def test_convert_to_linux_slashes():
 	Test burger.convert_to_linux_slashes()
 	"""
 
-	assert burger.convert_to_linux_slashes('foo', force_ending_slash=False) == 'foo'
-	assert burger.convert_to_linux_slashes('C:/foo\\bar', force_ending_slash=False) == 'C:/foo/bar'
-	assert burger.convert_to_linux_slashes('./foo/bar/fug', \
-		force_ending_slash=False) == './foo/bar/fug'
-	assert burger.convert_to_linux_slashes('.\\foo\\bar\\fug', \
-		force_ending_slash=False) == './foo/bar/fug'
-	assert burger.convert_to_linux_slashes('foo\\', force_ending_slash=False) == 'foo/'
+	assert burger.convert_to_linux_slashes( \
+		'foo', force_ending_slash=False) == 'foo'
+	assert burger.convert_to_linux_slashes( \
+		'C:/foo\\bar', force_ending_slash=False) == 'C:/foo/bar'
+	assert burger.convert_to_linux_slashes( \
+		'./foo/bar/fug', force_ending_slash=False) == './foo/bar/fug'
+	assert burger.convert_to_linux_slashes( \
+		'.\\foo\\bar\\fug', force_ending_slash=False) == './foo/bar/fug'
+	assert burger.convert_to_linux_slashes( \
+		'foo\\', force_ending_slash=False) == 'foo/'
 
-	assert burger.convert_to_linux_slashes('foo', force_ending_slash=True) == 'foo/'
+	assert burger.convert_to_linux_slashes( \
+		'foo', force_ending_slash=True) == 'foo/'
 	assert burger.convert_to_linux_slashes('C:/foo\\bar', \
 		force_ending_slash=True) == 'C:/foo/bar/'
 	assert burger.convert_to_linux_slashes('./foo/bar/fug', \
 		force_ending_slash=True) == './foo/bar/fug/'
 	assert burger.convert_to_linux_slashes('.\\foo\\bar\\fug', \
 		force_ending_slash=True) == './foo/bar/fug/'
-	assert burger.convert_to_linux_slashes('foo\\', force_ending_slash=True) == 'foo/'
+	assert burger.convert_to_linux_slashes( \
+		'foo\\', force_ending_slash=True) == 'foo/'
 
 ########################################
 

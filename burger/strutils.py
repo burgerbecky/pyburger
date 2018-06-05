@@ -11,8 +11,8 @@ Package that contains string manipulation functions
 from __future__ import absolute_import, print_function, unicode_literals
 
 import sys
+import os
 import string
-from .buildutils import get_windows_host_type
 
 ########################################
 
@@ -342,7 +342,7 @@ def encapsulate_path(input_path):
 	"""
 
 	# Process for Windows platforms
-	if get_windows_host_type():
+	if os.name == 'nt':
 		return encapsulate_path_windows(input_path)
 
 	# Force to linux slashes

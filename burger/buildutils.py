@@ -2,9 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Burger string functions
-
-Package that contains file manipulation functions
+Package that contains build helper functions
 """
 
 ## \package burger.buildutils
@@ -16,6 +14,7 @@ import os
 import platform
 import subprocess
 import sys
+from .strutils import is_string
 
 # Use the old way for Python 2 versus 3
 _PY2 = sys.version_info[0] == 2
@@ -31,26 +30,84 @@ try:
 except ImportError:
 	pass
 
+## Cached location of the BURGER_SDKS folder
+__BURGER_SDKS_FOLDER = None
+
+## Cached location of doxygen
+__DOXYGEN_PATH = None
+
+## Cached location of p4 from Perforce
+__PERFORCE_PATH = None
+
 ########################################
 
 
-def get_sdks_folder():
+def get_sdks_folder(verbose=False, refresh=False, folder=None):
 	"""
 	Return the path of the BURGER_SDKS folder
 
 	If the environment variable BURGER_SDKS is set,
 	return the pathname it contains. Otherwise,
-	print a warning and return None.
+	print a warning if verbose is True and then attempt to find
+	the 'sdks' folder by traversing the current working directory
+	for a folder named 'sdks'. If one isn't found, return None.
+
+	Examples:
+		# Normal use
+		sdksfolder = burger.buildutils.get_sdks_folder()
+		if not sdksfolder:
+			print('failure')
+			raise NameError("sdks not found, set BURGER_SDKS")
+
+		# Alert the user if BURGER_SDKS isn't set
+		burger.buildutils.get_sdks_folder(verbose=True)
+
+		# Force the use of a supplied folder for sdks
+		burger.buildutils.get_sdks_folder(refresh=True, folder='./foo/sdks/')
+
+	Args:
+		verbose: If True, print a message if BURGER_SDKS was not present
+		refresh: If True, reset the cache and force a reload.
+		folder: Path to use as BURGER_SDKS in the cache as an override
 
 	Returns:
 		None if the environment variable is not set, or the
 		value of BURGER_SDKS.
 	"""
 
-	sdks = os.getenv('BURGER_SDKS')
-	if sdks is None:
-		print('The environment variable "BURGER_SDKS" is not set')
-	return sdks
+	global __BURGER_SDKS_FOLDER				# pylint: disable=W0603
+
+	# Clear the cache if needed
+	if refresh:
+		__BURGER_SDKS_FOLDER = None
+
+	# Set the override, if found
+	if folder:
+		__BURGER_SDKS_FOLDER = folder
+
+	# Not cached?
+	if __BURGER_SDKS_FOLDER is None:
+
+		# Load from the system
+		__BURGER_SDKS_FOLDER = os.getenv('BURGER_SDKS', default=None)
+
+		# Test for None or empty string
+		if not __BURGER_SDKS_FOLDER:
+
+			# Warn about missing environment variable
+			if verbose:
+				print('The environment variable "BURGER_SDKS" is not set')
+
+			# Try to find the directory in the current path
+			from .fileutils import traverse_directory
+			sdks = traverse_directory(os.getcwd(), 'sdks', \
+				find_directory=True, terminate=True)
+			if sdks:
+				__BURGER_SDKS_FOLDER = sdks[0]
+				if verbose:
+					print('Assuming {} is the BURGER_SDKS folder'.format(sdks[0]))
+
+	return __BURGER_SDKS_FOLDER
 
 ########################################
 
@@ -113,9 +170,14 @@ def fix_csharp(csharp_application_path):
 		Command line appropriate for the platform to launch a C# application.
 	"""
 
+	# Encapsulate in quotes if needed
+	from .strutils import encapsulate_path
+	quoted = encapsulate_path(csharp_application_path)
+
+	# Prepend mono on non-windows systems
 	if host_machine() != 'windows':
-		return 'mono "{}"'.format(csharp_application_path)
-	return '"{}"'.format(csharp_application_path)
+		return 'mono {}'.format(quoted)
+	return quoted
 
 
 ########################################
@@ -143,7 +205,7 @@ def get_windows_host_type():
 	# Test the CPU for the type
 
 	machine = platform.machine()
-	if machine == 'AMD64':
+	if machine in ('AMD64', 'x86_64'):
 		return 'x64'
 	return 'x86'
 
@@ -176,21 +238,81 @@ def get_mac_host_type():
 	# Since it's a mac, query the Mac OSX cpu type
 	# using the MacOSX python extensions
 
-	mac_ver = platform.mac_ver()
-	cpu = mac_ver[2]
-	if cpu == 'x86' or cpu == 'x86_64':
+	cpu = platform.machine()
+	if cpu in ('x86', 'x86_64'):
 		return 'x86'
 
-	if cpu == 'PowerPC':
+	if cpu in ('PowerPC', 'ppc', 'Power Macintosh'):
 		return 'ppc'
 
-	# default to PowerPC
+	# Defaults to PowerPC
 	return 'ppc'
 
 ########################################
 
 
-def where_is_doxygen():
+def is_exe(filename):
+	"""
+	Return True if the file is executable
+
+	Note:
+		Windows platforms don't support the 'x' bit so all
+		files are executable if they exist.
+
+	Args:
+		filename: Full or partial pathname to test for existance
+	Returns:
+		True if the file is executable, False if the file doesn't exist or
+		is not valid.
+	"""
+	return os.path.isfile(filename) and os.access(filename, os.X_OK)
+
+########################################
+
+
+def find_in_path(filename, search_path=None, executable=False):
+	"""
+	Using the system PATH environment variable, search for a file
+
+	Args:
+		filename: File to locate
+		search_path: Search paths to use instead of PATH
+		executable: True to ensure it's an executable
+	Return:
+		None if not found, a full path if the file is found
+	"""
+
+	# Is there a search path override?
+	if search_path is None:
+		# Use the environment variable
+		search_path = os.getenv('PATH', None)
+
+	# Is the search path a single string?
+	if is_string(search_path):
+		# Break it up based on the path seperator
+		paths = search_path.split(os.pathsep)
+	else:
+		# Assume it's a tuple/list/dict of strings
+		paths = search_path
+
+	# Scan the list of paths to find the file
+	for item in paths:
+		# Try as is
+		temp_path = os.path.join(item, filename)
+		if os.path.isfile(temp_path):
+			# Check if executable
+			if not executable or os.access(temp_path, os.X_OK):
+				break
+	else:
+		return os.path.abspath(temp_path)
+
+	# Not found
+	return None
+
+########################################
+
+
+def where_is_doxygen(verbose=False, refresh=False, path=None):
 	"""
 	Return the location of Doxygen's executable
 
@@ -206,55 +328,80 @@ def where_is_doxygen():
 	the string 'doxygen' is returned expecting
 	that the executable is in the PATH
 
+	Args:
+		verbose: If True, print a message if doxygen was not found
+		refresh: If True, reset the cache and force a reload.
+		path: Path to doxygen to place in the cache
+
 	Returns:
 		A path to the Doxygen command line executable or None if not found.
 
 	"""
 
-	# Is Doxygen installed on windows?
+	global __DOXYGEN_PATH				# pylint: disable=W0603
 
-	if get_windows_host_type() is not False:
+	# Clear the cache if needed
+	if refresh:
+		__DOXYGEN_PATH = None
+
+	# Set the override, if found
+	if path:
+		__DOXYGEN_PATH = path
+
+	# Is cached?
+	if __DOXYGEN_PATH:
+		return __DOXYGEN_PATH
+
+	# Is Doxygen installed on windows?
+	if get_windows_host_type():
 
 		# Try the environment variable
-
-		doxygenpath = os.path.expandvars('${DOXYGEN}\\bin\\doxygen.exe')
-		if doxygenpath is not None:
-			if not os.path.isfile(doxygenpath):
-				doxygenpath = None
+		if os.getenv('DOXYGEN', None):
+			doxygenpath = os.path.expandvars('${DOXYGEN}\\bin\\doxygen.exe')
+			if os.path.isfile(doxygenpath):
+				__DOXYGEN_PATH = doxygenpath
+				return doxygenpath
 
 		# Try 64 bit version or native 32 bit version
-		if doxygenpath is None:
-			doxygenpath = \
-				os.path.expandvars('${ProgramFiles}\\doxygen\\bin\\doxygen.exe')
-			if doxygenpath is not None:
-				if not os.path.isfile(doxygenpath):
-					doxygenpath = None
+		if os.getenv('ProgramFiles', None):
+			doxygenpath = os.path.expandvars( \
+				'${ProgramFiles}\\doxygen\\bin\\doxygen.exe')
+			if os.path.isfile(doxygenpath):
+				__DOXYGEN_PATH = doxygenpath
+				return doxygenpath
 
 		# Try 32 bit version on 64 bit system
+		if os.getenv('ProgramFiles(x86)', None):
+			doxygenpath = os.path.expandvars( \
+				'${ProgramFiles(x86)}\\doxygen\\bin\\doxygen.exe')
+			if os.path.isfile(doxygenpath):
+				__DOXYGEN_PATH = doxygenpath
+				return doxygenpath
 
-			if doxygenpath is None:
-				doxygenpath = \
-					os.path.expandvars('${ProgramFiles(x86)}\\doxygen\\bin\\doxygen.exe')
-				if doxygenpath is not None:
-					if not os.path.isfile(doxygenpath):
-						doxygenpath = None
-
-			if doxygenpath is None:
-				print('Doxygen needs to be installed to build documentation!')
-
-		return doxygenpath
+		if verbose:
+			print('Doxygen not found!')
+		return None
 
 	# MacOSX has it hidden in the application
-	elif get_mac_host_type() is not False:
+	elif get_mac_host_type():
+		# Try the hidden file in the application first
 		doxygenpath = '/Applications/Doxygen.app/Contents/Resources/doxygen'
-		if not os.path.isfile(doxygenpath):
-			print \
-				('Doxygen needs to be installed in your Applications folder '
-					'to build documentation!')
-			return None
-		return doxygenpath
+		if os.path.isfile(doxygenpath):
+			__DOXYGEN_PATH = doxygenpath
+			return doxygenpath
 
-	# None of the above
+		# Try macports
+		doxygenpath = '/opt/local/bin/doxygen'
+		if os.path.isfile(doxygenpath):
+			__DOXYGEN_PATH = doxygenpath
+			return doxygenpath
+
+		if verbose:
+			print( \
+				'Doxygen needs to be installed in your Applications folder '
+				'to build documentation!')
+
+	# Return the cache value
 	return 'doxygen'
 
 ########################################

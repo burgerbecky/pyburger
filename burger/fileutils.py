@@ -349,7 +349,8 @@ def get_tool_path(tool_folder, tool_name, encapsulate=False):
 ########################################
 
 
-def traverse_directory(working_dir, filename_list, terminate=False):
+def traverse_directory( \
+	working_dir, filename_list, terminate=False, find_directory=False):
 
 	"""
 	Create a list of all copies of a file following a directory
@@ -364,7 +365,7 @@ def traverse_directory(working_dir, filename_list, terminate=False):
 		filename_list: string or an iterable of strings with the name(s)
 			of the file(s) to find in the scanned folders
 		terminate: True if searching will end on the first found file
-
+		find_directory: True if searching for directories instead of files.
 	Returns:
 		List of pathnames (With filename appended)
 	"""
@@ -384,7 +385,14 @@ def traverse_directory(working_dir, filename_list, terminate=False):
 		# Iterate over the list and detect if these files are present
 		for item in filename_list:
 			temppath = os.path.join(tempdir, item)
-			if os.path.isfile(temppath):
+			if find_directory:
+				if os.path.isdir(temppath):
+					# Insert at the beginning
+					dirlist.insert(0, temppath)
+					if terminate:
+						return dirlist
+
+			elif os.path.isfile(temppath):
 				# Insert at the beginning
 				dirlist.insert(0, temppath)
 				if terminate:
