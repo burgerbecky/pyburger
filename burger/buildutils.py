@@ -251,7 +251,7 @@ def get_mac_host_type():
 ########################################
 
 
-def is_exe(filename):
+def is_exe(exe_path):
 	"""
 	Return True if the file is executable
 
@@ -260,12 +260,87 @@ def is_exe(filename):
 		files are executable if they exist.
 
 	Args:
-		filename: Full or partial pathname to test for existance
+		exe_path: Full or partial pathname to test for existance
 	Returns:
 		True if the file is executable, False if the file doesn't exist or
 		is not valid.
 	"""
-	return os.path.isfile(filename) and os.access(filename, os.X_OK)
+	return os.path.isfile(exe_path) and os.access(exe_path, os.X_OK)
+
+########################################
+
+
+def get_path_ext(pathext=None):
+	"""
+	Return a list of executable extensions
+
+	If pathext is None, query the environment variable PATHEXT and
+	return the entries as a string list. If pathext is a string,
+	parse it as if it was a system specific PATHEXT string and
+	if it's an iterable, return the value as is. If PATHEXT doesn't exist
+	or is empty, return an empty list.
+
+	Windows usually sets the value like this
+	``PATHEXT=.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC``
+
+	Args:
+		pathext: String parsed as PATHEXT, iterable returned as is
+	Returns:
+		List of file name extension strings.
+	See:
+		burger.buildutils.make_exe_path() or burger.buildutils.find_in_path()
+	"""
+
+	# Read the environment variable?
+	if pathext is None:
+		pathext = os.getenv('PATHEXT', [])
+
+	# If a string, or environment variable?
+	if is_string(pathext):
+		# Parse the string
+		pathext = pathext.split(os.pathsep)
+
+	# Return the list or iterable
+	return pathext
+
+########################################
+
+
+def make_exe_path(exe_path, pathext=None):
+	"""
+	Given a folder and a executable name, return the true absolute path
+
+	Examples:
+		# exe could be returned as exe, exe.exe, exe.cmd, etc...
+		path = make_exe_path('C:\\code\\exe')
+		if path is None:
+			print('No file named exe at C:\\code')
+
+	Note:
+		On macOS and Linux, PATHEXT is not set, this is for supporting
+		extension types for common batch files or other executable extensions.
+
+	Args:
+		exe_path: Path of the executable to test
+		pathext: Extension list to test
+	Returns:
+		None if a match was not found, or a full pathname with extension.
+
+	See:
+		burger.buildutils.get_path_ext() or burger.buildutils.find_in_path()
+	"""
+	# Test the path as is
+	if is_exe(exe_path):
+		return exe_path
+
+	# Try all the extensions (Can be an empty list)
+	for ext in get_path_ext(pathext):
+		temp_path = exe_path + ext
+		if is_exe(temp_path):
+			break
+	else:
+		return None
+	return temp_path
 
 ########################################
 
@@ -297,47 +372,45 @@ def find_in_path(filename, search_path=None, executable=False):
 		executable: True to ensure it's an executable
 	Return:
 		None if not found, a full path if the file is found
+	See:
+		burger.buildutils.get_path_ext() or burger.buildutils.make_exe_path()
 	"""
+
+	# Set up for added standard extentions
+	if executable:
+		pathext = get_path_ext()
+	else:
+		pathext = []
 
 	# Is there a search path override?
 	if search_path is None:
 		# Use the environment variable
-		search_path = os.getenv('PATH', None)
-
-	# Is the search path a single string?
-	if is_string(search_path):
-		# Break it up based on the path seperator
-		paths = search_path.split(os.pathsep)
+		paths = os.getenv('PATH', [])
 	else:
-		# Assume it's a tuple/list/dict of strings
 		paths = search_path
 
-	# Set up for added standard extentions
-	if executable and get_windows_host_type():
-		pathext = os.getenv('PATHEXT', None)
-		if pathext:
-			pathext = pathext.split(os.pathsep)
-	else:
-		pathext = False
+	if is_string(paths):
+		# Break it up based on the path seperator
+		paths = paths.split(os.pathsep)
+
+	# Since PATH was used, also test the current working directory
+	# first
+	if search_path is None:
+		paths.insert(0, os.getcwd())
 
 	# Scan the list of paths to find the file
 	for item in paths:
-		# Try as is
+		# Get the full path
 		temp_path = os.path.join(item, filename)
-		if os.path.isfile(temp_path):
-			# Check if executable
-			if not executable or os.access(temp_path, os.X_OK):
-				break
 
-		# Try all the extensions (Can be an empty list)
-		for ext in pathext:
-			temp_path = os.path.join(item, filename + ext)
-			if is_exe(temp_path):
+		# Perform the test as an exe
+		if executable:
+			temp_path = make_exe_path(temp_path, pathext=pathext)
+			if temp_path:
 				break
-		else:
-			continue
-		break
-
+		# Test for just a file
+		elif os.path.isfile(temp_path):
+			break
 	else:
 		# Not found in the loops
 		return None

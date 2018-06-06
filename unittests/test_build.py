@@ -61,3 +61,50 @@ def test_get_sdks_folder(tmpdir):
 	if saved:
 		os.putenv('BURGER_SDKS', saved)
 		burger.get_sdks_folder(refresh=True, folder=saved)
+
+########################################
+
+
+def test_get_path_ext():
+	"""
+	Test burger.get_path_ext()
+	"""
+
+	grouptuple = ('a', 'b', 'c', 'd')
+	grouplist = ['a', 'b', 'c', 'd']
+	teststr = os.pathsep.join(grouptuple)
+	assert burger.get_path_ext(teststr) == grouplist
+	assert burger.get_path_ext(grouptuple) == grouptuple
+	assert burger.get_path_ext(grouplist) == grouplist
+
+########################################
+
+
+def test_make_exe_path():
+	"""
+	Test burger.make_exe_path()
+	"""
+
+	ran_test = False
+
+	# Test for a known windows executable
+	if os.getenv('SystemRoot', None):
+		# Case insensitive test
+		notepad = os.path.expandvars("${SystemRoot}\\notepad").lower()
+		notepadexe = notepad + '.exe'
+		if os.path.isfile(notepadexe):
+			assert burger.make_exe_path(notepad).lower() == notepadexe
+			ran_test = True
+
+	# Test with ls which is in the same place on Linux and macOS
+	macls = '/bin/ls'
+	if os.path.isfile(macls):
+		assert burger.make_exe_path(macls) == macls
+		ran_test = True
+
+	# This has to come back false
+	selffile = os.path.abspath(__file__)
+	assert burger.make_exe_path(os.path.dirname(selffile)) is None
+
+	# If this asserts, an executable test wasn't performed
+	assert ran_test

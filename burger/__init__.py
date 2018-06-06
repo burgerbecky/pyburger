@@ -45,10 +45,10 @@ from .fileutils import create_folder_if_needed, delete_file, is_source_newer, \
 	copy_directory_if_needed, shutil_readonly_cb, delete_directory, \
 	get_tool_path, traverse_directory, unlock_files, lock_files
 from .buildutils import StringIO, get_sdks_folder, host_machine, fix_csharp, \
-	get_windows_host_type, get_mac_host_type, is_exe, find_in_path, \
-	where_is_doxygen, where_is_p4, expand_and_verify, perforce_edit, \
-	compare_files, compare_file_to_string, run_command, make_version_header, \
-	is_codewarrior_mac_allowed
+	get_windows_host_type, get_mac_host_type, is_exe, get_path_ext, \
+	make_exe_path, find_in_path, where_is_doxygen, where_is_p4, \
+	expand_and_verify, perforce_edit, compare_files, compare_file_to_string, \
+	run_command, make_version_header, is_codewarrior_mac_allowed
 
 ########################################
 
@@ -114,6 +114,8 @@ __all__ = [
 	'get_windows_host_type',
 	'get_mac_host_type',
 	'is_exe',
+	'get_path_ext',
+	'make_exe_path',
 	'find_in_path',
 	'where_is_doxygen',
 	'expand_and_verify',

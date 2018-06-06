@@ -44,10 +44,12 @@ Build Helpers
 .. doxygenfunction:: burger::buildutils::get_windows_host_type
 .. doxygenfunction:: burger::buildutils::get_mac_host_type
 .. doxygenfunction:: burger::buildutils::is_exe
+.. doxygenfunction:: burger::buildutils::get_path_ext
+.. doxygenfunction:: burger::buildutils::make_exe_path
 .. doxygenfunction:: burger::buildutils::expand_and_verify
 .. doxygenfunction:: burger::buildutils::perforce_edit
 .. doxygenfunction:: burger::buildutils::compare_files
 .. doxygenfunction:: burger::buildutils::compare_file_to_string
+.. doxygenfunction:: burger::buildutils::run_command
 .. doxygenfunction:: burger::buildutils::make_version_header
 .. doxygenfunction:: burger::buildutils::is_codewarrior_mac_allowed
-.. doxygenfunction:: burger::buildutils::run_command
