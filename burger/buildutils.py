@@ -16,6 +16,8 @@ import subprocess
 import sys
 from .strutils import is_string
 
+# pylint: disable=C0302
+
 # Use the old way for Python 2 versus 3
 _PY2 = sys.version_info[0] == 2
 if _PY2:
@@ -31,13 +33,19 @@ except ImportError:
 	pass
 
 ## Cached location of the BURGER_SDKS folder
-__BURGER_SDKS_FOLDER = None
+_BURGER_SDKS_FOLDER = None
 
 ## Cached location of doxygen
-__DOXYGEN_PATH = None
+_DOXYGEN_PATH = None
 
 ## Cached location of p4 from Perforce
-__PERFORCE_PATH = None
+_PERFORCE_PATH = None
+
+## Environment variable locations of window applications
+_WINDOWS_ENV_PATHS = [
+	'ProgramFiles',
+	'ProgramFiles(x86)'
+]
 
 ########################################
 
@@ -75,24 +83,24 @@ def get_sdks_folder(verbose=False, refresh=False, folder=None):
 		value of BURGER_SDKS.
 	"""
 
-	global __BURGER_SDKS_FOLDER				# pylint: disable=W0603
+	global _BURGER_SDKS_FOLDER				# pylint: disable=W0603
 
 	# Clear the cache if needed
 	if refresh:
-		__BURGER_SDKS_FOLDER = None
+		_BURGER_SDKS_FOLDER = None
 
 	# Set the override, if found
 	if folder:
-		__BURGER_SDKS_FOLDER = folder
+		_BURGER_SDKS_FOLDER = folder
 
 	# Not cached?
-	if __BURGER_SDKS_FOLDER is None:
+	if _BURGER_SDKS_FOLDER is None:
 
 		# Load from the system
-		__BURGER_SDKS_FOLDER = os.getenv('BURGER_SDKS', default=None)
+		_BURGER_SDKS_FOLDER = os.getenv('BURGER_SDKS', default=None)
 
 		# Test for None or empty string
-		if not __BURGER_SDKS_FOLDER:
+		if not _BURGER_SDKS_FOLDER:
 
 			# Warn about missing environment variable
 			if verbose:
@@ -103,11 +111,11 @@ def get_sdks_folder(verbose=False, refresh=False, folder=None):
 			sdks = traverse_directory(os.getcwd(), 'sdks', \
 				find_directory=True, terminate=True)
 			if sdks:
-				__BURGER_SDKS_FOLDER = sdks[0]
+				_BURGER_SDKS_FOLDER = sdks[0]
 				if verbose:
 					print('Assuming {} is the BURGER_SDKS folder'.format(sdks[0]))
 
-	return __BURGER_SDKS_FOLDER
+	return _BURGER_SDKS_FOLDER
 
 ########################################
 
@@ -421,105 +429,6 @@ def find_in_path(filename, search_path=None, executable=False):
 ########################################
 
 
-def where_is_doxygen(verbose=False, refresh=False, path=None):
-	"""
-	Return the location of Doxygen's executable
-
-	Look for an environment variable DOXYGEN and
-	determine if the executable resides there, if
-	so, return the string to the path
-
-	If running on a MacOSX client, look in the Applications
-	folder for a copy of Doxygen.app and return the
-	pathname to the copy of doxygen that resides within
-
-	If it cannot be determined that doxygen is installed,
-	the string 'doxygen' is returned expecting
-	that the executable is in the PATH
-
-	Args:
-		verbose: If True, print a message if doxygen was not found
-		refresh: If True, reset the cache and force a reload.
-		path: Path to doxygen to place in the cache
-
-	Returns:
-		A path to the Doxygen command line executable or None if not found.
-
-	"""
-
-	global __DOXYGEN_PATH				# pylint: disable=W0603
-
-	# Clear the cache if needed
-	if refresh:
-		__DOXYGEN_PATH = None
-
-	# Set the override, if found
-	if path:
-		__DOXYGEN_PATH = path
-
-	# Is cached?
-	if __DOXYGEN_PATH:
-		return __DOXYGEN_PATH
-
-	# Is Doxygen installed on windows?
-	if get_windows_host_type():
-
-		# Try the environment variable
-		if os.getenv('DOXYGEN', None):
-			doxygenpath = os.path.expandvars('${DOXYGEN}\\bin\\doxygen.exe')
-			if os.path.isfile(doxygenpath):
-				__DOXYGEN_PATH = doxygenpath
-				return doxygenpath
-
-	# Try the path first
-	doxygenpath = find_in_path('doxygen', executable=True)
-	if doxygenpath:
-		__DOXYGEN_PATH = doxygenpath
-		return doxygenpath
-
-	# Is Doxygen installed on windows?
-	if get_windows_host_type():
-
-		# Try 64 bit version or native 32 bit version
-		if os.getenv('ProgramFiles', None):
-			doxygenpath = os.path.expandvars( \
-				'${ProgramFiles}\\doxygen\\bin\\doxygen.exe')
-			if os.path.isfile(doxygenpath):
-				__DOXYGEN_PATH = doxygenpath
-				return doxygenpath
-
-		# Try 32 bit version on 64 bit system
-		if os.getenv('ProgramFiles(x86)', None):
-			doxygenpath = os.path.expandvars( \
-				'${ProgramFiles(x86)}\\doxygen\\bin\\doxygen.exe')
-			if os.path.isfile(doxygenpath):
-				__DOXYGEN_PATH = doxygenpath
-				return doxygenpath
-
-		if verbose:
-			print('Doxygen not found!')
-		return None
-
-	# MacOSX has it hidden in the application
-	elif get_mac_host_type():
-
-		# Try the hidden file in the application
-		doxygenpath = '/Applications/Doxygen.app/Contents/Resources/doxygen'
-		if os.path.isfile(doxygenpath):
-			__DOXYGEN_PATH = doxygenpath
-			return doxygenpath
-
-		if verbose:
-			print( \
-				'Doxygen needs to be installed in your Applications folder '
-				'or through brew/macports!')
-
-	# Can't find it
-	return None
-
-########################################
-
-
 def expand_and_verify(file_string):
 	"""
 	Expand the input string with os.path.expandvars()
@@ -550,64 +459,206 @@ def expand_and_verify(file_string):
 ########################################
 
 
-def where_is_p4(encapsulate=True):
-
+def where_is_doxygen(verbose=False, refresh=False, path=None):
 	"""
-	Return the location of the p4 executable
+	Return the location of Doxygen's executable
 
-	Note: This returns the string in a format that is used
-	to call p4 from a shell, so on Windows clients it may
-	be encased in quotes to allow spaces in the full pathname
+	Look for an environment variable DOXYGEN and
+	determine if the executable resides there, if
+	so, return the string to the path
 
-	If it cannot be determined that p4 is installed,
-	the string 'p4' is returned expecting
-	that the executable is in the PATH
+	If running on a MacOSX client, look in the Applications
+	folder for a copy of Doxygen.app and return the
+	pathname to the copy of doxygen that resides within
+
+	PATH is then searched for doxygen, and if it's not found,
+	None is returned.
 
 	Args:
-		encapsulate: If True, return the path enquoted, otherwise don't
-			encapsulate in quotes.
+		verbose: If True, print a message if doxygen was not found
+		refresh: If True, reset the cache and force a reload.
+		path: Path to doxygen to place in the cache
+
+	Returns:
+		A path to the Doxygen command line executable or None if not found.
+
 	"""
 
-	# Is Perforce installed on windows?
+	global _DOXYGEN_PATH				# pylint: disable=W0603
 
-	if get_windows_host_type() is not False:
+	# Clear the cache if needed
+	if refresh:
+		_DOXYGEN_PATH = None
 
-		# Try the environment variable
+	# Set the override, if found
+	if path:
+		_DOXYGEN_PATH = path
 
-		perforce_path = expand_and_verify('${PERFORCE}\\p4.exe')
+	# Is cached?
+	if _DOXYGEN_PATH:
+		return _DOXYGEN_PATH
 
-		# Try 64 bit version or native 32 bit version
-		if perforce_path is None:
-			perforce_path = expand_and_verify('${ProgramFiles}\\Perforce\\p4.exe')
+	# Try the environment variable first
+	if os.getenv('DOXYGEN', None):
+		if get_windows_host_type():
 
-		# Try 32 bit version on 64 bit system
+			# Windows points to the base path
+			doxygenpath = os.path.expandvars('${DOXYGEN}\\bin\\doxygen.exe')
+		else:
+			# Just append the exec name
+			doxygenpath = os.path.expandvars('${DOXYGEN}/doxygen')
 
-			if perforce_path is None:
-				perforce_path = expand_and_verify('${ProgramFiles(x86)}\\Perforce\\p4.exe')
-				if perforce_path is None:
-					print('Perforce needs to be installed for source control!')
-					return None
+		# Valid?
+		if is_exe(doxygenpath):
+			_DOXYGEN_PATH = doxygenpath
+			return doxygenpath
 
-		if encapsulate:
-			return '"{}"'.format(perforce_path)
-		return perforce_path
+	# Scan the PATH for the exec
+	doxygenpath = find_in_path('doxygen', executable=True)
+	if doxygenpath:
+		_DOXYGEN_PATH = doxygenpath
+		return doxygenpath
 
-	# Is the path set for Linux or Mac OSX?
+	# List of the usual suspects
+	full_paths = []
 
-	perforce_path = os.getenv('PERFORCE')
-	if perforce_path is not None:
-		perforce_path = os.path.join(perforce_path, 'p4')
-		if encapsulate:
-			return '"{}"'.format(perforce_path)
-		return perforce_path
+	# Check if it's installed but not in the path
+	if get_windows_host_type():
 
-	# Assume it's in the PATH on other systems
-	return 'p4'
+		# Try the 'ProgramFiles' folders
+		for item in _WINDOWS_ENV_PATHS:
+			if os.getenv(item, None):
+				full_paths.append(os.path.expandvars( \
+					'${' + item + '}\\doxygen\\bin\\doxygen.exe'))
+
+	elif get_mac_host_type():
+
+		# MacOSX has it hidden in the application
+		full_paths.append('/Applications/Doxygen.app/Contents/Resources/doxygen')
+		full_paths.append('/opt/local/bin/doxygen')
+
+	elif os.name == 'posix':
+		# Posix / Linux
+		full_paths.append('/usr/bin/doxygen')
+
+	# Scan the list of known locations
+	for doxygenpath in full_paths:
+		if is_exe(doxygenpath):
+			# Finally found it!
+			_DOXYGEN_PATH = doxygenpath
+			return doxygenpath
+
+	# Oh, dear.
+	if verbose:
+		print('Doxygen not found!')
+		if get_mac_host_type():
+			print('Install the desktop application in the Applications folder or ' \
+				'use brew or macports for the command line version')
+
+	# Can't find it
+	return None
 
 ########################################
 
 
-def perforce_edit(files):
+def where_is_p4(verbose=False, refresh=False, path=None):
+
+	"""
+	Return the location of the p4 executable
+
+	Look for an environment variable PERFORCE and
+	determine if the executable resides there, if
+	so, return the string to the path.
+
+	PATH is then searched for p4, and if it's not found,
+	None is returned.
+
+	Args:
+		verbose: If True, print a message if Perforce was not found
+		refresh: If True, reset the cache and force a reload.
+		path: Path to Perforce to place in the cache
+	Returns:
+		A path to the Perforce command line executable or None if not found.
+	See:
+		perforce_edit()
+	"""
+
+	global _PERFORCE_PATH				# pylint: disable=W0603
+
+	# Clear the cache if needed
+	if refresh:
+		_PERFORCE_PATH = None
+
+	# Set the override, if found
+	if path:
+		_PERFORCE_PATH = path
+
+	# Is cached?
+	if _PERFORCE_PATH:
+		return _PERFORCE_PATH
+
+	# Try the environment variable first
+	if os.getenv('PERFORCE', None):
+		if get_windows_host_type():
+
+			# Windows points to the base path
+			p4path = os.path.expandvars('${PERFORCE}\\p4.exe')
+		else:
+			# Just append the exec name
+			p4path = os.path.expandvars('${PERFORCE}/p4')
+
+		# Valid?
+		if is_exe(p4path):
+			_PERFORCE_PATH = p4path
+			return p4path
+
+	# Scan the PATH for the exec
+	p4path = find_in_path('p4', executable=True)
+	if p4path:
+		_PERFORCE_PATH = p4path
+		return p4path
+
+	# List of the usual suspects
+	full_paths = []
+
+	# Check if it's installed but not in the path
+	if get_windows_host_type():
+
+		# Try the 'ProgramFiles' folders
+		for item in _WINDOWS_ENV_PATHS:
+			if os.getenv(item, None):
+				full_paths.append(os.path.expandvars( \
+					'${' + item + '}\\perforce\\p4.exe'))
+
+	elif get_mac_host_type():
+
+		# Installed here via brew
+		full_paths.append('/opt/local/bin/p4')
+
+	elif os.name == 'posix':
+		# Posix / Linux
+		full_paths.append('/usr/bin/p4')
+
+	# Scan the list of known locations
+	for p4path in full_paths:
+		if is_exe(p4path):
+			# Finally found it!
+			_PERFORCE_PATH = p4path
+			return p4path
+
+	# Oh, dear.
+	if verbose:
+		print('Perforce "p4" not found!')
+		if get_mac_host_type():
+			print('Use brew or macports for the command line version')
+
+	# Can't find it
+	return None
+
+########################################
+
+
+def perforce_edit(files, verbose=False):
 
 	"""
 	Given a list of files, checkout (Edit) them in perforce
@@ -617,27 +668,39 @@ def perforce_edit(files):
 
 	Args:
 		files: list or string object of file(s) to checkout
+		verbose: If True, print the command line and warnings
 
 	Returns:
 		Zero if no error, non-zero on error
+	See:
+		where_is_p4()
 	"""
 
 	# Get the p4 executable
-	perforce_path = where_is_p4()
+	perforce_path = where_is_p4(verbose=verbose)
 
 	# Not found?
 	if perforce_path is None:
 		return 10
 
-	if not isinstance(files, list):
-		files = [files]
+	# Encapsulate the single string entry
+	if is_string(files):
+		file_list = (files,)
+	else:
+		file_list = files
 
-	for item in files:
-		cmd = '{} edit "{}"'.format(perforce_path, os.path.abspath(item))
+	# Generate the command line and call
+	from .strutils import encapsulate_path
+	p4quoted = encapsulate_path(perforce_path)
+	error = 0
+	for item in file_list:
+		cmd = '{} edit {}'.format(p4quoted, encapsulate_path(os.path.abspath(item)))
+		if verbose:
+			print(cmd)
 		error = subprocess.call(cmd, shell=True)
 		if error != 0:
-			return error
-	return 0
+			break
+	return error
 
 ########################################
 
@@ -750,6 +813,9 @@ def run_command(args, working_dir=None, quiet=False):
 	"""
 	Execute a program and capture the return code and text output
 
+	Pass a command line formatted for the current shell and then this
+	function will execute that command and capture both stdout and stderr.
+
 	Args:
 		args: List of command line entries, starting with the program pathname
 		working_dir: Directory to set before executing command
@@ -763,7 +829,7 @@ def run_command(args, working_dir=None, quiet=False):
 			stderr=subprocess.PIPE, universal_newlines=True)
 	except OSError as error:
 		if not quiet:
-			print('Command line "{}" generated {}'.format(args, error))
+			print('Command line "{}" generated error {}'.format(args, error))
 		return (error.errno, '', '')
 
 	stdoutstr, stderrstr = tempfp.communicate()
@@ -772,7 +838,7 @@ def run_command(args, working_dir=None, quiet=False):
 ########################################
 
 
-def make_version_header(working_dir, outputfilename):
+def make_version_header(working_dir, outputfilename, verbose=False):
 	"""
 	Create a C header with the perforce version
 
@@ -789,6 +855,7 @@ def make_version_header(working_dir, outputfilename):
 		working_dir: string with the path of the folder to obtain the perforce
 			version for
 		outputfilename: string with the path of the generated header
+		verbose: Print perforce commands and other informational messages
 
 	Returns:
 		Zero if no error, non-zero on error
@@ -798,6 +865,9 @@ def make_version_header(working_dir, outputfilename):
 	p4exe = where_is_p4()
 	if p4exe is None:
 		return 10
+	# Encapsulate in quotes if needed
+	from .strutils import encapsulate_path
+	p4cmd = encapsulate_path(p4exe)
 
 	# Create the header guard by taking the filename,
 	# converting to upper case and replacing spaces and
@@ -813,9 +883,10 @@ def make_version_header(working_dir, outputfilename):
 	# -t / Display the time
 	# -l / Print out the entire changelist description
 
-	error, tempdata = run_command( \
-		"{} changes -m 1 -t -l ...#have".format(p4exe),
-		working_dir)[:2]
+	cmd = "{} changes -m 1 -t -l ...#have".format(p4cmd)
+	if verbose:
+		print(cmd)
+	error, tempdata = run_command(cmd, working_dir)[:2]
 	if error != 0:
 		return error
 
@@ -825,8 +896,10 @@ def make_version_header(working_dir, outputfilename):
 	# Get the p4 client
 	# Parse "P4CLIENT=burgeroctocore (config)"
 
-	error, tempdata = \
-		run_command("{} set P4CLIENT".format(p4exe), working_dir)[:2]
+	cmd = "{} set P4CLIENT".format(p4cmd)
+	if verbose:
+		print(cmd)
+	error, tempdata = run_command(cmd, working_dir)[:2]
 	if error != 0:
 		return error
 
@@ -836,7 +909,10 @@ def make_version_header(working_dir, outputfilename):
 	# Get the p4 user
 	# Parse "P4USER=burgerbecky (config)"
 
-	error, tempdata = run_command("{} set P4USER".format(p4exe), working_dir)[:2]
+	cmd = "{} set P4USER".format(p4cmd)
+	if verbose:
+		print(cmd)
+	error, tempdata = run_command(cmd, working_dir)[:2]
 	if error != 0:
 		return error
 
@@ -877,15 +953,16 @@ def make_version_header(working_dir, outputfilename):
 
 	filevalue = filep.getvalue()
 	del filep
+
 	if compare_file_to_string(outputfilename, filevalue) is not True:
-		print('Writing ' + outputfilename)
+		if verbose:
+			print('Writing ' + outputfilename)
 		try:
 			with open(outputfilename, 'w') as filep:
 				filep.write(filevalue)
 		except IOError as error:
 			print(error)
 			return 2
-
 	return 0
 
 ########################################
@@ -907,7 +984,7 @@ def is_codewarrior_mac_allowed():
 
 	# Test if a mac
 
-	if host_machine() == 'macosx':
+	if get_mac_host_type():
 		# Get the Mac OS version number
 		mac_ver = platform.mac_ver()
 		release = mac_ver[0]
