@@ -816,6 +816,9 @@ def run_command(args, working_dir=None, quiet=False):
 	Pass a command line formatted for the current shell and then this
 	function will execute that command and capture both stdout and stderr.
 
+	Note:
+		The first parameter is passed to subprocess.Popen() as is.
+
 	Args:
 		args: List of command line entries, starting with the program pathname
 		working_dir: Directory to set before executing command
@@ -865,9 +868,6 @@ def make_version_header(working_dir, outputfilename, verbose=False):
 	p4exe = where_is_p4()
 	if p4exe is None:
 		return 10
-	# Encapsulate in quotes if needed
-	from .strutils import encapsulate_path
-	p4cmd = encapsulate_path(p4exe)
 
 	# Create the header guard by taking the filename,
 	# converting to upper case and replacing spaces and
@@ -883,9 +883,9 @@ def make_version_header(working_dir, outputfilename, verbose=False):
 	# -t / Display the time
 	# -l / Print out the entire changelist description
 
-	cmd = "{} changes -m 1 -t -l ...#have".format(p4cmd)
+	cmd = (p4exe, 'changes', '-m', '1', '-t', '-l', '...#have')
 	if verbose:
-		print(cmd)
+		print(' '.join(cmd))
 	error, tempdata = run_command(cmd, working_dir)[:2]
 	if error != 0:
 		return error
@@ -896,9 +896,9 @@ def make_version_header(working_dir, outputfilename, verbose=False):
 	# Get the p4 client
 	# Parse "P4CLIENT=burgeroctocore (config)"
 
-	cmd = "{} set P4CLIENT".format(p4cmd)
+	cmd = (p4exe, 'set', 'P4CLIENT')
 	if verbose:
-		print(cmd)
+		print(' '.join(cmd))
 	error, tempdata = run_command(cmd, working_dir)[:2]
 	if error != 0:
 		return error
@@ -909,9 +909,9 @@ def make_version_header(working_dir, outputfilename, verbose=False):
 	# Get the p4 user
 	# Parse "P4USER=burgerbecky (config)"
 
-	cmd = "{} set P4USER".format(p4cmd)
+	cmd = (p4exe, 'set', 'P4USER')
 	if verbose:
-		print(cmd)
+		print(' '.join(cmd))
 	error, tempdata = run_command(cmd, working_dir)[:2]
 	if error != 0:
 		return error
