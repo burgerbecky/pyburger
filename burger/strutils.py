@@ -13,6 +13,17 @@ from __future__ import absolute_import, print_function, unicode_literals
 import sys
 import os
 import string
+import re
+import csv
+
+## Valid characters for windows filenames without quoting
+_WINDOWSSAFESET = frozenset(string.ascii_letters + string.digits + '_-.:\\')
+
+## Valid characters for macOS and Linux files without quoting
+_LINUXSAFESET = frozenset(string.ascii_letters + string.digits + '@%_-+=:,./')
+
+## Regex to match comma and quotes
+_RE_COMMA_QUOTES = re.compile(r"\\.|[\"',]", re.DOTALL)
 
 ########################################
 
@@ -241,9 +252,6 @@ def convert_to_linux_slashes(path_name, force_ending_slash=False):
 ########################################
 
 
-_WINDOWSSAFESET = frozenset(string.ascii_letters + string.digits + '_-.:\\')
-
-
 def encapsulate_path_windows(input_path):
 
 	"""
@@ -280,9 +288,6 @@ def encapsulate_path_windows(input_path):
 	return '"{}"'.format(temp.replace('"', '\\"'))
 
 ########################################
-
-
-_LINUXSAFESET = frozenset(string.ascii_letters + string.digits + '@%_-+=:,./')
 
 
 def encapsulate_path_linux(input_path):
@@ -347,3 +352,127 @@ def encapsulate_path(input_path):
 
 	# Force to linux slashes
 	return encapsulate_path_linux(input_path)
+
+########################################
+
+
+def split_comma_with_quotes(comma_string):
+	"""
+	Split comma seperated string while handling quotes
+
+	str.split(',') will split a string into a list but it doesn't
+	handle entries that are encased in quotes. This function will
+	scan for quote characters and skip over any comma that's encased
+	in quotes.
+
+	Examples:
+		# Result is ['"foo,bar"','foo','bar']
+		lines = burger.strutils.split_comma_with_quotes('"foo,bar",foo,bar')
+
+		# Will raise an error due to missing end quote
+		willraise = burger.strutils.split_comma_with_quote('"foo,bar')
+
+	Args:
+		comma_string: String of comma seperated strings
+
+	Return:
+		List of string fragments for each comma seperated entries
+
+	Raises:
+		ValueError
+
+	"""
+
+	# Start the parsing at the start of the string
+	marker = 0
+
+	# No delimiter found yet
+	delimiter = ''
+	result = []
+
+	# Get list of matches
+	for match in _RE_COMMA_QUOTES.finditer(comma_string):
+
+		# Get the character that matched
+		temp = match.group(0)
+
+		# Looking for a comma?
+		if delimiter == '':
+
+			# This is a comma that will trigger a split
+			if temp == ',':
+
+				# Add in the string that was found
+				result.append(comma_string[marker:match.start()])
+				# Mark AFTER the comma with +1
+				marker = match.start() + 1
+
+			# Is this a quote?
+			elif temp in "\"'":
+				# Mark a delimiter and stop checking for commas
+				delimiter = temp
+
+		# A delimiter is being tracker, has it been hit?
+		elif temp == delimiter:
+			# Enable splitting on commas
+			delimiter = ''
+
+	# If the quote was not matched, throw an exception
+	if delimiter:
+		raise ValueError("String wasn't properly quoted")
+
+	# Grab the last string chunk
+	temp = comma_string[marker:]
+
+	# If it's empty, it's because there was a trailing comma
+	if temp:
+		result.append(temp)
+
+	return result
+
+########################################
+
+
+def parse_csv(csv_string):
+	"""
+	Parse a comma seperated string allowing quoted strings
+
+	Given a string of comma seperated entries and handle quotes properly.
+
+	Examples:
+		# Result is ['foo,bar','foo','bar']
+		lines = burger.strutils.split_comma_with_quotes('"foo,bar",foo,bar')
+
+		# Result is ['foo"bar',"'boo'boo'"]
+		lines = burger.strutils.split_comma_with_quotes('"foo""bar","'boo,boo'")
+
+		# Will raise an error due to missing end quote
+		willraise = burger.strutils.split_comma_with_quote('"foo,bar')
+
+	Args:
+		csv_string: String of comma seperated entries
+	Returns:
+		List of entries with whitespace stripped from prefix and suffix
+	Raises:
+		ValueError
+	"""
+
+	result = []
+	# Seperate by commas
+	for item in split_comma_with_quotes(csv_string):
+
+		# Strip the whitespace
+		temp = item.strip('\n\r \t')
+
+		# Is there anything to parse?
+		if temp:
+
+			# Check if there's a delimiter
+			delimiter = temp[0]
+			if delimiter in "\"'":
+
+				# If there's a delimiter, properly handle it
+				temp = next(csv.reader([temp], quotechar=str(delimiter), \
+					delimiter=str(delimiter), quoting=csv.QUOTE_ALL))[0]
+		result.append(temp)
+	return result

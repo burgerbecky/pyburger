@@ -14,6 +14,8 @@ String Functions
 .. doxygenfunction:: burger::strutils::encapsulate_path_windows
 .. doxygenfunction:: burger::strutils::encapsulate_path_linux
 .. doxygenfunction:: burger::strutils::encapsulate_path
+.. doxygenfunction:: burger::strutils::split_comma_with_quotes
+.. doxygenfunction:: burger::strutils::parse_csv
 
 File Locators
 ^^^^^^^^^^^^^
@@ -24,11 +26,12 @@ File Locators
 
 File Functions
 ^^^^^^^^^^^^^^
+.. doxygenfunction:: burger::fileutils::is_write_protected
+.. doxygenfunction:: burger::fileutils::make_executable
 .. doxygenfunction:: burger::fileutils::create_folder_if_needed
 .. doxygenfunction:: burger::fileutils::delete_file
 .. doxygenfunction:: burger::fileutils::is_source_newer
 .. doxygenfunction:: burger::fileutils::copy_file_if_needed
-.. doxygenfunction:: burger::fileutils::copy_file_checkout_if_needed
 .. doxygenfunction:: burger::fileutils::copy_directory_if_needed
 .. doxygenfunction:: burger::fileutils::shutil_readonly_cb
 .. doxygenfunction:: burger::fileutils::delete_directory

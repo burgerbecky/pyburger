@@ -352,3 +352,103 @@ def test_encapsulate_path():
 	assert burger.encapsulate_path("foo'foo") == "'foo'\"'\"'foo'"
 	# Restore the real value
 	os.name = savedname
+
+########################################
+
+
+def test_split_comma_with_quotes():
+	"""
+	Test burger.split_comma_with_quotes()
+	"""
+
+	# Test for normal behavior
+	assert burger.split_comma_with_quotes('x') == ['x']
+	assert burger.split_comma_with_quotes('x,y') == ['x', 'y']
+	assert burger.split_comma_with_quotes('x,y,') == ['x', 'y']
+	assert burger.split_comma_with_quotes('x,y,z,') == ['x', 'y', 'z']
+	assert burger.split_comma_with_quotes(',x,y,z') == ['', 'x', 'y', 'z']
+	assert burger.split_comma_with_quotes(',x,y,z,') == ['', 'x', 'y', 'z']
+
+	# Test for normal behavior
+	assert burger.split_comma_with_quotes('\nx') == ['\nx']
+	assert burger.split_comma_with_quotes('\tx,y') == ['\tx', 'y']
+	assert burger.split_comma_with_quotes('\rx,y,') == ['\rx', 'y']
+	assert burger.split_comma_with_quotes('\n\rx,y,z,') == ['\n\rx', 'y', 'z']
+	assert burger.split_comma_with_quotes(',x,y,z\t') == ['', 'x', 'y', 'z\t']
+	assert burger.split_comma_with_quotes(',x,y,z\t,') == ['', 'x', 'y', 'z\t']
+
+	# Test for quote behavior
+	assert burger.split_comma_with_quotes('"x"') == ['"x"']
+	assert burger.split_comma_with_quotes('"x","y"') == ['"x"', '"y"']
+	assert burger.split_comma_with_quotes('"x",y,') == ['"x"', 'y']
+	assert burger.split_comma_with_quotes("x,'y',z,") == ['x', "'y'", 'z']
+	assert burger.split_comma_with_quotes(',x,y,"z"') == ['', 'x', 'y', '"z"']
+	assert burger.split_comma_with_quotes(',x,"y,z",') == ['', 'x', '"y,z"']
+
+	# Test for Exceptions
+	try:
+		burger.split_comma_with_quotes("'foo")
+		assert 0
+	except ValueError:
+		pass
+	try:
+		burger.split_comma_with_quotes('"foo')
+		assert 0
+	except ValueError:
+		pass
+	try:
+		burger.split_comma_with_quotes('"foo,bar')
+		assert 0
+	except ValueError:
+		pass
+
+########################################
+
+
+def test_parse_csv():
+	"""
+	Test burger.parse_csv()
+	"""
+
+	# Test for normal behavior
+	assert burger.parse_csv('x') == ['x']
+	assert burger.parse_csv('x,y') == ['x', 'y']
+	assert burger.parse_csv('x,y,') == ['x', 'y']
+	assert burger.parse_csv('x,y,z,') == ['x', 'y', 'z']
+	assert burger.parse_csv(',x,y,z') == ['', 'x', 'y', 'z']
+	assert burger.parse_csv(',x,y,z,') == ['', 'x', 'y', 'z']
+
+	# Test for normal behavior
+	assert burger.parse_csv('\nx') == ['x']
+	assert burger.parse_csv('\tx,y') == ['x', 'y']
+	assert burger.parse_csv('\rx,y,') == ['x', 'y']
+	assert burger.parse_csv('\n\rx,y,z,') == ['x', 'y', 'z']
+	assert burger.parse_csv(',x,y,z\t') == ['', 'x', 'y', 'z']
+	assert burger.parse_csv(',x,y,z\t,') == ['', 'x', 'y', 'z']
+
+	# Test for quote behavior
+	assert burger.parse_csv('"x"') == ['x']
+	assert burger.parse_csv('"x","y"') == ['x', 'y']
+	assert burger.parse_csv('"x",y,') == ['x', 'y']
+	assert burger.parse_csv("x,'y',z,") == ['x', 'y', 'z']
+	assert burger.parse_csv(',x,y,"z"') == ['', 'x', 'y', 'z']
+	assert burger.parse_csv(',x,"y,z",') == ['', 'x', 'y,z']
+	assert burger.parse_csv('x,"y""z",') == ['x', 'y"z']
+	assert burger.parse_csv('x,\'y\'\'z\',') == ['x', 'y\'z']
+
+	# Test for Exceptions
+	try:
+		burger.parse_csv("'foo")
+		assert 0
+	except ValueError:
+		pass
+	try:
+		burger.parse_csv('"foo')
+		assert 0
+	except ValueError:
+		pass
+	try:
+		burger.parse_csv('"foo,bar')
+		assert 0
+	except ValueError:
+		pass

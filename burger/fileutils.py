@@ -2,13 +2,10 @@
 # -*- coding: utf-8 -*-
 
 """
-Burger string functions
-
 Package that contains file manipulation functions
 """
 
 ## \package burger.fileutils
-
 
 from __future__ import absolute_import, print_function, unicode_literals
 
@@ -16,8 +13,57 @@ import errno
 import os
 import shutil
 import stat
-from .strutils import is_string
+from .strutils import is_string, encapsulate_path
 from .buildutils import perforce_edit, host_machine, get_windows_host_type
+
+
+########################################
+
+
+def is_write_protected(path_name):
+	"""
+	Test if a file is write protected
+
+	If the file/directory exists, it is tested if it's
+	write protected. If it exists and is write protected,
+	True is returned, otherwise False is returned.
+
+	Args:
+		path_name: Path name to the file/directory
+
+	Returns:
+		True if the file exists and is write protected
+	"""
+
+	try:
+		# Get the status of the file
+		path_mode = os.stat(path_name).st_mode
+
+		# Return True if write protected
+		return not path_mode & stat.S_IWRITE
+
+	# Don't throw if the file didn't exist
+	except OSError as error:
+		if error.errno != errno.ENOENT:
+			raise
+	return False
+
+########################################
+
+
+def make_executable(exe_path):
+	"""
+	Set the executable flag to true on a file
+
+	Args:
+		exe_path: Pathname to the executable to fix up.
+
+	"""
+
+	# Get the Read access bits and copy them to the X flags
+	exe_mode = os.stat(exe_path).st_mode
+	exe_mode |= (exe_mode & 0x124) >> 2
+	os.chmod(exe_path, exe_mode)
 
 ########################################
 
@@ -27,10 +73,14 @@ def create_folder_if_needed(path):
 	Given a pathname to a folder, detect if the folder exists, if not, create it.
 
 	Call os.makedirs(path) but does not throw an
-	exception if the directory already exists.
+	exception if the directory already exists. All other exceptions
+	are passed through with raise.
 
 	Args:
 		path: A string object with the pathname.
+
+	See:
+		delete_directory()
 	"""
 
 	try:
@@ -51,6 +101,8 @@ def delete_file(filename):
 
 	Args:
 		filename: A string object with the filename
+	See:
+		delete_directory()
 	"""
 
 	try:
@@ -67,9 +119,26 @@ def is_source_newer(source, destination):
 	Return False if the source file is older then the destination file
 
 	Check the modification times of both files to determine if the
-	source file is newer
+	source file is newer. If the destination file is older or doesn't exist
+	True is returned.
 
 	Return False if destination is newer, not False if not.
+
+	Examples:
+		result = burger.fileutils.is_source_newer('file.c', 'file.obj')
+
+		if result == 2:
+			build_file_c()
+
+		if result:
+			compile('file.c', 'file.obj')
+		else:
+			print('Already built')
+
+	Note:
+		If the source file does not exist, the function will return 2.
+		This is to allow proper error checking if the source is required
+		to exist.
 
 	Args:
 		source: string pathname of the file to test
@@ -103,81 +172,50 @@ def is_source_newer(source, destination):
 ########################################
 
 
-def copy_file_if_needed(source, destination, silent=False):
+def copy_file_if_needed(source, destination, verbose=True, perforce=False):
 	"""
-	Copy a file only if newer
+	Copy a file only if newer than the destination.
 
 	Copy a file only if the destination is missing or is older than the source
-	file
+	file.
 
 	Args:
 		source: string pathname of the file to copy from
 		destination: string pathname of the file to copy to
-		silent: True if print output is suppressed
+		verbose: True if print output is desired
+		perforce: True if Perforce 'p4 edit' should be done on the destination.
 
 	Returns:
-		Zero if no error otherwise non-zero
+		Zero if no error otherwise IOError.errno
+
+	See:
+		is_source_newer()
 	"""
 
 	# If there is a destination file, check the modification times
+	# and check with 'is True' to ensure source exists
 
 	if is_source_newer(source, destination) is True:
 
-		# Copy the file
+		# Alert perforce that the file is to be modified
+		if perforce and is_write_protected(destination):
+			perforce_edit(destination, verbose=verbose)
 
-		if silent is not False:
+		# Copy the file
+		if verbose:
 			print('Copying {0} -> {1}'.format(source, destination))
 		try:
 			shutil.copyfile(source, destination)
 		except IOError as error:
 			print(error)
-			return 2
-	return 0
-
-########################################
-
-
-def copy_file_checkout_if_needed(source, destination, silent=False):
-
-	"""
-	Copy a file only if newer and alert Perforce if present
-
-	Copy a file only if needed and check out the destination file before the copy
-	operation if Perforce is detected
-
-	Args:
-		source: string pathname of the file to copy from
-		destination: string pathname of the file to copy to
-		silent: True if print output is suppressed
-
-	Returns:
-		Zero on no error, non-zero on error
-
-	See:
-		perforce_edit()
-	"""
-
-	if is_source_newer(source, destination) is True:
-
-		# Alert perforce that the file is to be modified
-
-		perforce_edit(destination)
-
-		# Copy the file
-		if silent is not False:
-			print('Copying {} -> {}'.format(source, destination))
-		try:
-			shutil.copyfile(source, destination)
-		except IOError as error:
-			print(error)
-			return 2
+			return error.errno
 	return 0
 
 ########################################
 
 
 def copy_directory_if_needed(source, destination, exception_list=None, \
-	silent=False):
+	verbose=True):
 
 	"""
 	Copy all of the files in a directory into a new directory
@@ -192,7 +230,7 @@ def copy_directory_if_needed(source, destination, exception_list=None, \
 		source: string pathname of the directory to copy from
 		destination: string pathname of the directory to copy to
 		exception_list: optional list of file extensions to ignore during copy
-		silent: True if print output is suppressed
+		verbose: True if print output is desired
 
 	Returns:
 		Zero if no error, non-zero on error
@@ -208,27 +246,28 @@ def copy_directory_if_needed(source, destination, exception_list=None, \
 	# Make sure the output folder exists
 	create_folder_if_needed(destination)
 
-	name_list = os.listdir(source)
-	for base_name in name_list:
+	# Iterate over the directory list
+	for base_name in os.listdir(source):
 		for item in exception_list:
 			if base_name.endswith(item):
 				break
 		else:
+
+			# Perform the copy of the entry
 			file_name = os.path.join(source, base_name)
 
 			# Handle the directories found
 			if os.path.isdir(file_name):
 				# Recursive!
 				error = copy_directory_if_needed(file_name, \
-					os.path.join(destination, base_name), exception_list, silent)
+					os.path.join(destination, base_name), exception_list, verbose=verbose)
 			else:
 				error = copy_file_if_needed(file_name, os.path.join( \
-					destination, base_name), silent)
+					destination, base_name), verbose=verbose)
 
 			# Exit immediately on error
 			if error != 0:
 				return error
-
 	return 0
 
 ########################################
@@ -289,13 +328,13 @@ def delete_directory(path, delete_read_only=False):
 		delete_read_only: True if read only files are to be deleted as well
 
 	See:
-		shutil_readonly_cb()
+		shutil_readonly_cb() or create_folder_if_needed()
 	"""
 
-	if delete_read_only is False:
-		shutil.rmtree(path, ignore_errors=True)
-	else:
+	if delete_read_only:
 		shutil.rmtree(path, onerror=shutil_readonly_cb)
+	else:
+		shutil.rmtree(path, ignore_errors=True)
 
 ########################################
 
@@ -333,7 +372,7 @@ def get_tool_path(tool_folder, tool_name, encapsulate=False):
 
 	# Windows supports 32 and 64 bit Intel
 	elif host == 'windows':
-		exename = os.path.join(tool_folder, 'windows', get_windows_host_type(), \
+		exename = os.path.join(tool_folder, 'windows_' + get_windows_host_type(), \
 			tool_name + '.exe')
 	else:
 
@@ -342,8 +381,8 @@ def get_tool_path(tool_folder, tool_name, encapsulate=False):
 
 	# Encase in quotes to handle spaces in filenames
 
-	if encapsulate is True:
-		return '"{}"'.format(exename)
+	if encapsulate:
+		return encapsulate_path(exename)
 	return exename
 
 ########################################
@@ -449,21 +488,21 @@ def unlock_files(working_dir, recursive=False):
 		path_name = os.path.join(abs_dir, item)
 
 		# Get the status of the file
-		path_stat = os.stat(path_name)
+		path_mode = os.stat(path_name).st_mode
 
 		# Process files
-		if path_stat.st_mode & stat.S_IFREG:
+		if path_mode & stat.S_IFREG:
 
 			# Only care about write protected files
-			if not path_stat.st_mode & stat.S_IWRITE:
+			if not path_mode & stat.S_IWRITE:
 
 				# Remove write protection while retaining the other flags
-				os.chmod(path_name, path_stat.st_mode + stat.S_IWRITE + \
+				os.chmod(path_name, path_mode + stat.S_IWRITE + \
 					stat.S_IWGRP + stat.S_IWOTH)
 				result.append(path_name)
 		else:
 			# Process recursion
-			if recursive and path_stat.st_mode & stat.S_IFDIR:
+			if recursive and path_mode & stat.S_IFDIR:
 				result += unlock_files(path_name, True)
 	return result
 
@@ -484,8 +523,8 @@ def lock_files(lock_list):
 	for item in lock_list:
 
 		# Get the status of the file
-		path_stat = os.stat(item)
+		path_mode = os.stat(item).st_mode
 
 		# Mark it write protected for Perforce
-		os.chmod(item, path_stat.st_mode & \
+		os.chmod(item, path_mode & \
 			(~(stat.S_IWRITE + stat.S_IWGRP + stat.S_IWOTH)))

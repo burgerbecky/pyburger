@@ -39,9 +39,10 @@ from .__pkginfo__ import NUMVERSION, VERSION, AUTHOR, TITLE, SUMMARY, URI, \
 	EMAIL, LICENSE, COPYRIGHT
 from .strutils import unicode_print, is_string, convert_to_array, TrueFalse, \
 	truefalse, TRUEFALSE, convert_to_windows_slashes, convert_to_linux_slashes, \
-	encapsulate_path_windows, encapsulate_path_linux, encapsulate_path
-from .fileutils import create_folder_if_needed, delete_file, is_source_newer, \
-	copy_file_if_needed, copy_file_checkout_if_needed, \
+	encapsulate_path_windows, encapsulate_path_linux, encapsulate_path, \
+	split_comma_with_quotes, parse_csv
+from .fileutils import is_write_protected, make_executable, \
+	create_folder_if_needed, delete_file, is_source_newer, copy_file_if_needed, \
 	copy_directory_if_needed, shutil_readonly_cb, delete_directory, \
 	get_tool_path, traverse_directory, unlock_files, lock_files
 from .buildutils import StringIO, get_sdks_folder, host_machine, fix_csharp, \
@@ -96,11 +97,14 @@ __all__ = [
 	'encapsulate_path_windows',
 	'encapsulate_path_linux',
 	'encapsulate_path',
+	'split_comma_with_quotes',
+	'parse_csv',
+	'is_write_protected',
+	'make_executable',
 	'create_folder_if_needed',
 	'delete_file',
 	'is_source_newer',
 	'copy_file_if_needed',
-	'copy_file_checkout_if_needed',
 	'copy_directory_if_needed',
 	'shutil_readonly_cb',
 	'delete_directory',
