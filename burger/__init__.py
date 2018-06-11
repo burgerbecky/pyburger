@@ -40,7 +40,7 @@ from .__pkginfo__ import NUMVERSION, VERSION, AUTHOR, TITLE, SUMMARY, URI, \
 from .strutils import unicode_print, is_string, convert_to_array, TrueFalse, \
 	truefalse, TRUEFALSE, convert_to_windows_slashes, convert_to_linux_slashes, \
 	encapsulate_path_windows, encapsulate_path_linux, encapsulate_path, \
-	split_comma_with_quotes, parse_csv
+	split_comma_with_quotes, parse_csv, translate_to_regex_match
 from .fileutils import is_write_protected, make_executable, \
 	create_folder_if_needed, delete_file, is_source_newer, copy_file_if_needed, \
 	copy_directory_if_needed, shutil_readonly_cb, delete_directory, \
@@ -99,6 +99,7 @@ __all__ = [
 	'encapsulate_path',
 	'split_comma_with_quotes',
 	'parse_csv',
+	'translate_to_regex_match',
 	'is_write_protected',
 	'make_executable',
 	'create_folder_if_needed',

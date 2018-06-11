@@ -16,6 +16,7 @@ String Functions
 .. doxygenfunction:: burger::strutils::encapsulate_path
 .. doxygenfunction:: burger::strutils::split_comma_with_quotes
 .. doxygenfunction:: burger::strutils::parse_csv
+.. doxygenfunction:: burger::strutils::translate_to_regex_match
 
 File Locators
 ^^^^^^^^^^^^^

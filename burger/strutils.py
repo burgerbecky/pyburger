@@ -15,6 +15,7 @@ import os
 import string
 import re
 import csv
+import fnmatch
 
 ## Valid characters for windows filenames without quoting
 _WINDOWSSAFESET = frozenset(string.ascii_letters + string.digits + '_-.:\\')
@@ -475,4 +476,24 @@ def parse_csv(csv_string):
 				temp = next(csv.reader([temp], quotechar=str(delimiter), \
 					delimiter=str(delimiter), quoting=csv.QUOTE_ALL))[0]
 		result.append(temp)
+	return result
+
+########################################
+
+
+def translate_to_regex_match(file_list):
+	"""
+	Translate filename wildcards into regexes
+
+	Args:
+		file_list: List of filename wildcards
+	Results:
+		List of re.compile().match entries
+	"""
+
+	# Start with an empty folder
+	result = []
+	for item in file_list:
+		# Translate and then return the match function
+		result.append(re.compile(fnmatch.translate(item)).match)
 	return result

@@ -452,3 +452,24 @@ def test_parse_csv():
 		assert 0
 	except ValueError:
 		pass
+
+########################################
+
+
+def test_translate_to_regex_match():
+	"""
+	Test burger.translate_to_regex_match()
+	"""
+
+	# Get an empty list
+	assert not burger.translate_to_regex_match([])
+
+	dir_list = burger.translate_to_regex_match(('foo.txt', '*.py'))
+	assert dir_list
+
+	# Find positive matches
+	for item in dir_list:
+		assert item('foo.txt') or item('a.py')
+		assert not item('foo.bar')
+		assert not item('py.px')
+		assert not item('py')
