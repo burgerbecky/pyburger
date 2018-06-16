@@ -16,6 +16,25 @@ import string
 import re
 import csv
 import fnmatch
+import platform
+
+## True if the interpreter is Python 2.x
+PY2 = sys.version_info[0] == 2
+
+## True if the interpreter is Python 3.x or higher
+PY3_OR_HIGHER = sys.version_info[0] >= 3
+
+## True if the interpreter is Python 3.3 or higher
+PY3_3_OR_HIGHER = sys.version_info >= (3, 3, 0)
+
+## True if the interpreter is Python 3.4 or higher
+PY3_4_OR_HIGHER = sys.version_info >= (3, 4, 0)
+
+## True if the interpreter is Python 3.5 or higher
+PY3_5_OR_HIGHER = sys.version_info >= (3, 5, 0)
+
+## True if the interpreter is PyPy
+PYPY = platform.python_implementation() == 'PyPy'
 
 ## Valid characters for windows filenames without quoting
 _WINDOWSSAFESET = frozenset(string.ascii_letters + string.digits + '_-.:\\')
@@ -48,7 +67,7 @@ def unicode_print(input_string):
 	except UnicodeEncodeError:
 		# Ensure it's encoded to utf-8
 		encoded = input_string.encode('utf-8')
-		if sys.version_info[0] == 2:
+		if PY2:
 
 			# Python 2.x only accepts this as input
 			print(encoded)
@@ -64,6 +83,7 @@ def unicode_print(input_string):
 try:
 	# Test if basestring exists (Only in Python 2.x)
 	basestring										# pylint: disable=W0104,basestring-builtin
+	## Internal type to pass to isinstance() for is_string()
 	_IS_STRING_TEST = basestring					# pylint: disable=C0103,basestring-builtin
 
 except NameError:

@@ -37,19 +37,23 @@ import sys
 
 from .__pkginfo__ import NUMVERSION, VERSION, AUTHOR, TITLE, SUMMARY, URI, \
 	EMAIL, LICENSE, COPYRIGHT
+
 from .strutils import unicode_print, is_string, convert_to_array, TrueFalse, \
 	truefalse, TRUEFALSE, convert_to_windows_slashes, convert_to_linux_slashes, \
 	encapsulate_path_windows, encapsulate_path_linux, encapsulate_path, \
 	split_comma_with_quotes, parse_csv, translate_to_regex_match
+
 from .fileutils import is_write_protected, make_executable, \
 	create_folder_if_needed, delete_file, is_source_newer, copy_file_if_needed, \
 	copy_directory_if_needed, shutil_readonly_cb, delete_directory, \
 	get_tool_path, traverse_directory, unlock_files, lock_files
+
 from .buildutils import StringIO, get_sdks_folder, host_machine, fix_csharp, \
 	get_windows_host_type, get_mac_host_type, is_exe, get_path_ext, \
 	make_exe_path, find_in_path, where_is_doxygen, where_is_p4, \
 	expand_and_verify, perforce_edit, compare_files, compare_file_to_string, \
-	run_command, make_version_header, is_codewarrior_mac_allowed
+	run_command, make_version_header, is_codewarrior_mac_allowed, \
+	import_py_script, run_py_script
 
 ########################################
 
@@ -81,10 +85,7 @@ __license__ = LICENSE
 ## Copyright owner
 __copyright__ = COPYRIGHT
 
-#
 ## Items to import on "from burger import *"
-#
-
 __all__ = [
 	'unicode_print',
 	'is_string',
@@ -131,6 +132,8 @@ __all__ = [
 	'run_command',
 	'make_version_header',
 	'is_codewarrior_mac_allowed',
+	'import_py_script',
+	'run_py_script',
 	'Interceptstdout',
 	'Node'
 ]
@@ -236,4 +239,7 @@ class Node(object):
 			ret += child.__repr__(level + 1)
 		return ret
 
+	## Display this node as a string
+	# See:
+	# __repr__()
 	__str__ = __repr__

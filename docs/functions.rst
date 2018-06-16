@@ -57,3 +57,5 @@ Build Helpers
 .. doxygenfunction:: burger::buildutils::run_command
 .. doxygenfunction:: burger::buildutils::make_version_header
 .. doxygenfunction:: burger::buildutils::is_codewarrior_mac_allowed
+.. doxygenfunction:: burger::buildutils::import_py_script
+.. doxygenfunction:: burger::buildutils::run_py_script

@@ -15,6 +15,7 @@ Please? It's not like I'm asking you for money!
 from __future__ import absolute_import, print_function, unicode_literals
 
 import os
+import errno
 import burger
 
 ########################################
@@ -108,3 +109,65 @@ def test_make_exe_path():
 
 	# If this asserts, an executable test wasn't performed
 	assert ran_test
+
+########################################
+
+
+def test_import_py_script():
+	"""
+	Test burger.import_py_script()
+	"""
+
+	selffile = os.path.dirname(os.path.abspath(__file__))
+
+	# Load in from the 'a' folder
+	sample = burger.import_py_script(os.path.join(selffile, 'a', 'sample.py'))
+	assert sample.__name__ == 'sample'
+	assert hasattr(sample, 'test')
+	assert hasattr(sample, 'testa')
+	assert not hasattr(sample, 'testb')
+	assert sample.test() == 'sample_a'
+	assert sample.testa() == 'testa'
+
+	# Switch to the file in the 'b' folder
+	sample = burger.import_py_script(os.path.join(selffile, 'b', 'sample.py'))
+	assert sample.__name__ == 'sample'
+	assert hasattr(sample, 'test')
+	assert not hasattr(sample, 'testa')
+	assert hasattr(sample, 'testb')
+	assert sample.test() == 'sample_b'
+	assert sample.testb() == 'testb'
+
+	# Test importing a with a unique module name
+	sample = burger.import_py_script(os.path.join(selffile, 'a', 'sample.py'), 'hamster')
+	assert sample.__name__ == 'hamster'
+	assert hasattr(sample, 'test')
+	assert hasattr(sample, 'testa')
+	assert not hasattr(sample, 'testb')
+	assert sample.test() == 'sample_a'
+	assert sample.testa() == 'testa'
+
+	# Intentionally fail to test the assert that fired
+	try:
+		sample = burger.import_py_script(os.path.join(selffile, 'doesntexist.py'))
+	except IOError as error:
+		# File not found is the correct error
+		assert error.errno == errno.ENOENT
+
+########################################
+
+
+def test_run_py_script():
+	"""
+	Test burger.run_py_script()
+	"""
+
+	selffile = os.path.dirname(os.path.abspath(__file__))
+	assert burger.run_py_script(os.path.join(selffile, 'a', 'sample.py'), 'test') == 'sample_a'
+	assert burger.run_py_script(os.path.join(selffile, 'a', 'sample.py'), 'testa') == 'testa'
+
+	assert burger.run_py_script(os.path.join(selffile, 'b', 'sample.py'), 'test') == 'sample_b'
+	assert burger.run_py_script(os.path.join(selffile, 'b', 'sample.py'), 'testb') == 'testb'
+
+	assert burger.run_py_script(os.path.join(selffile, 'a', 'sample.py'), 'main', 'gerbil') == 'gerbil'
+	assert burger.run_py_script(os.path.join(selffile, 'b', 'sample.py'), 'main', 'cat') == 'cattest'
