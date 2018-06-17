@@ -13,22 +13,25 @@ Please? It's not like I'm asking you for money!
 
 """
 
+
 def test():
 	"""
-	Returns 'sample_b'
+	Returns 'sample_a'
 	"""
 
-	return 'sample_b'
+	return 'sample_a'
 
-def testb():
+
+def testa():
 	"""
-	Returns 'testb'
+	Returns 'testa'
 	"""
 
-	return 'testb'
+	return 'testa'
+
 
 def main(arg):
 	"""
 	Returns argument
 	"""
-	return arg + 'test'
+	return arg

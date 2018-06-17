@@ -9,13 +9,14 @@ Package that contains build helper functions
 
 from __future__ import absolute_import, print_function, unicode_literals
 
-import errno
 import os
 import platform
 import subprocess
 import sys
 
-from .strutils import is_string, PY2, PY3_3_OR_HIGHER, PY3_5_OR_HIGHER
+from .strutils import is_string, host_machine, encapsulate_path, \
+	get_windows_host_type, get_mac_host_type, PY2, PY3_3_OR_HIGHER, \
+	PY3_5_OR_HIGHER
 
 # pylint: disable=C0302
 
@@ -23,13 +24,6 @@ if PY2:
 	from cStringIO import StringIO
 else:
 	from io import StringIO
-
-# Redefining built-in W0622 (Ignore redefinition of zip)
-
-try:
-	import itertools.izip as zip		# pylint: disable=W0622
-except ImportError:
-	pass
 
 ## Cached location of the BURGER_SDKS folder
 _BURGER_SDKS_FOLDER = None
@@ -119,44 +113,6 @@ def get_sdks_folder(verbose=False, refresh=False, folder=None):
 ########################################
 
 
-def host_machine():
-	"""
-	Return the high level operating system's name
-
-	Return the machine this script is running on, 'windows', 'macosx',
-	'linux' or 'unknown'
-
-	Returns:
-		The string 'windows', 'macosx', 'linux', or 'unknown'
-
-	See:
-		get_mac_host_type() or get_windows_host_type()
-	"""
-	# Only windows reports as NT
-
-	if os.name == 'nt':
-		return 'windows'
-
-	# BSD and GNU report as posix
-
-	if os.name == 'posix':
-
-		# MacOSX is the Darwin kernel
-
-		if platform.system() == 'Darwin':
-			return 'macosx'
-
-		# Assume linux (Tested on Ubuntu and Red Hat)
-
-		return 'linux'
-
-	# Surrender Dorothy
-
-	return 'unknown'
-
-########################################
-
-
 def fix_csharp(csharp_application_path):
 	"""
 	Convert pathname to execute a C# exe file
@@ -174,86 +130,13 @@ def fix_csharp(csharp_application_path):
 		csharp_application_path: Pathname string to update
 
 	Returns:
-		Command line appropriate for the platform to launch a C# application.
+		List of commands appropriate for the platform to launch a C# application.
 	"""
-
-	# Encapsulate in quotes if needed
-	from .strutils import encapsulate_path
-	quoted = encapsulate_path(csharp_application_path)
 
 	# Prepend mono on non-windows systems
 	if host_machine() != 'windows':
-		return 'mono {}'.format(quoted)
-	return quoted
-
-
-########################################
-
-
-def get_windows_host_type():
-	"""
-	Return windows host type (32 or 64 bit)
-
-	Return False if the host is not Windows, 'x86' if it's a 32 bit host
-	and 'x64' if it's a 64 bit host, and possibly 'arm' if an arm host
-
-	Returns:
-		The string 'x64', 'x86', 'arm' or False
-	See:
-		get_mac_host_type() or host_machine()
-
-	"""
-
-	# Not windows?
-
-	if os.name != 'nt':
-		return False
-
-	# Test the CPU for the type
-
-	machine = platform.machine()
-	if machine in ('AMD64', 'x86_64'):
-		return 'x64'
-	return 'x86'
-
-########################################
-
-
-def get_mac_host_type():
-	"""
-	Return Mac OSX host type (PowerPC/Intel)
-
-	Return False if the host is not Mac OSX. 'ppc' if it's a Power PC based
-	system, 'x86' for Intel (Both 32 and 64 bit)
-
-	Returns:
-		The string 'x86', 'ppc' or False
-
-	See:
-		get_windows_host_type() or host_machine()
-	"""
-
-	# Mac/Linux?
-	if os.name != 'posix':
-		return False
-
-	# Not linux?
-
-	if platform.system() != 'Darwin':
-		return False
-
-	# Since it's a mac, query the Mac OSX cpu type
-	# using the MacOSX python extensions
-
-	cpu = platform.machine()
-	if cpu in ('x86', 'x86_64'):
-		return 'x86'
-
-	if cpu in ('PowerPC', 'ppc', 'Power Macintosh'):
-		return 'ppc'
-
-	# Defaults to PowerPC
-	return 'ppc'
+		return ['mono', encapsulate_path(csharp_application_path)]
+	return [csharp_application_path]
 
 ########################################
 
@@ -689,121 +572,15 @@ def perforce_edit(files, verbose=False):
 		file_list = files
 
 	# Generate the command line and call
-	from .strutils import encapsulate_path
-	p4quoted = encapsulate_path(perforce_path)
 	error = 0
 	for item in file_list:
-		cmd = '{} edit {}'.format(p4quoted, encapsulate_path(os.path.abspath(item)))
+		cmd = [perforce_path, 'edit', encapsulate_path(os.path.abspath(item))]
 		if verbose:
-			print(cmd)
+			print(' '.join(cmd))
 		error = subprocess.call(cmd, shell=True)
 		if error != 0:
 			break
 	return error
-
-########################################
-
-
-def compare_files(filename1, filename2):
-	"""
-	Compare text files for equality
-
-	Check if two text files are the same length,
-	and then test the contents to verify equality.
-
-	Args:
-		filename1: string object with the pathname of the file to test
-		filename2: string object with the pathname of the file to test against
-
-	Returns:
-		True if the files are equal, False if not.
-
-	See:
-		compare_file_to_string()
-	"""
-
-	# Load in the two text files
-
-	try:
-		with open(filename1, 'r') as filep:
-			file_one_lines = filep.read().splitlines()
-		with open(filename2, 'r') as filep:
-			file_two_lines = filep.read().splitlines()
-	except IOError as error:
-		# Only deal with file not found
-		if error.errno != errno.ENOENT:
-			raise
-		# If not found, return "not equal"
-		return False
-
-	del filep
-
-	# Compare the file contents
-
-	if len(file_one_lines) == len(file_two_lines):
-		for i, j in zip(file_one_lines, file_two_lines):
-			if i != j:
-				break
-		else:
-			# It's a match!
-			return True
-	return False
-
-########################################
-
-
-def compare_file_to_string(filename, data):
-
-	"""
-	Compare text file and a string for equality
-
-	Check if a text file is the same as a string by loading the text file and
-	testing line by line to verify the equality of the contents
-
-	Args:
-		filename: string object with the pathname of the file to test
-		data: string object to test against
-
-	Returns:
-		True if the file and the string are the same, False if not
-
-	See:
-		compare_files()
-	"""
-
-	# Do a data compare as a text file
-
-	try:
-		with open(filename, 'r') as filep:
-			file_one_lines = filep.read().splitlines()
-	except IOError as error:
-		# Only deal with file not found
-		if error.errno != errno.ENOENT:
-			raise
-		# If not found, return "not equal"
-		return False
-
-	del filep
-
-	# Compare the file contents taking into account
-	# different line endings
-
-	# Test if this is a StringIO object
-	if hasattr(data, 'getvalue'):
-		file_two_lines = data.getvalue().splitlines()
-	else:
-		file_two_lines = data.splitlines()
-
-	# Compare the file contents
-
-	if len(file_one_lines) == len(file_two_lines):
-		for i, j in zip(file_one_lines, file_two_lines):
-			if i != j:
-				break
-		else:
-			# It's a match!
-			return True
-	return False
 
 ########################################
 
@@ -953,6 +730,7 @@ def make_version_header(working_dir, outputfilename, verbose=False):
 	filevalue = filep.getvalue()
 	del filep
 
+	from .fileutils import compare_file_to_string
 	if compare_file_to_string(outputfilename, filevalue) is not True:
 		if verbose:
 			print('Writing ' + outputfilename)
@@ -978,7 +756,7 @@ def is_codewarrior_mac_allowed():
 		True if CodeWarrior for Mac OS can be run on this Macintosh
 
 	See:
-		host_machine()
+		strutils.host_machine()
 	"""
 
 	# Test if a mac

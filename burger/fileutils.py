@@ -13,9 +13,17 @@ import errno
 import os
 import shutil
 import stat
-from .strutils import is_string, encapsulate_path
-from .buildutils import perforce_edit, host_machine, get_windows_host_type
+import codecs
 
+from .strutils import is_string, convert_to_array, encapsulate_path, \
+	host_machine, get_windows_host_type
+
+# Redefining built-in W0622 (Ignore redefinition of zip)
+
+try:
+	import itertools.izip as zip		# pylint: disable=W0622
+except ImportError:
+	pass
 
 ########################################
 
@@ -199,6 +207,7 @@ def copy_file_if_needed(source, destination, verbose=True, perforce=False):
 
 		# Alert perforce that the file is to be modified
 		if perforce and is_write_protected(destination):
+			from .buildutils import perforce_edit
 			perforce_edit(destination, verbose=verbose)
 
 		# Copy the file
@@ -411,8 +420,7 @@ def traverse_directory( \
 
 	# Ensure that if the input was a string, that it becomes
 	# an iterable to work below
-	if is_string(filename_list):
-		filename_list = (filename_list,)
+	filename_list = convert_to_array(filename_list)
 
 	# Convert into a unpacked pathname
 	tempdir = os.path.abspath(working_dir)
@@ -528,3 +536,184 @@ def lock_files(lock_list):
 		# Mark it write protected for Perforce
 		os.chmod(item, path_mode & \
 			(~(stat.S_IWRITE + stat.S_IWGRP + stat.S_IWOTH)))
+
+########################################
+
+
+def load_text_file(file_name):
+	"""
+	Load in a text file as a list of lines
+
+	Read in a text file as a list of lines and handle
+	all three line ending types (\\r, \\n and \\r\\n)
+
+	Note:
+		This function assumes the file is utf-8 with or without
+		a byte order mark.
+
+	Args:
+		file_name: File to load
+
+	Returns:
+		A list object with the file
+
+	See:
+		save_text_file() or buildutils.compare_files()
+	"""
+
+	# Open the file in a way that ensur
+
+	try:
+		with open(file_name, 'rb') as filep:
+			result = filep.read().decode('utf-8-sig').splitlines()
+	except IOError as error:
+		# Only deal with file not found
+		if error.errno != errno.ENOENT:
+			raise
+		# If not found, return None
+		result = None
+	return result
+
+########################################
+
+
+def save_text_file(file_name, text_lines, line_feed=None, bom=False):
+	"""
+	Save in a text file from an iterable of lines
+
+	Save a text file from an iterable of lines and allow custom
+	line endings. If line_feed is None, the line feed will be the
+	system default.
+
+	Note:
+		This function will write out the text file using utf-8 encoding.
+
+	Args:
+		file_name: File to load
+		text_lines: Lines to save
+		line_feed: String to use as a line feed
+		bom: If True write the UTF-8 Byte Order Mark
+
+	See:
+		load_text_file()
+	"""
+
+	# Set the proper line feed if not supplied
+	if not line_feed:
+		line_feed = os.linesep
+
+	# If it's a single line, convert to an iterable
+	text_lines = convert_to_array(text_lines)
+
+	# Write out the file
+	with open(file_name, 'wb') as filep:
+
+		# Write the byte order mark
+		if bom:
+			filep.write(codecs.BOM_UTF8)
+
+		filep.write(line_feed.join(text_lines).encode('utf-8'))
+
+		# Make sure there's an ending line feed
+		filep.write(line_feed.encode('utf-8'))
+
+########################################
+
+
+def compare_files(filename1, filename2):
+	"""
+	Compare text files for equality
+
+	Check if two text files are the same length,
+	and then test the contents to verify equality.
+
+	Args:
+		filename1: string object with the pathname of the file to test
+		filename2: string object with the pathname of the file to test against
+
+	Returns:
+		True if the files are equal, False if not.
+
+	See:
+		compare_file_to_string()
+	"""
+
+	# Load in the two text files
+
+	file_one_lines = load_text_file(filename1)
+	# If not found, return "not equal"
+	if file_one_lines is None:
+		return False
+
+	file_two_lines = load_text_file(filename2)
+	# If not found, return "not equal"
+	if file_two_lines is None:
+		return False
+
+	# Compare the file contents
+
+	if len(file_one_lines) == len(file_two_lines):
+		for i, j in zip(file_one_lines, file_two_lines):
+			if i != j:
+				break
+		else:
+			# It's a match!
+			return True
+	return False
+
+########################################
+
+
+def compare_file_to_string(file_name, data):
+
+	"""
+	Compare text file and a string for equality
+
+	Check if a text file is the same as a string by loading the text file and
+	testing line by line to verify the equality of the contents
+
+	Args:
+		file_name: string object with the pathname of the file to test
+		data: string object to test against
+
+	Returns:
+		True if the file and the string are the same, False if not
+
+	See:
+		compare_files()
+	"""
+
+	# Do a data compare as a text file
+
+	file_one_lines = load_text_file(file_name)
+	if file_one_lines is None:
+		# If not found, return "not equal"
+		return False
+
+	# Compare the file contents taking into account
+	# different line endings
+
+	# No data? Assume it's empty
+	if data is None:
+		file_two_lines = []
+
+	# Test if this is a StringIO object
+	elif hasattr(data, 'getvalue'):
+		file_two_lines = data.getvalue().splitlines()
+	# Test if a single string
+	elif is_string(data):
+		file_two_lines = data.splitlines()
+	else:
+		# Assume it's an iterable
+		file_two_lines = data
+
+	# Compare the file contents
+
+	if len(file_one_lines) == len(file_two_lines):
+		for i, j in zip(file_one_lines, file_two_lines):
+			if i != j:
+				break
+		else:
+			# It's a match!
+			return True
+	return False

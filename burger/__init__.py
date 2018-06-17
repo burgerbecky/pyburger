@@ -41,19 +41,19 @@ from .__pkginfo__ import NUMVERSION, VERSION, AUTHOR, TITLE, SUMMARY, URI, \
 from .strutils import unicode_print, is_string, convert_to_array, TrueFalse, \
 	truefalse, TRUEFALSE, convert_to_windows_slashes, convert_to_linux_slashes, \
 	encapsulate_path_windows, encapsulate_path_linux, encapsulate_path, \
-	split_comma_with_quotes, parse_csv, translate_to_regex_match
+	split_comma_with_quotes, parse_csv, translate_to_regex_match, host_machine, \
+	get_windows_host_type, get_mac_host_type
 
 from .fileutils import is_write_protected, make_executable, \
 	create_folder_if_needed, delete_file, is_source_newer, copy_file_if_needed, \
 	copy_directory_if_needed, shutil_readonly_cb, delete_directory, \
-	get_tool_path, traverse_directory, unlock_files, lock_files
+	get_tool_path, traverse_directory, unlock_files, lock_files, load_text_file, \
+	save_text_file, compare_files, compare_file_to_string
 
-from .buildutils import StringIO, get_sdks_folder, host_machine, fix_csharp, \
-	get_windows_host_type, get_mac_host_type, is_exe, get_path_ext, \
-	make_exe_path, find_in_path, where_is_doxygen, where_is_p4, \
-	expand_and_verify, perforce_edit, compare_files, compare_file_to_string, \
-	run_command, make_version_header, is_codewarrior_mac_allowed, \
-	import_py_script, run_py_script
+from .buildutils import StringIO, get_sdks_folder, fix_csharp, is_exe, \
+	get_path_ext, make_exe_path, find_in_path, where_is_doxygen, where_is_p4, \
+	expand_and_verify, perforce_edit, run_command, make_version_header, \
+	is_codewarrior_mac_allowed, import_py_script, run_py_script
 
 ########################################
 
@@ -101,6 +101,9 @@ __all__ = [
 	'split_comma_with_quotes',
 	'parse_csv',
 	'translate_to_regex_match',
+	'host_machine',
+	'get_windows_host_type',
+	'get_mac_host_type',
 	'is_write_protected',
 	'make_executable',
 	'create_folder_if_needed',
@@ -114,11 +117,12 @@ __all__ = [
 	'traverse_directory',
 	'unlock_files',
 	'lock_files',
+	'load_text_file',
+	'save_text_file',
+	'compare_files',
+	'compare_file_to_string',
 	'get_sdks_folder',
-	'host_machine',
 	'fix_csharp',
-	'get_windows_host_type',
-	'get_mac_host_type',
 	'is_exe',
 	'get_path_ext',
 	'make_exe_path',
@@ -127,8 +131,6 @@ __all__ = [
 	'expand_and_verify',
 	'where_is_p4',
 	'perforce_edit',
-	'compare_files',
-	'compare_file_to_string',
 	'run_command',
 	'make_version_header',
 	'is_codewarrior_mac_allowed',

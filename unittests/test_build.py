@@ -121,7 +121,7 @@ def test_import_py_script():
 	selffile = os.path.dirname(os.path.abspath(__file__))
 
 	# Load in from the 'a' folder
-	sample = burger.import_py_script(os.path.join(selffile, 'a', 'sample.py'))
+	sample = burger.import_py_script(os.path.join(selffile, 'data', 'sample.py'))
 	assert sample.__name__ == 'sample'
 	assert hasattr(sample, 'test')
 	assert hasattr(sample, 'testa')
@@ -130,7 +130,7 @@ def test_import_py_script():
 	assert sample.testa() == 'testa'
 
 	# Switch to the file in the 'b' folder
-	sample = burger.import_py_script(os.path.join(selffile, 'b', 'sample.py'))
+	sample = burger.import_py_script(os.path.join(selffile, 'data2', 'sample.py'))
 	assert sample.__name__ == 'sample'
 	assert hasattr(sample, 'test')
 	assert not hasattr(sample, 'testa')
@@ -139,7 +139,8 @@ def test_import_py_script():
 	assert sample.testb() == 'testb'
 
 	# Test importing a with a unique module name
-	sample = burger.import_py_script(os.path.join(selffile, 'a', 'sample.py'), 'hamster')
+	sample = burger.import_py_script( \
+		os.path.join(selffile, 'data', 'sample.py'), 'hamster')
 	assert sample.__name__ == 'hamster'
 	assert hasattr(sample, 'test')
 	assert hasattr(sample, 'testa')
@@ -163,11 +164,17 @@ def test_run_py_script():
 	"""
 
 	selffile = os.path.dirname(os.path.abspath(__file__))
-	assert burger.run_py_script(os.path.join(selffile, 'a', 'sample.py'), 'test') == 'sample_a'
-	assert burger.run_py_script(os.path.join(selffile, 'a', 'sample.py'), 'testa') == 'testa'
+	assert burger.run_py_script( \
+		os.path.join(selffile, 'data', 'sample.py'), 'test') == 'sample_a'
+	assert burger.run_py_script( \
+		os.path.join(selffile, 'data', 'sample.py'), 'testa') == 'testa'
 
-	assert burger.run_py_script(os.path.join(selffile, 'b', 'sample.py'), 'test') == 'sample_b'
-	assert burger.run_py_script(os.path.join(selffile, 'b', 'sample.py'), 'testb') == 'testb'
+	assert burger.run_py_script( \
+		os.path.join(selffile, 'data2', 'sample.py'), 'test') == 'sample_b'
+	assert burger.run_py_script( \
+		os.path.join(selffile, 'data2', 'sample.py'), 'testb') == 'testb'
 
-	assert burger.run_py_script(os.path.join(selffile, 'a', 'sample.py'), 'main', 'gerbil') == 'gerbil'
-	assert burger.run_py_script(os.path.join(selffile, 'b', 'sample.py'), 'main', 'cat') == 'cattest'
+	assert burger.run_py_script( \
+		os.path.join(selffile, 'data', 'sample.py'), 'main', 'gerbil') == 'gerbil'
+	assert burger.run_py_script( \
+		os.path.join(selffile, 'data2', 'sample.py'), 'main', 'cat') == 'cattest'

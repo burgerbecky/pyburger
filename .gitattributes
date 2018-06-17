@@ -1,0 +1,7 @@
+# Set default behaviour, in case users don't have core.autocrlf set.
+* text=auto
+
+# Required for unit tests
+lf.txt binary
+cr.txt binary
+crlf.txt binary

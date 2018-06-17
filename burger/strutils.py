@@ -517,3 +517,109 @@ def translate_to_regex_match(file_list):
 		# Translate and then return the match function
 		result.append(re.compile(fnmatch.translate(item)).match)
 	return result
+
+########################################
+
+
+def host_machine():
+	"""
+	Return the high level operating system's name
+
+	Return the machine this script is running on, 'windows', 'macosx',
+	'linux' or 'unknown'
+
+	Returns:
+		The string 'windows', 'macosx', 'linux', or 'unknown'
+
+	See:
+		get_mac_host_type() or get_windows_host_type()
+	"""
+	# Only windows reports as NT
+
+	if os.name == 'nt':
+		return 'windows'
+
+	# BSD and GNU report as posix
+
+	if os.name == 'posix':
+
+		# MacOSX is the Darwin kernel
+
+		if platform.system() == 'Darwin':
+			return 'macosx'
+
+		# Assume linux (Tested on Ubuntu and Red Hat)
+
+		return 'linux'
+
+	# Surrender Dorothy
+
+	return 'unknown'
+
+########################################
+
+
+def get_windows_host_type():
+	"""
+	Return windows host type (32 or 64 bit)
+
+	Return False if the host is not Windows, 'x86' if it's a 32 bit host
+	and 'x64' if it's a 64 bit host, and possibly 'arm' if an arm host
+
+	Returns:
+		The string 'x64', 'x86', 'arm' or False
+	See:
+		get_mac_host_type() or host_machine()
+
+	"""
+
+	# Not windows?
+
+	if os.name != 'nt':
+		return False
+
+	# Test the CPU for the type
+
+	machine = platform.machine()
+	if machine in ('AMD64', 'x86_64'):
+		return 'x64'
+	return 'x86'
+
+########################################
+
+
+def get_mac_host_type():
+	"""
+	Return Mac OSX host type (PowerPC/Intel)
+
+	Return False if the host is not Mac OSX. 'ppc' if it's a Power PC based
+	system, 'x86' for Intel (Both 32 and 64 bit)
+
+	Returns:
+		The string 'x86', 'ppc' or False
+
+	See:
+		get_windows_host_type() or host_machine()
+	"""
+
+	# Mac/Linux?
+	if os.name != 'posix':
+		return False
+
+	# Not linux?
+
+	if platform.system() != 'Darwin':
+		return False
+
+	# Since it's a mac, query the Mac OSX cpu type
+	# using the MacOSX python extensions
+
+	cpu = platform.machine()
+	if cpu in ('x86', 'x86_64'):
+		return 'x86'
+
+	if cpu in ('PowerPC', 'ppc', 'Power Macintosh'):
+		return 'ppc'
+
+	# Defaults to PowerPC
+	return 'ppc'

@@ -17,6 +17,9 @@ String Functions
 .. doxygenfunction:: burger::strutils::split_comma_with_quotes
 .. doxygenfunction:: burger::strutils::parse_csv
 .. doxygenfunction:: burger::strutils::translate_to_regex_match
+.. doxygenfunction:: burger::strutils::host_machine
+.. doxygenfunction:: burger::strutils::get_windows_host_type
+.. doxygenfunction:: burger::strutils::get_mac_host_type
 
 File Locators
 ^^^^^^^^^^^^^
@@ -36,24 +39,23 @@ File Functions
 .. doxygenfunction:: burger::fileutils::copy_directory_if_needed
 .. doxygenfunction:: burger::fileutils::shutil_readonly_cb
 .. doxygenfunction:: burger::fileutils::delete_directory
+.. doxygenfunction:: burger::fileutils::get_tool_path
 .. doxygenfunction:: burger::fileutils::traverse_directory
 .. doxygenfunction:: burger::fileutils::unlock_files
 .. doxygenfunction:: burger::fileutils::lock_files
-.. doxygenfunction:: burger::fileutils::get_tool_path
+.. doxygenfunction:: burger::fileutils::load_text_file
+.. doxygenfunction:: burger::fileutils::save_text_file
+.. doxygenfunction:: burger::fileutils::compare_files
+.. doxygenfunction:: burger::fileutils::compare_file_to_string
 
 Build Helpers
 ^^^^^^^^^^^^^
-.. doxygenfunction:: burger::buildutils::host_machine
 .. doxygenfunction:: burger::buildutils::fix_csharp
-.. doxygenfunction:: burger::buildutils::get_windows_host_type
-.. doxygenfunction:: burger::buildutils::get_mac_host_type
 .. doxygenfunction:: burger::buildutils::is_exe
 .. doxygenfunction:: burger::buildutils::get_path_ext
 .. doxygenfunction:: burger::buildutils::make_exe_path
 .. doxygenfunction:: burger::buildutils::expand_and_verify
 .. doxygenfunction:: burger::buildutils::perforce_edit
-.. doxygenfunction:: burger::buildutils::compare_files
-.. doxygenfunction:: burger::buildutils::compare_file_to_string
 .. doxygenfunction:: burger::buildutils::run_command
 .. doxygenfunction:: burger::buildutils::make_version_header
 .. doxygenfunction:: burger::buildutils::is_codewarrior_mac_allowed
