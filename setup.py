@@ -87,7 +87,7 @@ SETUP_ARGS = dict(
 	license=PROJECT_MODULE.__license__,
 	url=PROJECT_MODULE.__uri__,
 
-	author=PROJECT_MODULE.__author__,
+	author=PROJECT_MODULE.__author__.encode('utf8'),
 	author_email=PROJECT_MODULE.__email__,
 
 	keywords=PROJECT_KEYWORDS,

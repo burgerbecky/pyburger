@@ -27,6 +27,7 @@ File Locators
 .. doxygenfunction:: burger::buildutils::find_in_path
 .. doxygenfunction:: burger::buildutils::where_is_doxygen
 .. doxygenfunction:: burger::buildutils::where_is_p4
+.. doxygenfunction:: burger::buildutils::where_is_watcom
 
 File Functions
 ^^^^^^^^^^^^^^

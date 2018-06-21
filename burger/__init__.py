@@ -38,11 +38,12 @@ import sys
 from .__pkginfo__ import NUMVERSION, VERSION, AUTHOR, TITLE, SUMMARY, URI, \
 	EMAIL, LICENSE, COPYRIGHT
 
-from .strutils import unicode_print, is_string, convert_to_array, TrueFalse, \
-	truefalse, TRUEFALSE, convert_to_windows_slashes, convert_to_linux_slashes, \
-	encapsulate_path_windows, encapsulate_path_linux, encapsulate_path, \
-	split_comma_with_quotes, parse_csv, translate_to_regex_match, host_machine, \
-	get_windows_host_type, get_mac_host_type
+from .strutils import PY2, unicode_print, is_string, convert_to_array, \
+	TrueFalse, truefalse, TRUEFALSE, convert_to_windows_slashes, \
+	convert_to_linux_slashes, encapsulate_path_windows, encapsulate_path_linux, \
+	encapsulate_path, split_comma_with_quotes, parse_csv, \
+	translate_to_regex_match, host_machine, get_windows_host_type, \
+	get_mac_host_type
 
 from .fileutils import is_write_protected, make_executable, \
 	create_folder_if_needed, delete_file, is_source_newer, copy_file_if_needed, \
@@ -50,10 +51,18 @@ from .fileutils import is_write_protected, make_executable, \
 	get_tool_path, traverse_directory, unlock_files, lock_files, load_text_file, \
 	save_text_file, compare_files, compare_file_to_string
 
-from .buildutils import StringIO, get_sdks_folder, fix_csharp, is_exe, \
+from .buildutils import get_sdks_folder, fix_csharp, is_exe, \
 	get_path_ext, make_exe_path, find_in_path, where_is_doxygen, where_is_p4, \
-	expand_and_verify, perforce_edit, run_command, make_version_header, \
-	is_codewarrior_mac_allowed, import_py_script, run_py_script
+	expand_and_verify, perforce_edit, where_is_watcom, run_command, \
+	make_version_header, is_codewarrior_mac_allowed, import_py_script, \
+	run_py_script
+
+# pylint: disable=C0302
+
+if PY2:
+	from cStringIO import StringIO
+else:
+	from io import StringIO
 
 ########################################
 
@@ -131,6 +140,7 @@ __all__ = [
 	'expand_and_verify',
 	'where_is_p4',
 	'perforce_edit',
+	'where_is_watcom',
 	'run_command',
 	'make_version_header',
 	'is_codewarrior_mac_allowed',

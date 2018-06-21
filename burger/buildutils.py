@@ -15,15 +15,8 @@ import subprocess
 import sys
 
 from .strutils import is_string, host_machine, encapsulate_path, \
-	get_windows_host_type, get_mac_host_type, PY2, PY3_3_OR_HIGHER, \
+	get_windows_host_type, get_mac_host_type, PY3_3_OR_HIGHER, \
 	PY3_5_OR_HIGHER
-
-# pylint: disable=C0302
-
-if PY2:
-	from cStringIO import StringIO
-else:
-	from io import StringIO
 
 ## Cached location of the BURGER_SDKS folder
 _BURGER_SDKS_FOLDER = None
@@ -33,6 +26,9 @@ _DOXYGEN_PATH = None
 
 ## Cached location of p4 from Perforce
 _PERFORCE_PATH = None
+
+## Cached location of Watcom
+_WATCOM_PATH = None
 
 ## Environment variable locations of window applications
 _WINDOWS_ENV_PATHS = [
@@ -585,12 +581,101 @@ def perforce_edit(files, verbose=False):
 ########################################
 
 
-def run_command(args, working_dir=None, quiet=False):
+def where_is_watcom(verbose=False, refresh=False, path=None):
+	"""
+	Return the location of Watcom's executables
+
+	Look for an environment variable WATCOM and
+	determine if the executable resides there, if
+	so, return the string to the path
+
+	In Windows, the boot drive is checked for a WATCOM folder and if
+	found, that folder name is returned. If all checks failed,
+	None is returned.
+
+	Args:
+		verbose: If True, print a message if watcom was not found
+		refresh: If True, reset the cache and force a reload.
+		path: Path to watcom to place in the cache
+
+	Returns:
+		A path to the Watcom folder or None if not found.
+
+	"""
+
+	global _WATCOM_PATH				# pylint: disable=W0603
+
+	# Clear the cache if needed
+	if refresh:
+		_WATCOM_PATH = None
+
+	# Set the override, if found
+	if path:
+		_WATCOM_PATH = path
+
+	# Watcom is not available on macOS yet
+	if get_mac_host_type():
+		return None
+
+	# Is cached?
+	if _WATCOM_PATH:
+		return _WATCOM_PATH
+
+	if get_windows_host_type():
+		test_path = 'binnt\\wcc386.exe'
+	else:
+		test_path = 'binl/wcc386'
+
+	# Try the environment variable first
+	watcom_path = os.getenv('WATCOM', None)
+	if watcom_path:
+		# Valid?
+		if is_exe(os.path.join(watcom_path, test_path)):
+			_WATCOM_PATH = watcom_path
+			return watcom_path
+
+	# List of the usual suspects
+	full_paths = []
+	if get_windows_host_type():
+		# Watcom defaults to the root folder
+		full_paths.append(os.path.expandvars('${HOMEDRIVE}\\WATCOM'))
+
+		# Try the 'ProgramFiles' folders
+		for item in _WINDOWS_ENV_PATHS:
+			if os.getenv(item, None):
+				full_paths.append(os.path.expandvars( \
+					'${' + item + '}\\watcom'))
+
+	elif os.name == 'posix':
+		# Posix / Linux
+		full_paths.append('/usr/bin/watcom')
+
+	# Scan the list of known locations
+	for watcom_path in full_paths:
+		# Valid?
+		if is_exe(os.path.join(watcom_path, test_path)):
+			# Finally found it!
+			_WATCOM_PATH = watcom_path
+			return watcom_path
+
+	# Oh, dear.
+	if verbose:
+		print('Watcom was not found!')
+
+	# Can't find it
+	return None
+
+########################################
+
+
+def run_command(args, working_dir=None, quiet=False, capture_stdout=False, \
+	capture_stderr=False):
 	"""
 	Execute a program and capture the return code and text output
 
 	Pass a command line formatted for the current shell and then this
-	function will execute that command and capture both stdout and stderr.
+	function will execute that command and capture both stdout and stderr if
+	desired.
 
 	Note:
 		The first parameter is passed to subprocess.Popen() as is.
@@ -599,16 +684,26 @@ def run_command(args, working_dir=None, quiet=False):
 		args: List of command line entries, starting with the program pathname
 		working_dir: Directory to set before executing command
 		quiet: Set to True if errors should not be printed
-
+		capture_stdout: Set to True if stdout is to be captured
+		capture_stderr: Set to True if stderr is to be captured
 	Returns:
-		The return code, stdout, stderr
+		The return error_code, stdout, stderr
 	"""
+
+	# Which output streams are to be captured?
+	stdout = subprocess.PIPE if capture_stdout else None
+	stderr = subprocess.PIPE if capture_stderr else None
+
 	try:
-		tempfp = subprocess.Popen(args, cwd=working_dir, stdout=subprocess.PIPE, \
-			stderr=subprocess.PIPE, universal_newlines=True)
+		tempfp = subprocess.Popen(args, cwd=working_dir, stdout=stdout, \
+			stderr=stderr, universal_newlines=True)
 	except OSError as error:
 		if not quiet:
-			print('Command line "{}" generated error {}'.format(args, error))
+			if is_string(args):
+				msg = args
+			else:
+				msg = ' '.join(args)
+			print('Command line "{}" generated error {}'.format(msg, error))
 		return (error.errno, '', '')
 
 	stdoutstr, stderrstr = tempfp.communicate()
@@ -662,7 +757,7 @@ def make_version_header(working_dir, outputfilename, verbose=False):
 	cmd = (p4exe, 'changes', '-m', '1', '-t', '-l', '...#have')
 	if verbose:
 		print(' '.join(cmd))
-	error, tempdata = run_command(cmd, working_dir)[:2]
+	error, tempdata = run_command(cmd, working_dir, capture_stdout=True)[:2]
 	if error != 0:
 		return error
 
@@ -675,7 +770,7 @@ def make_version_header(working_dir, outputfilename, verbose=False):
 	cmd = (p4exe, 'set', 'P4CLIENT')
 	if verbose:
 		print(' '.join(cmd))
-	error, tempdata = run_command(cmd, working_dir)[:2]
+	error, tempdata = run_command(cmd, working_dir, capture_stdout=True)[:2]
 	if error != 0:
 		return error
 
@@ -688,7 +783,7 @@ def make_version_header(working_dir, outputfilename, verbose=False):
 	cmd = (p4exe, 'set', 'P4USER')
 	if verbose:
 		print(' '.join(cmd))
-	error, tempdata = run_command(cmd, working_dir)[:2]
+	error, tempdata = run_command(cmd, working_dir, capture_stdout=True)[:2]
 	if error != 0:
 		return error
 
@@ -697,46 +792,41 @@ def make_version_header(working_dir, outputfilename, verbose=False):
 
 	# Write out the header
 
-	filep = StringIO()
-	filep.write( \
-		'/***************************************\n'
-		'\n'
-		'\tThis file was generated by a call to\n'
-		'\tburger.buildutils.make_version_header() from\n'
-		'\tthe burger python package\n'
-		'\n'
-		'***************************************/\n'
-		'\n'
-		'#ifndef {0}\n'
-		'#define {0}\n'
-		'\n'.format(headerguard))
+	output = [ \
+		'/***************************************',
+		'',
+		'\tThis file was generated by a call to',
+		'\tburger.buildutils.make_version_header() from',
+		'\tthe burger python package',
+		'',
+		'***************************************/',
+		'',
+		'#ifndef ' + headerguard,
+		'#define ' + headerguard,
+		'']
 
 	if len(p4changes) > 4:
-		filep.write('#define P4_CHANGELIST ' + p4changes[1] + '\n')
-		filep.write('#define P4_CHANGEDATE "' + p4changes[3] + '"\n')
-		filep.write('#define P4_CHANGETIME "' + p4changes[4] + '"\n')
+		output.append('#define P4_CHANGELIST ' + p4changes[1])
+		output.append('#define P4_CHANGEDATE "' + p4changes[3] + '"')
+		output.append('#define P4_CHANGETIME "' + p4changes[4] + '"')
 
 	if len(p4clients) > 1:
-		filep.write('#define P4_CLIENT "' + p4clients[1] + '"\n')
+		output.append('#define P4_CLIENT "' + p4clients[1] + '"')
 
 	if len(p4users) > 1:
-		filep.write('#define P4_USER "' + p4users[1] + '"\n')
+		output.append('#define P4_USER "' + p4users[1] + '"')
 
-	filep.write('\n#endif\n')
+	output.extend(['', '#endif'])
 
 	# Check if the data is different than what's already stored on
 	# the drive
 
-	filevalue = filep.getvalue()
-	del filep
-
-	from .fileutils import compare_file_to_string
-	if compare_file_to_string(outputfilename, filevalue) is not True:
+	from .fileutils import compare_file_to_string, save_text_file
+	if compare_file_to_string(outputfilename, output) is False:
 		if verbose:
 			print('Writing ' + outputfilename)
 		try:
-			with open(outputfilename, 'w') as filep:
-				filep.write(filevalue)
+			save_text_file(outputfilename, output)
 		except IOError as error:
 			print(error)
 			return 2

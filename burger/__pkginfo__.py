@@ -18,7 +18,7 @@ NUMVERSION = (1, 1, 8)
 VERSION = '.'.join([str(num) for num in NUMVERSION])
 
 ## Author's name
-AUTHOR = 'Rebecca Ann Heineman <becky@burgerbecky.com>'
+AUTHOR = 'Rebecca Ann Heineman'
 
 ## Name of the module
 TITLE = 'burger'

@@ -641,24 +641,22 @@ def compare_files(filename1, filename2):
 	# Load in the two text files
 
 	file_one_lines = load_text_file(filename1)
+
 	# If not found, return "not equal"
-	if file_one_lines is None:
-		return False
+	# Note: Must use is not None because empty lists are acceptable
 
-	file_two_lines = load_text_file(filename2)
-	# If not found, return "not equal"
-	if file_two_lines is None:
-		return False
+	if file_one_lines is not None:
+		file_two_lines = load_text_file(filename2)
+		if file_two_lines is not None:
 
-	# Compare the file contents
-
-	if len(file_one_lines) == len(file_two_lines):
-		for i, j in zip(file_one_lines, file_two_lines):
-			if i != j:
-				break
-		else:
-			# It's a match!
-			return True
+			# Compare the file contents
+			if len(file_one_lines) == len(file_two_lines):
+				for i, j in zip(file_one_lines, file_two_lines):
+					if i != j:
+						break
+				else:
+					# It's a match!
+					return True
 	return False
 
 ########################################
@@ -686,34 +684,33 @@ def compare_file_to_string(file_name, data):
 	# Do a data compare as a text file
 
 	file_one_lines = load_text_file(file_name)
-	if file_one_lines is None:
-		# If not found, return "not equal"
-		return False
 
-	# Compare the file contents taking into account
-	# different line endings
+	# If not found, return "not equal"
+	# Note: Must use is not None because empty lists are acceptable
+	if file_one_lines is not None:
 
-	# No data? Assume it's empty
-	if data is None:
-		file_two_lines = []
+		# No data? Assume it's empty
+		if data is None:
+			file_two_lines = []
 
-	# Test if this is a StringIO object
-	elif hasattr(data, 'getvalue'):
-		file_two_lines = data.getvalue().splitlines()
-	# Test if a single string
-	elif is_string(data):
-		file_two_lines = data.splitlines()
-	else:
-		# Assume it's an iterable
-		file_two_lines = data
-
-	# Compare the file contents
-
-	if len(file_one_lines) == len(file_two_lines):
-		for i, j in zip(file_one_lines, file_two_lines):
-			if i != j:
-				break
+		# Test if this is a StringIO object
+		elif hasattr(data, 'getvalue'):
+			file_two_lines = data.getvalue().splitlines()
+		# Test if a single string
+		elif is_string(data):
+			file_two_lines = data.splitlines()
 		else:
-			# It's a match!
-			return True
+			# Assume it's an iterable
+			file_two_lines = data
+
+		# Compare the file contents taking into account
+		# different line endings
+
+		if len(file_one_lines) == len(file_two_lines):
+			for i, j in zip(file_one_lines, file_two_lines):
+				if i != j:
+					break
+			else:
+				# It's a match!
+				return True
 	return False
