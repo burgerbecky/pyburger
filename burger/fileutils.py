@@ -714,3 +714,45 @@ def compare_file_to_string(file_name, data):
 				# It's a match!
 				return True
 	return False
+
+########################################
+
+
+def read_zero_terminated_string(filep, encoding='utf-8'):
+	"""
+	Read a zero terminated string from an open binary file
+
+	Read in a stream of bytes and stop at the end of file or
+	a terminating zero. The string will be converted from utf-8
+	into unicode by default before returning.
+
+	Args:
+		filep: File record of a file opened in binary mode
+		encoding: Character set encoding of the string
+	Returns:
+		None or the unicode string (Without the terminating zero)
+	"""
+
+	# Nothing parsed yet
+	chars = bytearray()
+	while True:
+		# Read to end of file or to a terminating character
+		character = filep.read(1)
+
+		# EOF?
+		if not character:
+			if chars:
+				break
+			return None
+
+		# Convert to integer to handle utf-8 decoding
+		temp = ord(character)
+
+		# Zero terminator?
+		if not temp:
+			break
+		# Add to the array
+		chars.append(temp)
+
+	# Ensure that UTF-8 data is properly parsed
+	return chars.decode(encoding)

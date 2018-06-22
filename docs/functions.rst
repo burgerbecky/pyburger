@@ -48,6 +48,7 @@ File Functions
 .. doxygenfunction:: burger::fileutils::save_text_file
 .. doxygenfunction:: burger::fileutils::compare_files
 .. doxygenfunction:: burger::fileutils::compare_file_to_string
+.. doxygenfunction:: burger::fileutils::read_zero_terminated_string
 
 Build Helpers
 ^^^^^^^^^^^^^

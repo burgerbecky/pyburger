@@ -24,7 +24,9 @@ CRLF_TESTS = [
 	'testing 3'
 ]
 
-SENSHI = u'\u7f8e\u5c11\u5973\u6226\u58eb\u30bb\u30fc\u30e9\u30fc\u30e0\u30fc\u30f3'
+# Bishojou Senshi Sailor Moon
+SENSHI = u'\u7f8e\u5c11\u5973\u6226\u58eb\u30bb\u30fc\u30e9' \
+	'\u30fc\u30e0\u30fc\u30f3'
 
 ########################################
 
@@ -130,10 +132,14 @@ def test_save_text_file(tmpdir):
 	Test burger.save_text_file()
 	"""
 
-	burger.save_text_file(os.path.join(str(tmpdir), 'lf.txt'), CRLF_TESTS, '\n')
-	burger.save_text_file(os.path.join(str(tmpdir), 'cr.txt'), CRLF_TESTS, '\r')
-	burger.save_text_file(os.path.join(str(tmpdir), 'crlf.txt'), CRLF_TESTS, '\r\n')
-	burger.save_text_file(os.path.join(str(tmpdir), 'senshi.txt'), SENSHI, bom=True)
+	burger.save_text_file(os.path.join(str(tmpdir), 'lf.txt'), \
+		CRLF_TESTS, '\n')
+	burger.save_text_file(os.path.join(str(tmpdir), 'cr.txt'), \
+		CRLF_TESTS, '\r')
+	burger.save_text_file(os.path.join(str(tmpdir), 'crlf.txt'), \
+		CRLF_TESTS, '\r\n')
+	burger.save_text_file(os.path.join(str(tmpdir), 'senshi.txt'), \
+		SENSHI, bom=True)
 
 	selffile = os.path.join( \
 		os.path.dirname(os.path.abspath(__file__)), 'data')
@@ -216,3 +222,39 @@ def test_compare_file_to_string():
 		CRLF_TESTS) is False
 	assert burger.compare_file_to_string(os.path.join(selffile, 'lf.txt'), \
 		None) is False
+
+########################################
+
+
+def test_read_zero_terminated_str():
+	"""
+	Test burger.read_zero_terminated_string()
+	"""
+
+	selffile = os.path.join( \
+		os.path.dirname(os.path.abspath(__file__)), 'data')
+	filep = open(os.path.join(selffile, 'zeroterminate.bin'), 'rb')
+
+	# Test ascii
+	for item in CRLF_TESTS:
+		assert burger.read_zero_terminated_string(filep) == item
+
+	# Test Japanese utf-8
+	assert burger.read_zero_terminated_string(filep) == SENSHI
+	# Test Windows
+	assert burger.read_zero_terminated_string(filep, encoding='cp1252') == \
+		u'\u2018\u2019\u00C0\u00C1\u00C2\u00C3\u00C4\u00C5'
+	# Test ISO-8859-1
+	assert burger.read_zero_terminated_string(filep, encoding='latin_1') == \
+		u'\u0091\u0092\u00C0\u00C1\u00C2\u00C3\u00C4\u00C5'
+	# Test MacRoman
+	assert burger.read_zero_terminated_string(filep, encoding='mac_roman') == \
+		u'\u00EB\u00ED\u00BF\u00A1\u00AC\u221A\u0192\u2248'
+
+	# Test empty string
+	assert burger.read_zero_terminated_string(filep) == ''
+
+	# Test EOF
+	assert burger.read_zero_terminated_string(filep) is None
+
+	filep.close()
