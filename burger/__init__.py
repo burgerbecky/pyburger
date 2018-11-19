@@ -3,7 +3,6 @@
 
 """
 A set of subroutines used by the Burgerlib based scripts written in Python.
-
 """
 
 # pylint: disable=C0302
@@ -29,6 +28,7 @@ A set of subroutines used by the Burgerlib based scripts written in Python.
 # - \ref burger.buildutils
 # - \ref burger.fileutils
 # - \ref burger.strutils
+# - \ref burger.windowsutils
 #
 
 from __future__ import absolute_import, print_function, unicode_literals
@@ -53,10 +53,12 @@ from .fileutils import is_write_protected, make_executable, \
 	read_zero_terminated_string
 
 from .buildutils import get_sdks_folder, fix_csharp, is_exe, \
-	get_path_ext, make_exe_path, find_in_path, where_is_doxygen, where_is_p4, \
-	expand_and_verify, perforce_edit, where_is_watcom, run_command, \
-	make_version_header, is_codewarrior_mac_allowed, import_py_script, \
-	run_py_script
+	get_path_ext, make_exe_path, find_in_path, where_is_doxygen, \
+	where_is_p4, expand_and_verify, perforce_command, perforce_edit, \
+	perforce_add, where_is_watcom, run_command, make_version_header, \
+	is_codewarrior_mac_allowed, import_py_script, run_py_script
+
+from .windowsutils import get_file_info
 
 # pylint: disable=C0302
 
@@ -141,7 +143,9 @@ __all__ = [
 	'where_is_doxygen',
 	'expand_and_verify',
 	'where_is_p4',
+	'perforce_command',
 	'perforce_edit',
+	'perforce_add',
 	'where_is_watcom',
 	'run_command',
 	'make_version_header',
@@ -149,7 +153,8 @@ __all__ = [
 	'import_py_script',
 	'run_py_script',
 	'Interceptstdout',
-	'Node'
+	'Node',
+	'get_file_info'
 ]
 
 ########################################

@@ -536,16 +536,18 @@ def where_is_p4(verbose=False, refresh=False, path=None):
 ########################################
 
 
-def perforce_edit(files, verbose=False):
+def perforce_command(files, command, verbose=False):
 
 	"""
-	Given a list of files, checkout (Edit) them in perforce
+	Given a list of files, send a command to execute on them in perforce
 
 	Pass either a single string or a string list of pathnames
-	of files to checkout in perforce using the 'p4 edit' command
+	of files to checkout in perforce using the 'p4' command with
+	the command name
 
 	Args:
 		files: list or string object of file(s) to checkout
+		command: string to pass to p4 such as 'edit' or 'add'
 		verbose: If True, print the command line and warnings
 
 	Returns:
@@ -570,13 +572,61 @@ def perforce_edit(files, verbose=False):
 	# Generate the command line and call
 	error = 0
 	for item in file_list:
-		cmd = [perforce_path, 'edit', encapsulate_path(os.path.abspath(item))]
+		cmd = [perforce_path, command, os.path.abspath(item)]
 		if verbose:
 			print(' '.join(cmd))
-		error = subprocess.call(cmd, shell=True)
-		if error != 0:
+		error = subprocess.call(cmd)
+		if error:
 			break
 	return error
+
+########################################
+
+
+def perforce_edit(files, verbose=False):
+
+	"""
+	Given a list of files, checkout (Edit) them in perforce
+
+	Pass either a single string or a string list of pathnames
+	of files to checkout in perforce using the 'p4 edit' command
+
+	Args:
+		files: list or string object of file(s) to checkout
+		verbose: If True, print the command line and warnings
+
+	Returns:
+		Zero if no error, non-zero on error
+	See:
+		where_is_p4()
+	"""
+
+	# Perform the edit command
+	return perforce_command(files, 'edit', verbose=verbose)
+
+########################################
+
+
+def perforce_add(files, verbose=False):
+
+	"""
+	Given a list of files, add them in perforce
+
+	Pass either a single string or a string list of pathnames
+	of files to checkout in perforce using the 'p4 add' command
+
+	Args:
+		files: list or string object of file(s) to add
+		verbose: If True, print the command line and warnings
+
+	Returns:
+		Zero if no error, non-zero on error
+	See:
+		where_is_p4()
+	"""
+
+	# Perform the edit command
+	return perforce_command(files, 'add', verbose=verbose)
 
 ########################################
 

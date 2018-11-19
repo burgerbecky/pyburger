@@ -3,7 +3,6 @@
 
 """
 Package that contains string manipulation functions
-
 """
 
 ## \package burger.strutils
