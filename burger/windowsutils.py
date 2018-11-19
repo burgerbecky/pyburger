@@ -9,7 +9,7 @@ Package that contains windows only functions
 
 from __future__ import absolute_import, print_function, unicode_literals
 
-from ctypes import c_wchar_p, windll, create_string_buffer, c_uint, \
+from ctypes import c_wchar_p, create_string_buffer, c_uint, \
 	string_at, wstring_at, byref, c_void_p
 import array
 from .strutils import get_windows_host_type
@@ -44,6 +44,9 @@ def get_file_info(filename, info):
 
 	# Test if running on a windows host
 	if get_windows_host_type():
+
+		# Only import on windows hosts
+		from ctypes import windll
 
 		# Ensure it's unicode
 		wchar_filename = c_wchar_p(filename)
