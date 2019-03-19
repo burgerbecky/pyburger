@@ -25,6 +25,12 @@ addons:
 
 matrix:
   include:
+  # Windows builds
+  - os: windows
+    dist: 1803-containers
+    python: '2.7'
+    env: TOXENV=py27
+
   # Linux builds
   # Linux versions
   # precise = 12.04
@@ -32,31 +38,31 @@ matrix:
   # xenial = 16.04
   # bionic = 18.04
   - os: linux
-    dist: bionic
+    dist: xenial
     sudo: false
     python: '2.7'
     env: TOXENV=py27
 
   - os: linux
-    dist: bionic
+    dist: xenial
     sudo: false
     python: '3.4'
     env: TOXENV=py34
 
   - os: linux
-    dist: bionic
+    dist: xenial
     sudo: false
     python: '3.5'
     env: TOXENV=py35
 
   - os: linux
-    dist: bionic
+    dist: xenial
     sudo: false
     python: '3.6'
     env: TOXENV=py36
 
   - os: linux
-    dist: bionic
+    dist: xenial
     sudo: false
     python: '3.7-dev'
     env: TOXENV=py37
