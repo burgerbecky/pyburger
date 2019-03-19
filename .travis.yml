@@ -25,11 +25,11 @@ addons:
 
 matrix:
   include:
-  # Windows builds
-  - os: windows
-    dist: 1803-containers
-    python: '2.7'
-    env: TOXENV=py27
+  # Windows builds (Not supported for python on 3/19/2019)
+  #- os: windows
+  #  dist: 1803-containers
+  #  python: '2.7'
+  #  env: TOXENV=py27
 
   # Linux builds
   # Linux versions
