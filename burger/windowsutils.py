@@ -32,7 +32,7 @@ def get_file_info(filename, info):
 		product_version =  burger.get_file_info('devenv.exe', 'ProductVersion')
 
 	Note:
-		This function will always None on non-windows platforms.
+		This function will always return None on non-windows platforms.
 
 	Args:
 		filename: Name of the windows file.
