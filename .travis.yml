@@ -75,27 +75,27 @@ matrix:
     language: objective-c
     env:
       - TOXENV=py27 
-      - PYENV_VERSION=2.7.14
+      - PYENV_VERSION=2.7.15
   - os: osx
     language: objective-c
     env: 
       - TOXENV=py34
-      - PYENV_VERSION=3.4.7
+      - PYENV_VERSION=3.4.8
   - os: osx
     language: objective-c
     env: 
       - TOXENV=py35
-      - PYENV_VERSION=3.5.4
+      - PYENV_VERSION=3.5.5
   - os: osx
     language: objective-c
     env: 
       - TOXENV=py36
-      - PYENV_VERSION=3.6.3
+      - PYENV_VERSION=3.6.5
   - os: osx
     language: objective-c
     env: 
       - TOXENV=py37
-      - PYENV_VERSION=3.7.2
+      - PYENV_VERSION=3.7-dev
 
   #- os: osx
   #  language: objective-c
