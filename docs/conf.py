@@ -44,21 +44,20 @@ release = tempmodule.__version__
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = \
-[
-	'sphinx.ext.autodoc',
-	'sphinx.ext.doctest',
-	'sphinx.ext.intersphinx',
-	'sphinx.ext.todo',
-	'sphinx.ext.coverage',
-	'sphinx.ext.mathjax',
-	'sphinx.ext.ifconfig',
-	'sphinx.ext.viewcode',
-	'sphinx.ext.githubpages',
-	'sphinx.ext.imgconverter',
-	# rst2pdf has a conflict with sphinx.ext.mathjax
-	#'rst2pdf.pdfbuilder',
-	'breathe'
+extensions = [
+    'sphinx.ext.autodoc',
+    'sphinx.ext.doctest',
+    'sphinx.ext.intersphinx',
+    'sphinx.ext.todo',
+    'sphinx.ext.coverage',
+    'sphinx.ext.mathjax',
+    'sphinx.ext.ifconfig',
+    'sphinx.ext.viewcode',
+    'sphinx.ext.githubpages',
+    'sphinx.ext.imgconverter',
+    # rst2pdf has a conflict with sphinx.ext.mathjax
+    #'rst2pdf.pdfbuilder',
+    'breathe'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -129,32 +128,30 @@ htmlhelp_basename = project + 'doc'
 
 # -- Options for LaTeX output ------------------------------------------------
 
-latex_elements = \
-{
-	# The paper size ('letterpaper' or 'a4paper').
-	#
-	# 'papersize': 'letterpaper',
+latex_elements = {
+    # The paper size ('letterpaper' or 'a4paper').
+    #
+    # 'papersize': 'letterpaper',
 
-	# The font size ('10pt', '11pt' or '12pt').
-	#
-	# 'pointsize': '10pt',
+    # The font size ('10pt', '11pt' or '12pt').
+    #
+    # 'pointsize': '10pt',
 
-	# Additional stuff for the LaTeX preamble.
-	#
-	# 'preamble': '',
+    # Additional stuff for the LaTeX preamble.
+    #
+    # 'preamble': '',
 
-	# Latex figure (float) alignment
-	#
-	# 'figure_align': 'htbp',
+    # Latex figure (float) alignment
+    #
+    # 'figure_align': 'htbp',
 }
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title,
 # author, documentclass [howto, manual, or own class]).
-latex_documents = \
-[
-	(master_doc, project + '.tex', project + ' Documentation',
-		author, 'manual'),
+latex_documents = [
+    (master_doc, project + '.tex', project + ' Documentation',
+     author, 'manual'),
 ]
 
 
@@ -162,9 +159,8 @@ latex_documents = \
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = \
-[
-	(master_doc, project, project + ' Documentation', [author], 1)
+man_pages = [
+    (master_doc, project, project + ' Documentation', [author], 1)
 ]
 
 
@@ -173,11 +169,10 @@ man_pages = \
 # Grouping the document tree into Texinfo files. List of tuples
 # (source start file, target name, title, author,
 # dir menu entry, description, category)
-texinfo_documents = \
-[
-	(master_doc, project, project + ' Documentation',
-		author, project, tempmodule.__summary__,
-		'Miscellaneous'),
+texinfo_documents = [
+    (master_doc, project, project + ' Documentation',
+     author, project, tempmodule.__summary__,
+     'Miscellaneous'),
 ]
 
 
@@ -205,7 +200,7 @@ epub_exclude_files = ['search.html']
 
 #pdf_documents = \
 #[
-#	('index', u'rst2pdf', project + ' doc', author)
+#    ('index', u'rst2pdf', project + ' doc', author)
 #]
 
 #rst2pdf has a bug where indexes can't build, this is a workaround
@@ -214,7 +209,7 @@ epub_exclude_files = ['search.html']
 # -- Extension configuration -------------------------------------------------
 
 breathe_projects = {
-	project:"temp/xml/"
+    project: "temp/xml/"
 }
 
 breathe_default_project = project
@@ -233,50 +228,51 @@ todo_include_todos = True
 
 
 def generate_doxygen_xml(app):
-	"""
-	Run the doxygen make commands if we're on the ReadTheDocs server
-	"""
-	#pylint: disable=W0613
+    """
+    Run the doxygen make commands if we're on the ReadTheDocs server
+    """
+    #pylint: disable=W0613
 
-	# Doxygen can't create a nested folder. Help it by
-	# creating the first folder
+    # Doxygen can't create a nested folder. Help it by
+    # creating the first folder
 
-	try:
-		os.makedirs(os.path.join(CWD, 'temp'))
-	except OSError as error:
-		if error.errno != errno.EEXIST:
-			raise
+    try:
+        os.makedirs(os.path.join(CWD, 'temp'))
+    except OSError as error:
+        if error.errno != errno.EEXIST:
+            raise
 
-	# Invoke the prebuild python script to create the README.html
-	# file if needed using pandoc
-	sys.path.append(CWD)
-	prebuild = __import__('prebuild')
-	sys.path.pop()
-	prebuild.main(CWD)
+    # Invoke the prebuild python script to create the README.html
+    # file if needed using pandoc
+    sys.path.append(CWD)
+    prebuild = __import__('prebuild')
+    sys.path.pop()
+    prebuild.main(CWD)
 
-	# Call Doxygen to build the documentation
-	try:
-		retcode = subprocess.call('doxygen', cwd=CWD, shell=True)
-		if retcode < 0:
-			sys.stderr.write("doxygen terminated by signal %s" % (-retcode))
-	except OSError as error:
-		sys.stderr.write("doxygen execution failed: %s" % error)
+    # Call Doxygen to build the documentation
+    try:
+        retcode = subprocess.call('doxygen', cwd=CWD, shell=True)
+        if retcode < 0:
+            sys.stderr.write("doxygen terminated by signal %s" % (-retcode))
+    except OSError as error:
+        sys.stderr.write("doxygen execution failed: %s" % error)
 
-	# If on ReadTheDocs.org, copy to public folder
-	if on_rtd:
-		try:
-			retcode = subprocess.call("cp -r temp/html _build/html/doxygen", cwd='.', shell=True)
-			if retcode < 0:
-				sys.stderr.write("cp terminated by signal %s" % (-retcode))
-		except OSError as error:
-			sys.stderr.write("cp execution failed: %s" % error)
+    # If on ReadTheDocs.org, copy to public folder
+    if on_rtd:
+        try:
+            retcode = subprocess.call("cp -r temp/html _build/html/doxygen", cwd='.', shell=True)
+            if retcode < 0:
+                sys.stderr.write("cp terminated by signal %s" % (-retcode))
+        except OSError as error:
+            sys.stderr.write("cp execution failed: %s" % error)
 
 ########################################
 
-def setup(app):
-	"""
-	Called by breathe to create the doxygen docs
-	"""
 
-	# Add hook for building doxygen xml when needed
-	app.connect("builder-inited", generate_doxygen_xml)
+def setup(app):
+    """
+    Called by breathe to create the doxygen docs
+    """
+
+    # Add hook for building doxygen xml when needed
+    app.connect("builder-inited", generate_doxygen_xml)

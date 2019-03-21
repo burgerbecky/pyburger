@@ -18,7 +18,7 @@ Compatibility
 -------------
 
 * Python 2.7.1 or higher
-* Python 3.3 or higher
+* Python 3.4 or higher
 
 Installation
 ------------

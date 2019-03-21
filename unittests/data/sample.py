@@ -4,7 +4,7 @@
 """
 Sample.py in the 'a' directory
 
-Copyright 2013-2018 by Rebecca Ann Heineman becky@burgerbecky.com
+Copyright 2013-2019 by Rebecca Ann Heineman becky@burgerbecky.com
 
 It is released under an MIT Open Source license. Please see LICENSE
 for license details. Yes, you can use it in a
@@ -15,23 +15,23 @@ Please? It's not like I'm asking you for money!
 
 
 def test():
-	"""
-	Returns 'sample_a'
-	"""
+    """
+    Returns 'sample_a'
+    """
 
-	return 'sample_a'
+    return 'sample_a'
 
 
 def testa():
-	"""
-	Returns 'testa'
-	"""
+    """
+    Returns 'testa'
+    """
 
-	return 'testa'
+    return 'testa'
 
 
 def main(arg):
-	"""
-	Returns argument
-	"""
-	return arg
+    """
+    Returns argument
+    """
+    return arg
