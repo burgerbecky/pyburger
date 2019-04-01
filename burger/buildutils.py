@@ -97,8 +97,8 @@ def get_sdks_folder(verbose=False, refresh=False, folder=None):
 
             # Try to find the directory in the current path
             from .fileutils import traverse_directory
-            sdks = traverse_directory(os.getcwd(), 'sdks', \
-                find_directory=True, terminate=True)
+            sdks = traverse_directory(os.getcwd(), 'sdks',
+                                      find_directory=True, terminate=True)
             if sdks:
                 _BURGER_SDKS_FOLDER = sdks[0]
                 if verbose:
@@ -179,7 +179,9 @@ def get_path_ext(pathext=None):
 
     # Read the environment variable?
     if pathext is None:
-        pathext = os.getenv('PATHEXT', [])
+        pathext = os.getenv('PATHEXT', None)
+        if pathext is None:
+            return []
 
     # If a string, or environment variable?
     if is_string(pathext):
@@ -271,7 +273,9 @@ def find_in_path(filename, search_path=None, executable=False):
     # Is there a search path override?
     if search_path is None:
         # Use the environment variable
-        paths = os.getenv('PATH', [])
+        paths = os.getenv('PATH', None)
+        if paths is None:
+            paths = []
     else:
         paths = search_path
 
@@ -362,6 +366,7 @@ def where_is_doxygen(verbose=False, refresh=False, path=None):
 
     """
 
+    # pylint: disable=R0912
     global _DOXYGEN_PATH                # pylint: disable=W0603
 
     # Clear the cache if needed
@@ -406,7 +411,7 @@ def where_is_doxygen(verbose=False, refresh=False, path=None):
         # Try the 'ProgramFiles' folders
         for item in _WINDOWS_ENV_PATHS:
             if os.getenv(item, None):
-                full_paths.append(os.path.expandvars( \
+                full_paths.append(os.path.expandvars(
                     '${' + item + '}\\doxygen\\bin\\doxygen.exe'))
 
     elif get_mac_host_type():
@@ -430,8 +435,8 @@ def where_is_doxygen(verbose=False, refresh=False, path=None):
     if verbose:
         print('Doxygen not found!')
         if get_mac_host_type():
-            print('Install the desktop application in the Applications folder or ' \
-                'use brew or macports for the command line version')
+            print('Install the desktop application in the Applications folder or '
+                  'use brew or macports for the command line version')
 
     # Can't find it
     return None
@@ -440,7 +445,6 @@ def where_is_doxygen(verbose=False, refresh=False, path=None):
 
 
 def where_is_p4(verbose=False, refresh=False, path=None):
-
     """
     Return the location of the p4 executable
 
@@ -461,6 +465,7 @@ def where_is_p4(verbose=False, refresh=False, path=None):
         perforce_edit()
     """
 
+    # pylint: disable=R0912
     global _PERFORCE_PATH                # pylint: disable=W0603
 
     # Clear the cache if needed
@@ -505,7 +510,7 @@ def where_is_p4(verbose=False, refresh=False, path=None):
         # Try the 'ProgramFiles' folders
         for item in _WINDOWS_ENV_PATHS:
             if os.getenv(item, None):
-                full_paths.append(os.path.expandvars( \
+                full_paths.append(os.path.expandvars(
                     '${' + item + '}\\perforce\\p4.exe'))
 
     elif get_mac_host_type():
@@ -537,7 +542,6 @@ def where_is_p4(verbose=False, refresh=False, path=None):
 
 
 def perforce_command(files, command, verbose=False):
-
     """
     Given a list of files, send a command to execute on them in perforce
 
@@ -584,7 +588,6 @@ def perforce_command(files, command, verbose=False):
 
 
 def perforce_edit(files, verbose=False):
-
     """
     Given a list of files, checkout (Edit) them in perforce
 
@@ -608,7 +611,6 @@ def perforce_edit(files, verbose=False):
 
 
 def perforce_add(files, verbose=False):
-
     """
     Given a list of files, add them in perforce
 
@@ -653,6 +655,7 @@ def where_is_watcom(verbose=False, refresh=False, path=None):
 
     """
 
+    # pylint: disable=R0912
     global _WATCOM_PATH                # pylint: disable=W0603
 
     # Clear the cache if needed
@@ -693,7 +696,7 @@ def where_is_watcom(verbose=False, refresh=False, path=None):
         # Try the 'ProgramFiles' folders
         for item in _WINDOWS_ENV_PATHS:
             if os.getenv(item, None):
-                full_paths.append(os.path.expandvars( \
+                full_paths.append(os.path.expandvars(
                     '${' + item + '}\\watcom'))
 
     elif os.name == 'posix':
@@ -718,8 +721,8 @@ def where_is_watcom(verbose=False, refresh=False, path=None):
 ########################################
 
 
-def run_command(args, working_dir=None, quiet=False, capture_stdout=False, \
-    capture_stderr=False):
+def run_command(args, working_dir=None, quiet=False, capture_stdout=False,
+                capture_stderr=False):
     """
     Execute a program and capture the return code and text output
 
@@ -745,8 +748,8 @@ def run_command(args, working_dir=None, quiet=False, capture_stdout=False, \
     stderr = subprocess.PIPE if capture_stderr else None
 
     try:
-        tempfp = subprocess.Popen(args, cwd=working_dir, stdout=stdout, \
-            stderr=stderr, universal_newlines=True)
+        tempfp = subprocess.Popen(args, cwd=working_dir, stdout=stdout,
+                                  stderr=stderr, universal_newlines=True)
     except OSError as error:
         if not quiet:
             if is_string(args):
@@ -785,6 +788,7 @@ def make_version_header(working_dir, outputfilename, verbose=False):
         Zero if no error, non-zero on error
     """
 
+    # pylint: disable=R0912
     # Check if perforce is installed
     p4exe = where_is_p4()
     if p4exe is None:
@@ -842,7 +846,7 @@ def make_version_header(working_dir, outputfilename, verbose=False):
 
     # Write out the header
 
-    output = [ \
+    output = [
         '/***************************************',
         '',
         '\tThis file was generated by a call to',
@@ -971,7 +975,7 @@ def import_py_script(file_name, module_name=None):
         try:
             if PY3_3_OR_HIGHER:
                 # Python 3.3 and 3.4 prefers using the SourceFileLoader class
-                # pylint: disable=E0611, E0401
+                # pylint: disable=E0611, E0401, E1120, W1505
                 from importlib.machinery import SourceFileLoader
                 result = SourceFileLoader(module_name, file_name).load_module()
 
@@ -1029,3 +1033,95 @@ def run_py_script(file_name, function_name=None, arg=None):
     if arg is None:
         return method()
     return method(arg)
+
+########################################
+
+
+def where_is_visual_studio(vs_version):
+    """
+    Locate devenv.com for a specific version of Visual Studio
+
+    Given a specific version by year, check for the appropriate environment variable
+    that contains the path to the executable of the IDE
+
+    Note:
+        This function will always return None on non-windows hosts.
+
+    Examples:
+        # Normal use
+        vs_path = burger.buildutils.where_is_visual_studio(2010)
+        if not vs_path:
+            print('Visual Studio 2010 not found')
+            raise NameError("Visual Studio 2010 not found")
+
+    Args:
+        vs_version: Version year as number
+    Returns:
+        Path to devenv.com for the IDE or None.
+    """
+
+    # Test if running on a windows host
+    host_type = get_windows_host_type()
+    if not host_type:
+        return None
+
+    # For each version of Visual Studio, set the default environment variable
+    # and path that the specific version of Visual Studio resides
+    if vs_version == 2003:
+        # Is Visual studio 2003 installed?
+        env_path = 'VS71COMNTOOLS'
+        def_path = 'Microsoft Visual Studio .NET 2003'
+    elif vs_version == 2005:
+        # Is Visual studio 2005 installed?
+        env_path = 'VS80COMNTOOLS'
+        def_path = 'Microsoft Visual Studio 8'
+    elif vs_version == 2008:
+        # Is Visual studio 2008 installed?
+        env_path = 'VS90COMNTOOLS'
+        def_path = 'Microsoft Visual Studio 9.0'
+    elif vs_version == 2010:
+        # Is Visual studio 2010 installed?
+        env_path = 'VS100COMNTOOLS'
+        def_path = 'Microsoft Visual Studio 10.0'
+    elif vs_version == 2012:
+        # Is Visual studio 2012 installed?
+        env_path = 'VS110COMNTOOLS'
+        def_path = 'Microsoft Visual Studio 11.0'
+    elif vs_version == 2013:
+        # Is Visual studio 2013 installed?
+        env_path = 'VS120COMNTOOLS'
+        def_path = 'Microsoft Visual Studio 12.0'
+    elif vs_version == 2015:
+        # Is Visual studio 2015 installed?
+        env_path = 'VS140COMNTOOLS'
+        def_path = 'Microsoft Visual Studio 14.0'
+    elif vs_version == 2017:
+        # Is Visual studio 2017 installed?
+        env_path = 'VS150COMNTOOLS'
+        def_path = 'Microsoft Visual Studio\\2017\\Community'
+    elif vs_version == 2019:
+        # Is Visual studio 2019 installed?
+        env_path = 'VS160COMNTOOLS'
+        def_path = 'Microsoft Visual Studio\\2019\\Community'
+    else:
+        return None
+
+    # Try the environment variable first
+    vstudiopath = os.getenv(env_path, default=None)
+    if not vstudiopath:
+        # Try the pathname next
+        if host_type == 'x86':
+            program_files = 'ProgramFiles'
+        else:
+            program_files = 'ProgramFiles(x86)'
+
+        # Generate the proper path to test
+        vstudiopath = os.path.expandvars(
+            '%' + program_files + '%\\' + def_path + '\\Common7\\Tools\\')
+
+    # Locate the launcher
+    vstudiopath = os.path.abspath(vstudiopath + r'\..\ide\devenv.com')
+    if os.path.isfile(vstudiopath):
+        # Return the path if the file was found
+        return vstudiopath
+    return None

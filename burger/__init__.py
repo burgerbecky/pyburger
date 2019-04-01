@@ -48,15 +48,16 @@ from .strutils import PY2, unicode_print, is_string, convert_to_array, \
 from .fileutils import is_write_protected, make_executable, \
     create_folder_if_needed, delete_file, is_source_newer, copy_file_if_needed, \
     copy_directory_if_needed, shutil_readonly_cb, delete_directory, \
-    get_tool_path, traverse_directory, unlock_files, lock_files, load_text_file, \
-    save_text_file, compare_files, compare_file_to_string, \
-    read_zero_terminated_string
+    clean_directories, clean_extensions, get_tool_path, traverse_directory, \
+    unlock_files, lock_files, load_text_file, save_text_file, compare_files, \
+    compare_file_to_string, read_zero_terminated_string
 
-from .buildutils import get_sdks_folder, fix_csharp, is_exe, \
-    get_path_ext, make_exe_path, find_in_path, where_is_doxygen, \
+from .buildutils import get_sdks_folder, fix_csharp, is_exe, get_path_ext, \
+    make_exe_path, find_in_path, where_is_doxygen, \
     where_is_p4, expand_and_verify, perforce_command, perforce_edit, \
     perforce_add, where_is_watcom, run_command, make_version_header, \
-    is_codewarrior_mac_allowed, import_py_script, run_py_script
+    is_codewarrior_mac_allowed, import_py_script, run_py_script, \
+    where_is_visual_studio
 
 from .windowsutils import get_file_info
 
@@ -125,6 +126,8 @@ __all__ = [
     'copy_directory_if_needed',
     'shutil_readonly_cb',
     'delete_directory',
+    'clean_directories',
+    'clean_extensions',
     'get_tool_path',
     'traverse_directory',
     'unlock_files',
@@ -152,6 +155,7 @@ __all__ = [
     'is_codewarrior_mac_allowed',
     'import_py_script',
     'run_py_script',
+    'where_is_visual_studio',
     'Interceptstdout',
     'Node',
     'get_file_info'

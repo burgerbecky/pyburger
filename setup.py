@@ -127,37 +127,6 @@ CLEAN_EXTENSION_LIST = [
 ]
 
 
-def clean_dir(working_dir, extension_list):
-    """ Recursively clean files with an extension list """
-
-    for base_name in os.listdir(working_dir):
-        file_name = os.path.join(working_dir, base_name)
-        # Is it a file? (Skip directories)
-        if os.path.isfile(file_name):
-            for item in extension_list:
-                if base_name.endswith(item):
-                    os.remove(file_name)
-                    break
-
-        # Recurse
-        elif os.path.isdir(file_name):
-            clean_dir(file_name, extension_list)
-
-
-def clean_recursive(working_dir, base_name):
-    """ Recursively clean files with an extension list """
-
-    for item in os.listdir(working_dir):
-        file_name = os.path.join(working_dir, item)
-        # Is it a directory? (Skip files)
-        if os.path.isdir(file_name):
-            if item == base_name:
-                PROJECT_MODULE.delete_directory(file_name)
-            else:
-                # Recurse
-                clean_recursive(file_name, base_name)
-
-
 def clean(working_dir):
     """
     Clean up all the temp files after uploading
@@ -171,14 +140,16 @@ def clean(working_dir):
     for item in CLEAN_DIR_LIST:
         PROJECT_MODULE.delete_directory(os.path.join(working_dir, item))
 
-    for item in CLEAN_DIR_RECURSE_LIST:
-        clean_recursive(working_dir, item)
+    PROJECT_MODULE.clean_directories(working_dir, CLEAN_DIR_RECURSE_LIST, recursive=True)
 
     #
     # Delete all *.pyc and *.pyo files
     #
 
-    clean_dir(working_dir, CLEAN_EXTENSION_LIST)
+    PROJECT_MODULE.clean_extensions(
+        working_dir,
+        extension_list=CLEAN_EXTENSION_LIST,
+        recursive=True)
 
 
 #

@@ -223,9 +223,8 @@ def copy_file_if_needed(source, destination, verbose=True, perforce=False):
 ########################################
 
 
-def copy_directory_if_needed(source, destination, exception_list=None, \
-    verbose=True):
-
+def copy_directory_if_needed(source, destination, exception_list=None,
+                             verbose=True):
     """
     Copy all of the files in a directory into a new directory
 
@@ -268,10 +267,11 @@ def copy_directory_if_needed(source, destination, exception_list=None, \
             # Handle the directories found
             if os.path.isdir(file_name):
                 # Recursive!
-                error = copy_directory_if_needed(file_name, \
-                    os.path.join(destination, base_name), exception_list, verbose=verbose)
+                error = copy_directory_if_needed(
+                    file_name, os.path.join(destination, base_name),
+                    exception_list, verbose=verbose)
             else:
-                error = copy_file_if_needed(file_name, os.path.join( \
+                error = copy_file_if_needed(file_name, os.path.join(
                     destination, base_name), verbose=verbose)
 
             # Exit immediately on error
@@ -283,7 +283,6 @@ def copy_directory_if_needed(source, destination, exception_list=None, \
 
 
 def shutil_readonly_cb(func, path, exception_info):
-
     """
     Subroutine for shutil.rmtree() to delete read only files
 
@@ -348,8 +347,75 @@ def delete_directory(path, delete_read_only=False):
 ########################################
 
 
-def get_tool_path(tool_folder, tool_name, encapsulate=False):
+def clean_directories(path, name_list, recursive=False):
+    """
+    Recursively clean directories with a name list
 
+    Args:
+        path: Pathname of the directory to scan
+        name_list: Iterable of directory names
+        recursive: Boolean if recursive clean is desired
+
+   Examples:
+        # Delete all temp and __pycache__ files recursively
+        burger.fileutils.clean_directories('.', ('temp', '__pycache__'), True)
+
+    See:
+        clean_extensions() or delete_directory()
+    """
+
+    for base_name in os.listdir(path):
+        file_name = os.path.join(path, base_name)
+        # Is it a directory? (Skip files)
+        if os.path.isdir(file_name):
+            for item in name_list:
+                if item == base_name:
+                    delete_directory(file_name)
+                    break
+            else:
+                if recursive:
+                    # Recurse if needed
+                    clean_directories(file_name, name_list, recursive)
+
+########################################
+
+
+def clean_extensions(path, extension_list, recursive=False):
+    """
+    Recursively clean files with an extension list
+
+    Args:
+        path: Pathname of the directory to scan
+        extension_list: Iterable of file extensions
+        recursive: Boolean if recursive clean is desired
+
+   Examples:
+        # Delete all .obj and .lib files recursively
+        burger.fileutils.clean_extensions('temp', ('.obj', '.lib'), True)
+
+    See:
+        delete_file() or delete_directory()
+    """
+
+    # Scan the directory
+    for base_name in os.listdir(path):
+        # Create full pathname
+        file_name = os.path.join(path, base_name)
+        # Is it a file? (Skip directories)
+        if os.path.isfile(file_name):
+            for item in extension_list:
+                if base_name.endswith(item):
+                    os.remove(file_name)
+                    break
+
+        # Recurse if desired
+        elif recursive and os.path.isdir(file_name):
+            clean_extensions(file_name, extension_list, recursive)
+
+########################################
+
+
+def get_tool_path(tool_folder, tool_name, encapsulate=False):
     """
     Find executable tool directory
 
@@ -381,8 +447,8 @@ def get_tool_path(tool_folder, tool_name, encapsulate=False):
 
     # Windows supports 32 and 64 bit Intel
     elif host == 'windows':
-        exename = os.path.join(tool_folder, 'windows_' + get_windows_host_type(), \
-            tool_name + '.exe')
+        exename = os.path.join(tool_folder, 'windows_' + get_windows_host_type(),
+                               tool_name + '.exe')
     else:
 
         # On unknown platforms, assume the tool is in the path for the fallback
@@ -397,9 +463,8 @@ def get_tool_path(tool_folder, tool_name, encapsulate=False):
 ########################################
 
 
-def traverse_directory( \
-    working_dir, filename_list, terminate=False, find_directory=False):
-
+def traverse_directory(
+        working_dir, filename_list, terminate=False, find_directory=False):
     """
     Create a list of all copies of a file following a directory
 
@@ -505,8 +570,8 @@ def unlock_files(working_dir, recursive=False):
             if not path_mode & stat.S_IWRITE:
 
                 # Remove write protection while retaining the other flags
-                os.chmod(path_name, path_mode + stat.S_IWRITE + \
-                    stat.S_IWGRP + stat.S_IWOTH)
+                os.chmod(path_name, path_mode + stat.S_IWRITE
+                         + stat.S_IWGRP + stat.S_IWOTH)
                 result.append(path_name)
         else:
             # Process recursion
@@ -534,8 +599,8 @@ def lock_files(lock_list):
         path_mode = os.stat(item).st_mode
 
         # Mark it write protected for Perforce
-        os.chmod(item, path_mode & \
-            (~(stat.S_IWRITE + stat.S_IWGRP + stat.S_IWOTH)))
+        os.chmod(item, path_mode
+                 & (~(stat.S_IWRITE + stat.S_IWGRP + stat.S_IWOTH)))
 
 ########################################
 
@@ -663,7 +728,6 @@ def compare_files(filename1, filename2):
 
 
 def compare_file_to_string(file_name, data):
-
     """
     Compare text file and a string for equality
 

@@ -78,8 +78,9 @@ def get_file_info(filename, info):
                 # Extract information from the version using unicode and
                 # the proper codepage
                 if windll.version.VerQueryValueW(
-                    res_data, '\\StringFileInfo\\{0:04x}{1:04x}\\{2}'.format(
-                        codepages[0], codepages[1], info), byref(record), byref(length)):
+                        res_data, '\\StringFileInfo\\{0:04x}{1:04x}\\{2}'.format(
+                            codepages[0], codepages[1], info),
+                        byref(record), byref(length)):
                     # Return the final result removing the terminating zero
                     return wstring_at(record.value, length.value - 1)
     return None

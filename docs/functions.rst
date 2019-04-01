@@ -28,6 +28,7 @@ File Locators
 .. doxygenfunction:: burger::buildutils::where_is_doxygen
 .. doxygenfunction:: burger::buildutils::where_is_p4
 .. doxygenfunction:: burger::buildutils::where_is_watcom
+.. doxygenfunction:: burger::buildutils::where_is_visual_studio
 
 File Functions
 ^^^^^^^^^^^^^^
@@ -40,6 +41,8 @@ File Functions
 .. doxygenfunction:: burger::fileutils::copy_directory_if_needed
 .. doxygenfunction:: burger::fileutils::shutil_readonly_cb
 .. doxygenfunction:: burger::fileutils::delete_directory
+.. doxygenfunction:: burger::fileutils::clean_directories
+.. doxygenfunction:: burger::fileutils::clean_extensions
 .. doxygenfunction:: burger::fileutils::get_tool_path
 .. doxygenfunction:: burger::fileutils::traverse_directory
 .. doxygenfunction:: burger::fileutils::unlock_files
