@@ -15,8 +15,7 @@ import shutil
 import stat
 import codecs
 
-from .strutils import is_string, convert_to_array, encapsulate_path, \
-    host_machine, get_windows_host_type
+from .strutils import is_string, convert_to_array, encapsulate_path, host_machine, get_windows_host_type, translate_to_regex_match
 
 # Redefining built-in W0622 (Ignore redefinition of zip)
 
@@ -358,18 +357,19 @@ def clean_directories(path, name_list, recursive=False):
 
    Examples:
         # Delete all temp and __pycache__ files recursively
-        burger.fileutils.clean_directories('.', ('temp', '__pycache__'), True)
+        burger.fileutils.clean_directories('.', ('*.temp', '__pycache__'), True)
 
     See:
-        clean_extensions() or delete_directory()
+        clean_files() or delete_directory()
     """
 
+    match_list = translate_to_regex_match(name_list)
     for base_name in os.listdir(path):
         file_name = os.path.join(path, base_name)
         # Is it a directory? (Skip files)
         if os.path.isdir(file_name):
-            for item in name_list:
-                if item == base_name:
+            for item in match_list:
+                if item(base_name):
                     delete_directory(file_name)
                     break
             else:
@@ -380,37 +380,38 @@ def clean_directories(path, name_list, recursive=False):
 ########################################
 
 
-def clean_extensions(path, extension_list, recursive=False):
+def clean_files(path, name_list, recursive=False):
     """
-    Recursively clean files with an extension list
+    Recursively clean files with a filename list
 
     Args:
         path: Pathname of the directory to scan
-        extension_list: Iterable of file extensions
+        name_list: Iterable of file names
         recursive: Boolean if recursive clean is desired
 
    Examples:
         # Delete all .obj and .lib files recursively
-        burger.fileutils.clean_extensions('temp', ('.obj', '.lib'), True)
+        burger.fileutils.clean_files('temp', ('*.obj', '*.lib'), True)
 
     See:
         delete_file() or delete_directory()
     """
 
     # Scan the directory
+    match_list = translate_to_regex_match(name_list)
     for base_name in os.listdir(path):
         # Create full pathname
         file_name = os.path.join(path, base_name)
         # Is it a file? (Skip directories)
         if os.path.isfile(file_name):
-            for item in extension_list:
-                if base_name.endswith(item):
+            for item in match_list:
+                if item(base_name):
                     os.remove(file_name)
                     break
 
         # Recurse if desired
         elif recursive and os.path.isdir(file_name):
-            clean_extensions(file_name, extension_list, recursive)
+            clean_files(file_name, name_list, recursive)
 
 ########################################
 
@@ -493,7 +494,7 @@ def traverse_directory(
     dirlist = []
 
     # Loop
-    while 1:
+    while True:
         # Iterate over the list and detect if these files are present
         for item in filename_list:
             temppath = os.path.join(tempdir, item)

@@ -48,7 +48,7 @@ from .strutils import PY2, unicode_print, is_string, convert_to_array, \
 from .fileutils import is_write_protected, make_executable, \
     create_folder_if_needed, delete_file, is_source_newer, copy_file_if_needed, \
     copy_directory_if_needed, shutil_readonly_cb, delete_directory, \
-    clean_directories, clean_extensions, get_tool_path, traverse_directory, \
+    clean_directories, clean_files, get_tool_path, traverse_directory, \
     unlock_files, lock_files, load_text_file, save_text_file, compare_files, \
     compare_file_to_string, read_zero_terminated_string
 
@@ -127,7 +127,7 @@ __all__ = [
     'shutil_readonly_cb',
     'delete_directory',
     'clean_directories',
-    'clean_extensions',
+    'clean_files',
     'get_tool_path',
     'traverse_directory',
     'unlock_files',

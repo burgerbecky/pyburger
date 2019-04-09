@@ -42,7 +42,7 @@ File Functions
 .. doxygenfunction:: burger::fileutils::shutil_readonly_cb
 .. doxygenfunction:: burger::fileutils::delete_directory
 .. doxygenfunction:: burger::fileutils::clean_directories
-.. doxygenfunction:: burger::fileutils::clean_extensions
+.. doxygenfunction:: burger::fileutils::clean_files
 .. doxygenfunction:: burger::fileutils::get_tool_path
 .. doxygenfunction:: burger::fileutils::traverse_directory
 .. doxygenfunction:: burger::fileutils::unlock_files

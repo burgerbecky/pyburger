@@ -122,8 +122,8 @@ CLEAN_DIR_RECURSE_LIST = [
 ]
 
 CLEAN_EXTENSION_LIST = [
-    '.pyc',
-    '.pyo'
+    '*.pyc',
+    '*.pyo'
 ]
 
 
@@ -146,9 +146,9 @@ def clean(working_dir):
     # Delete all *.pyc and *.pyo files
     #
 
-    PROJECT_MODULE.clean_extensions(
+    PROJECT_MODULE.clean_files(
         working_dir,
-        extension_list=CLEAN_EXTENSION_LIST,
+        name_list=CLEAN_EXTENSION_LIST,
         recursive=True)
 
 
