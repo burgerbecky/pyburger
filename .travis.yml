@@ -159,6 +159,8 @@ after_failure:
 # Send a pass/fail to us
 notifications:
   slack:
+    rooms:
+      secure: T4nFowKbMzdZikD9D0kKg3CYV/NVtypUrfj5NruaZgsArw3Fo0RZj1/CQacXVR8qWBGjpqxwhDDkBEKFjq5e/++GsrUxoLL+Rgz8hn8VVUgV4q8+I7W4WDPybc1pEervJNqqwCq7oCiNen4ZrKzojVuNhO9HVAEDXRNfHzM9k/GvIOOpQzK6QB8tgfXTjoT8MZL5MjBvzFje755XgytELXlgCmcd+2wDXAUBwlgfxMtGC7UZhng5fS/6JmYYoBLATebpKMLUPcLbfHRZ3vb8x2fKnEDXF1YSAjry+Ade8bj/CdoM2SBZjjhsh7L+EoveWY0SXXFdtqjFMZu6zLUTRhACpmID/ANYjZYCUyeNIOzjNml1WhxnD11LGYhmB3V7164FEYdxtq5Z1QSwsH1cmA5u8loitM9nkl1wgc+IBtlrNTpDj7S75iRFxa4mr5hZfBADJy9Tpm5GzX+i/14zYFcE+0f6CnWebGfcTd9Js+vKIKoa4ttoXNhGERBsLy5S2QcBRS5yqSh8/dgi0GsnRBYYEfpOdV9H5mgq4WNVJnsntANwYk/Q9FvTmrrbnteb1oY8Tvf4GvaHioKNLbqbTXNSTdFozbrYLPrNoFGDGQBl767JBtQChcnfsHv78c3BluaLlCU8ikwYzJsrx9KqpXWuc06c+JGVC1qVLR9kZcA=
     on_success: always
     on_failure: always
   email:
