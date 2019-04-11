@@ -15,7 +15,7 @@ import re
 from .fileutils import delete_file, clean_files, clean_directories
 
 ## Match *.cbp
-_CODEBLOCKS_MATCH = re.compile('.*\\.cbp\\Z(?ms)')
+_CODEBLOCKS_MATCH = re.compile('(?ims).*\\.cbp\\Z')
 
 ########################################
 
