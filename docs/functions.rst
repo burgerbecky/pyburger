@@ -72,6 +72,7 @@ Build Helpers
 Clean Helpers
 ^^^^^^^^^^^^^
 .. doxygenfunction:: burger::cleanutils::clean_xcode
+.. doxygenfunction:: burger::cleanutils::clean_codeblocks
 
 Windows Functions
 ^^^^^^^^^^^^^^^^^
