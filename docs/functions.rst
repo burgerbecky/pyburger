@@ -69,6 +69,10 @@ Build Helpers
 .. doxygenfunction:: burger::buildutils::import_py_script
 .. doxygenfunction:: burger::buildutils::run_py_script
 
+Clean Helpers
+^^^^^^^^^^^^^
+.. doxygenfunction:: burger::cleanutils::clean_xcode
+
 Windows Functions
 ^^^^^^^^^^^^^^^^^
 .. doxygenfunction:: burger::windowsutils::get_file_info

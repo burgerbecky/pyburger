@@ -26,6 +26,7 @@ A set of subroutines used by the Burgerlib based scripts written in Python.
 #
 # - \ref burger
 # - \ref burger.buildutils
+# - \ref burger.cleanutils
 # - \ref burger.fileutils
 # - \ref burger.strutils
 # - \ref burger.windowsutils
@@ -58,6 +59,8 @@ from .buildutils import get_sdks_folder, fix_csharp, is_exe, get_path_ext, \
     perforce_add, where_is_watcom, run_command, make_version_header, \
     is_codewarrior_mac_allowed, import_py_script, run_py_script, \
     where_is_visual_studio
+
+from .cleanutils import clean_xcode
 
 from .windowsutils import get_file_info
 
@@ -158,6 +161,7 @@ __all__ = [
     'where_is_visual_studio',
     'Interceptstdout',
     'Node',
+    'clean_xcode',
     'get_file_info'
 ]
 
