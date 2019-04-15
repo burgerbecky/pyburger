@@ -83,3 +83,39 @@ def clean_codeblocks(path, recursive=False):
             file_name = os.path.join(path, item)
             if os.path.isdir(file_name):
                 clean_codeblocks(file_name, recursive)
+
+########################################
+
+
+def clean_setup_py(path, recursive=False):
+    """
+    Scan for setup.py files and perform a clean.
+
+    Scan the current folder and if the file setup.py was found,
+    remove the folders dist, build, _build, .tox, .pytestcache and *.egg-info
+
+    Args:
+        path: Directory to begin scanning
+        recursive: Boolean if recursive clean is desired
+
+    See:
+        clean_xcode() or clean_codeblocks()
+    """
+
+    # Check for setup.py
+    if os.path.isfile(os.path.join(path, 'setup.py')):
+        # Purge all the build folders
+        clean_directories(path, ('dist', 'build', '_build',
+                                 '.tox', '.pytestcache', '*.egg-info'))
+
+        # Get rid of python droppings from Python 3
+        clean_directories(path, ['__pycache__'], recursive=True)
+        # Get rid of python dropping from Python 2
+        clean_files(path, ('*.pyc', '*.pyo'), recursive=True)
+
+    # If recursive, process the sub folders
+    if recursive:
+        for item in os.listdir(path):
+            file_name = os.path.join(path, item)
+            if os.path.isdir(file_name):
+                clean_setup_py(file_name, recursive)

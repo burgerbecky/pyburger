@@ -60,7 +60,7 @@ from .buildutils import get_sdks_folder, fix_csharp, is_exe, get_path_ext, \
     is_codewarrior_mac_allowed, import_py_script, run_py_script, \
     where_is_visual_studio
 
-from .cleanutils import clean_xcode, clean_codeblocks
+from .cleanutils import clean_xcode, clean_codeblocks, clean_setup_py
 
 from .windowsutils import get_file_info
 
@@ -163,6 +163,7 @@ __all__ = [
     'Node',
     'clean_xcode',
     'clean_codeblocks',
+    'clean_setup_py',
     'get_file_info'
 ]
 
