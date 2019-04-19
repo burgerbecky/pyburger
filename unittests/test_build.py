@@ -15,7 +15,6 @@ Please? It's not like I'm asking you for money!
 from __future__ import absolute_import, print_function, unicode_literals
 
 import os
-import errno
 import burger
 
 ########################################
@@ -148,12 +147,15 @@ def test_import_py_script():
     assert sample.test() == 'sample_a'
     assert sample.testa() == 'testa'
 
+    assert not os.path.isfile(os.path.join(selffile, 'data', 'sample.pyc'))
+    assert not os.path.isdir(os.path.join(selffile, 'data', '__pycache__'))
+    assert not os.path.isfile(os.path.join(selffile, 'data2', 'sample.pyc'))
+    assert not os.path.isdir(os.path.join(selffile, 'data2', '__pycache__'))
+
     # Intentionally fail to test the assert that fired
-    try:
-        sample = burger.import_py_script(os.path.join(selffile, 'doesntexist.py'))
-    except IOError as error:
-        # File not found is the correct error
-        assert error.errno == errno.ENOENT
+    sample = burger.import_py_script(os.path.join(selffile, 'doesntexist.py'))
+    # File not found is the correct error
+    assert sample is None
 
 ########################################
 

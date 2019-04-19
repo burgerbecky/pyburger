@@ -15,7 +15,8 @@ import shutil
 import stat
 import codecs
 
-from .strutils import is_string, convert_to_array, encapsulate_path, host_machine, get_windows_host_type, translate_to_regex_match
+from .strutils import is_string, convert_to_array, encapsulate_path, host_machine, \
+    get_windows_host_type, translate_to_regex_match
 
 # Redefining built-in W0622 (Ignore redefinition of zip)
 

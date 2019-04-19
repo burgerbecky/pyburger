@@ -13,6 +13,7 @@ import os
 import platform
 import subprocess
 import sys
+import errno
 
 from .strutils import is_string, host_machine, encapsulate_path, \
     get_windows_host_type, get_mac_host_type, PY3_3_OR_HIGHER, \
@@ -952,49 +953,62 @@ def import_py_script(file_name, module_name=None):
     if not module_name:
         module_name = os.path.splitext(os.path.split(file_name)[-1])[0]
 
-    if PY3_5_OR_HIGHER:
+    old_dont = sys.dont_write_bytecode
+    sys.dont_write_bytecode = True
+    try:
+        if PY3_5_OR_HIGHER:
 
-        # Python 3.5 and allows the loading of a module without
-        # touching the cache
-        # pylint: disable=E0611, E0401, E1101
-        import importlib.util
-        spec = importlib.util.spec_from_file_location(module_name, file_name)
-        result = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(result)
+            # Python 3.5 and allows the loading of a module without
+            # touching the cache
+            # pylint: disable=E0611, E0401, E1101
+            import importlib.util
+            spec = importlib.util.spec_from_file_location(module_name, file_name)
+            result = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(result)
 
-    else:
-        # First step, if there's a module already loaded by this
-        # name, save it for restoration later
+        else:
+            # First step, if there's a module already loaded by this
+            # name, save it for restoration later
 
-        saved = None
-        if module_name in sys.modules:
-            saved = sys.modules[module_name]
-            del sys.modules[module_name]
+            saved = None
+            if module_name in sys.modules:
+                saved = sys.modules[module_name]
+                del sys.modules[module_name]
 
-        # Perform the load, throw exception on error
-        try:
-            if PY3_3_OR_HIGHER:
-                # Python 3.3 and 3.4 prefers using the SourceFileLoader class
-                # pylint: disable=E0611, E0401, E1120, W1505
-                from importlib.machinery import SourceFileLoader
-                result = SourceFileLoader(module_name, file_name).load_module()
+            # Perform the load, throw exception on error
+            try:
+                if PY3_3_OR_HIGHER:
+                    # Python 3.3 and 3.4 prefers using the SourceFileLoader class
+                    # pylint: disable=E0611, E0401, E1120, W1505
+                    from importlib.machinery import SourceFileLoader
+                    result = SourceFileLoader(module_name, file_name).load_module()
 
-            else:
-                # Use the imp library for Python 2.x to 3.2
-                import imp
-                result = imp.load_source(module_name, file_name)
+                else:
+                    # Use the imp library for Python 2.x to 3.2
+                    import imp
+                    result = imp.load_source(module_name, file_name)
 
-        # Wrap up by restoring the cache the way it was found
-        finally:
-            if saved:
-                sys.modules[module_name] = saved
-            else:
-                # Remove the generated entry since load_source() added it
+            # Wrap up by restoring the cache the way it was found
+            finally:
+                if saved:
+                    sys.modules[module_name] = saved
+                else:
+                    # Remove the generated entry since load_source() added it
 
-                # Note: Test before deletion, in case load_source threw
-                # an exception before creating the entry
-                if module_name in sys.modules:
-                    del sys.modules[module_name]
+                    # Note: Test before deletion, in case load_source threw
+                    # an exception before creating the entry
+                    if module_name in sys.modules:
+                        del sys.modules[module_name]
+
+    except IOError as error:
+        # File not found is the correct error
+        if error.errno == errno.ENOENT:
+            result = None
+        else:
+            raise
+
+    finally:
+        sys.dont_write_bytecode = old_dont
 
     return result
 
