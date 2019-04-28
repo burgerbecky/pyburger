@@ -100,6 +100,10 @@ buildutils.where_is_visual_studio
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. doxygenfunction:: burger::buildutils::where_is_visual_studio
 
+buildutils.where_is_codeblocks
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. doxygenfunction:: burger::buildutils::where_is_codeblocks
+
 
 File Functions
 --------------
