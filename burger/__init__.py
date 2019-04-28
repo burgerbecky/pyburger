@@ -172,7 +172,7 @@ __all__ = [
 
 class Interceptstdout(list):
     """
-    Handy class for capturing stdout from tools and python itself
+    Handy class for capturing stdout from tools and python itself.
 
     Examples:
         # Import the class
@@ -227,9 +227,9 @@ class Interceptstdout(list):
 ########################################
 
 
-class Node(object):
+class Node:
     """
-    Node class for creating directory trees
+    Node class for creating directory trees.
 
     Needed for some projects that have to store
     file entries in nested trees

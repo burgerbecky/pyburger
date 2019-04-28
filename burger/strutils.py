@@ -502,7 +502,7 @@ def parse_csv(csv_string):
 
 def translate_to_regex_match(file_list):
     """
-    Translate filename wildcards into regexes
+    Translate filename wildcards into regexes.
 
     Args:
         file_list: List of filename wildcards
@@ -512,7 +512,7 @@ def translate_to_regex_match(file_list):
 
     # Start with an empty folder
     result = []
-    for item in file_list:
+    for item in convert_to_array(file_list):
         # Translate and then return the match function
         result.append(re.compile(fnmatch.translate(item)).match)
     return result
