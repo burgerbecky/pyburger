@@ -213,10 +213,9 @@ class Interceptstdout(list):
 
     def __exit__(self, *args):
         """
-        Disconnect the stdout and store the items into a list of lines
-
-        Using splitlines(), output the buffer into a list of lines
-        into the output field
+        Disconnect the stdout and store the items into a list of lines.
+        @details
+        Using splitlines(), output the buffer into a list of lines into the output field.
         """
 
         # Restore stdout on exit
@@ -270,6 +269,6 @@ class Node:
         return ret
 
     ## Display this node as a string
-    # See:
+    # See Also:
     # __repr__()
     __str__ = __repr__

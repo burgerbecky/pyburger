@@ -31,8 +31,8 @@ def clean_xcode(path, recursive=False):
         path: Directory to begin scanning
         recursive: Boolean if recursive clean is desired
 
-    See:
-        clean_codeblocks(), fileutils.clean_files() and fileutils.clean_directories()
+    See Also:
+        clean_codeblocks, fileutils.clean_files, fileutils.clean_directories
     """
 
     # Purging user data in XCode projects
@@ -64,8 +64,8 @@ def clean_codeblocks(path, recursive=False):
         path: Directory to begin scanning
         recursive: Boolean if recursive clean is desired
 
-    See:
-        clean_xcode()
+    See Also:
+        clean_xcode
     """
 
     # Purging extra data in Codeblocks projects
@@ -98,8 +98,8 @@ def clean_setup_py(path, recursive=False):
         path: Directory to begin scanning
         recursive: Boolean if recursive clean is desired
 
-    See:
-        clean_xcode() or clean_codeblocks()
+    See Also:
+        clean_xcode, clean_codeblocks
     """
 
     # Check for setup.py

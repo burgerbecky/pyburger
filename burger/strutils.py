@@ -147,8 +147,8 @@ def TrueFalse(item):            # pylint: disable=C0103
         item: Object to convert to a bool before converting into a string
     Returns:
         The string 'True' or 'False'
-    See:
-        truefalse() or TRUEFALSE()
+    See Also:
+        truefalse, TRUEFALSE
     """
 
     # Test if it's the string 'False'
@@ -174,8 +174,8 @@ def truefalse(item):
         item: Object to convert to a bool before converting into a string
     Returns:
         The string 'true' or 'false'
-    See:
-        TRUEFALSE() or TrueFalse()
+    See Also:
+        TRUEFALSE, TrueFalse
     """
 
     # Test if it's the string 'False'
@@ -201,8 +201,8 @@ def TRUEFALSE(item):            # pylint: disable=C0103
         item: Object to convert to a bool before converting into a string
     Returns:
         The string 'TRUE' or 'FALSE'
-    See:
-        truefalse() or TrueFalse()
+    See Also:
+        truefalse, TrueFalse
     """
 
     # Test if it's the string 'False'
@@ -233,8 +233,8 @@ def convert_to_windows_slashes(path_name, force_ending_slash=False):
     Returns:
         A pathname using Windows type slashes '\\'
 
-    See:
-        convert_to_linux_slashes()
+    See Also:
+        convert_to_linux_slashes
 
     """
 
@@ -260,8 +260,8 @@ def convert_to_linux_slashes(path_name, force_ending_slash=False):
     Returns:
         A pathname using Linux/BSD type slashes '/'
 
-    See:
-        convert_to_windows_slashes()
+    See Also:
+        convert_to_windows_slashes
     """
 
     result = path_name.replace('\\', '/')
@@ -287,8 +287,8 @@ def encapsulate_path_windows(input_path):
         input_path: string with the path to encapsulate using Windows rules
     Returns:
         Original input string if Windows can accept it or input properly quoted
-    See:
-        encapsulate_path()
+    See Also:
+        encapsulate_path
     """
 
     # Force to Windows slashes
@@ -324,8 +324,8 @@ def encapsulate_path_linux(input_path):
         input_path: string with the path to encapsulate using Windows rules
     Returns:
         Original input string if Windows can accept it or input properly quoted
-    See:
-        encapsulate_path()
+    See Also:
+        encapsulate_path
     """
 
     # Force to linux slashes
@@ -362,8 +362,8 @@ def encapsulate_path(input_path):
         input_path: string with the path to encapsulate
     Returns:
         Input string or input properly quoted
-    See:
-        encapsulate_path_windows() and encapsulate_path_linux()
+    See Also:
+        encapsulate_path_windows, encapsulate_path_linux
     """
 
     # Process for Windows platforms
@@ -530,29 +530,25 @@ def host_machine():
     Returns:
         The string 'windows', 'macosx', 'linux', or 'unknown'
 
-    See:
-        get_mac_host_type() or get_windows_host_type()
+    See Also:
+        get_mac_host_type, get_windows_host_type
     """
-    # Only windows reports as NT
 
+    # Only windows reports as NT
     if os.name == 'nt':
         return 'windows'
 
     # BSD and GNU report as posix
-
     if os.name == 'posix':
 
         # MacOSX is the Darwin kernel
-
         if platform.system() == 'Darwin':
             return 'macosx'
 
         # Assume linux (Tested on Ubuntu and Red Hat)
-
         return 'linux'
 
     # Surrender Dorothy
-
     return 'unknown'
 
 ########################################
@@ -567,8 +563,8 @@ def get_windows_host_type():
 
     Returns:
         The string 'x64', 'x86', 'arm' or False
-    See:
-        get_mac_host_type() or host_machine()
+    See Also:
+        get_mac_host_type, host_machine
 
     """
 
@@ -597,8 +593,8 @@ def get_mac_host_type():
     Returns:
         The string 'x86', 'ppc' or False
 
-    See:
-        get_windows_host_type() or host_machine()
+    See Also:
+        get_windows_host_type, host_machine
     """
 
     # Mac/Linux?

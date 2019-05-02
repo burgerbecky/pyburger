@@ -87,8 +87,8 @@ def create_folder_if_needed(path):
     Args:
         path: A string object with the pathname.
 
-    See:
-        delete_directory()
+    See Also:
+        delete_directory
     """
 
     try:
@@ -109,8 +109,8 @@ def delete_file(filename):
 
     Args:
         filename: A string object with the filename
-    See:
-        delete_directory()
+    See Also:
+        delete_directory
     """
 
     try:
@@ -196,8 +196,8 @@ def copy_file_if_needed(source, destination, verbose=True, perforce=False):
     Returns:
         Zero if no error otherwise IOError.errno
 
-    See:
-        is_source_newer()
+    See Also:
+        is_source_newer
     """
 
     # If there is a destination file, check the modification times
@@ -243,8 +243,8 @@ def copy_directory_if_needed(source, destination, exception_list=None,
     Returns:
         Zero if no error, non-zero on error
 
-    See:
-        copy_file_if_needed(), create_folder_if_needed()
+    See Also:
+        copy_file_if_needed, create_folder_if_needed
     """
 
     # Ensure there is an exception list, even if empty
@@ -304,8 +304,8 @@ def shutil_readonly_cb(func, path, exception_info):
         path: pathname of the file that is read only
         exception_info: Information about the exception
 
-    See:
-        delete_directory()
+    See Also:
+        delete_directory
     """
 
     # File not found? Ignore
@@ -335,8 +335,8 @@ def delete_directory(path, delete_read_only=False):
         path: Pathname of the directory to delete
         delete_read_only: True if read only files are to be deleted as well
 
-    See:
-        shutil_readonly_cb() or create_folder_if_needed()
+    See Also:
+        shutil_readonly_cb, create_folder_if_needed
     """
 
     if delete_read_only:
@@ -360,8 +360,8 @@ def clean_directories(path, name_list, recursive=False):
         # Delete all temp and __pycache__ files recursively
         burger.fileutils.clean_directories('.', ('*.temp', '__pycache__'), True)
 
-    See:
-        clean_files() or delete_directory()
+    See Also:
+        clean_files, delete_directory
     """
 
     match_list = translate_to_regex_match(name_list)
@@ -394,8 +394,8 @@ def clean_files(path, name_list, recursive=False):
         # Delete all .obj and .lib files recursively
         burger.fileutils.clean_files('temp', ('*.obj', '*.lib'), True)
 
-    See:
-        delete_file() or delete_directory()
+    See Also:
+        delete_file, delete_directory
     """
 
     # Scan the directory
@@ -549,8 +549,8 @@ def unlock_files(working_dir, recursive=False):
     Returns:
         A list object with the name of every file that was unlocked.
 
-    See:
-        lock_files()
+    See Also:
+        lock_files
 
     """
 
@@ -592,8 +592,8 @@ def lock_files(lock_list):
     Args:
         lock_list: Iterable object containing a list of path names to files
             or directories to mark as "read-only"
-    See:
-        unlock_files()
+    See Also:
+        unlock_files
     """
     for item in lock_list:
 
@@ -624,8 +624,8 @@ def load_text_file(file_name):
     Returns:
         A list object with the file
 
-    See:
-        save_text_file() or compare_files()
+    See Also:
+        save_text_file, compare_files
     """
 
     # Open the file in a way that ensur
@@ -661,8 +661,8 @@ def save_text_file(file_name, text_lines, line_feed=None, bom=False):
         line_feed: String to use as a line feed
         bom: If True write the UTF-8 Byte Order Mark
 
-    See:
-        load_text_file()
+    See Also:
+        load_text_file
     """
 
     # Set the proper line feed if not supplied
@@ -701,8 +701,8 @@ def compare_files(filename1, filename2):
     Returns:
         True if the files are equal, False if not.
 
-    See:
-        compare_file_to_string()
+    See Also:
+        compare_file_to_string
     """
 
     # Load in the two text files
@@ -743,8 +743,8 @@ def compare_file_to_string(file_name, data):
     Returns:
         True if the file and the string are the same, False if not
 
-    See:
-        compare_files()
+    See Also:
+        compare_files
     """
 
     # Do a data compare as a text file

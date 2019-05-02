@@ -177,8 +177,8 @@ def get_path_ext(pathext=None):
         pathext: String parsed as PATHEXT, iterable returned as is
     Returns:
         List of file name extension strings.
-    See:
-        burger.buildutils.make_exe_path() or burger.buildutils.find_in_path()
+    See Also:
+        burger.buildutils.make_exe_path, burger.buildutils.find_in_path
     """
 
     # Read the environment variable?
@@ -218,8 +218,8 @@ def make_exe_path(exe_path, pathext=None):
     Returns:
         None if a match was not found, or a full pathname with extension.
 
-    See:
-        burger.buildutils.get_path_ext() or burger.buildutils.find_in_path()
+    See Also:
+        burger.buildutils.get_path_ext, burger.buildutils.find_in_path
     """
     # Test the path as is
     if is_exe(exe_path):
@@ -263,9 +263,10 @@ def find_in_path(filename, search_path=None, executable=False):
         search_path: Search paths to use instead of PATH
         executable: True to ensure it's an executable
     Return:
-        None if not found, a full path if the file is found
-    See:
-        burger.buildutils.get_path_ext() or burger.buildutils.make_exe_path()
+        None if not found, a full path if the file is found.
+
+    See Also:
+        burger.buildutils.get_path_ext, burger.buildutils.make_exe_path
     """
 
     # Set up for added standard extentions
@@ -465,8 +466,8 @@ def where_is_p4(verbose=False, refresh=False, path=None):
         path: Path to Perforce to place in the cache
     Returns:
         A path to the Perforce command line executable or None if not found.
-    See:
-        perforce_edit()
+    See Also:
+        perforce_edit, perforce_add
     """
 
     # pylint: disable=R0912
@@ -560,8 +561,8 @@ def perforce_command(files, command, verbose=False):
 
     Returns:
         Zero if no error, non-zero on error
-    See:
-        where_is_p4()
+    See Also:
+        where_is_p4
     """
 
     # Get the p4 executable
@@ -604,8 +605,8 @@ def perforce_edit(files, verbose=False):
 
     Returns:
         Zero if no error, non-zero on error
-    See:
-        where_is_p4()
+    See Also:
+        where_is_p4
     """
 
     # Perform the edit command
@@ -627,8 +628,8 @@ def perforce_add(files, verbose=False):
 
     Returns:
         Zero if no error, non-zero on error
-    See:
-        where_is_p4()
+    See Also:
+        where_is_p4
     """
 
     # Perform the edit command
@@ -903,8 +904,8 @@ def is_codewarrior_mac_allowed():
     Returns:
         True if CodeWarrior for Mac OS can be run on this Macintosh
 
-    See:
-        strutils.host_machine()
+    See Also:
+        strutils.host_machine
     """
 
     # Test if a mac
@@ -948,8 +949,8 @@ def import_py_script(file_name, module_name=None):
         module_name: Name of the loaded module for ``__name__``
     Returns:
         The imported python script object
-    See:
-        run_py_script()
+    See Also:
+        run_py_script
     """
 
     # If there's no module name, glean one from the filename
@@ -1034,8 +1035,8 @@ def run_py_script(file_name, function_name=None, arg=None):
         arg: Argument to pass to the function
     Returns:
         The value returned from the python script.
-    See:
-        import_py_script()
+    See Also:
+        import_py_script
     """
 
     # If a function name wasn't passed, assume it's ``main``
