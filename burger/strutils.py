@@ -44,6 +44,10 @@ _LINUXSAFESET = frozenset(string.ascii_letters + string.digits + '@%_-+=:,./')
 ## Regex to match comma and quotes
 _RE_COMMA_QUOTES = re.compile(r"\\.|[\"',]", re.DOTALL)
 
+## Cached result for get_mac_host_type()
+_MAC_HOST_TYPE = None
+
+
 ########################################
 
 
@@ -587,34 +591,44 @@ def get_mac_host_type():
     """
     Return Mac OSX host type (PowerPC/Intel)
 
-    Return False if the host is not Mac OSX. 'ppc' if it's a Power PC based
-    system, 'x86' for Intel (Both 32 and 64 bit)
+    Return False if the host is not Mac OSX. 'ppc' or 'ppc64' if it's a Power PC based
+    system, 'x86' or 'x64' for Intel (Both 32 and 64 bit)
 
     Returns:
-        The string 'x86', 'ppc' or False
+        The string 'x86', 'x64', 'ppc', 'ppc64' or False.
 
     See Also:
         get_windows_host_type, host_machine
     """
 
-    # Mac/Linux?
-    if os.name != 'posix':
-        return False
+    global _MAC_HOST_TYPE       # pylint: disable=W0603
+    if _MAC_HOST_TYPE is None:
 
-    # Not linux?
+        # Not macOS? Force returning False
+        if os.name != 'posix' or platform.system() != 'Darwin':
+            cpu = False
+        else:
+            # Since it's a mac, query the Mac OSX cpu type
+            # using the MacOSX python extensions
 
-    if platform.system() != 'Darwin':
-        return False
+            cpu = platform.machine()
 
-    # Since it's a mac, query the Mac OSX cpu type
-    # using the MacOSX python extensions
+            # Intel 64 bit
+            if cpu == 'x86_64':
+                cpu = 'x64'
 
-    cpu = platform.machine()
-    if cpu in ('x86', 'x86_64'):
-        return 'x86'
+            # Special case for Power Macs
+            elif cpu in ('PowerPC', 'ppc', 'Power Macintosh'):
 
-    if cpu in ('PowerPC', 'ppc', 'Power Macintosh'):
-        return 'ppc'
+                # Issue the command machine and capture the output.
+                # If it contains 'ppc970' then you're running on a 64 bit
+                # version of macOS, despite what platform.machine() says
 
-    # Defaults to PowerPC
-    return 'ppc'
+                from .buildutils import run_command
+                if 'ppc970' in run_command('machine', capture_stdout=True)[1]:
+                    cpu = 'ppc64'
+                else:
+                    cpu = 'ppc'
+        _MAC_HOST_TYPE = cpu
+    # Return the resolved global
+    return _MAC_HOST_TYPE
