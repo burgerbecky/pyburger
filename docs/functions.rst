@@ -104,6 +104,9 @@ buildutils.where_is_codeblocks
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. doxygenfunction:: burger::buildutils::where_is_codeblocks
 
+buildutils.where_is_xcode
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. doxygenfunction:: burger::buildutils::where_is_xcode
 
 File Functions
 --------------

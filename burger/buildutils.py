@@ -17,7 +17,7 @@ import errno
 
 from .strutils import is_string, host_machine, encapsulate_path, \
     get_windows_host_type, get_mac_host_type, PY3_3_OR_HIGHER, \
-    PY3_5_OR_HIGHER
+    PY3_4_OR_HIGHER, PY3_5_OR_HIGHER
 
 ## Cached location of the BURGER_SDKS folder
 _BURGER_SDKS_FOLDER = None
@@ -115,9 +115,9 @@ def get_sdks_folder(verbose=False, refresh=False, folder=None):
 
 def fix_csharp(csharp_application_path):
     """
-    Convert pathname to execute a C# exe file
+    Convert pathname to execute a C# exe file.
 
-    C# applications can launch as is on Windows platforms,
+    @details C# applications can launch as is on Windows platforms,
     however, on Mac OSX and Linux, it must be launched
     from mono. Determine the host machine and if not
     windows, automatically prepend 'mono' to
@@ -640,7 +640,7 @@ def perforce_add(files, verbose=False):
 
 def where_is_watcom(verbose=False, refresh=False, path=None):
     """
-    Return the location of Watcom's executables
+    Return the location of Watcom's executables.
 
     Look for an environment variable WATCOM and
     determine if the executable resides there, if
@@ -729,7 +729,7 @@ def where_is_watcom(verbose=False, refresh=False, path=None):
 def run_command(args, working_dir=None, quiet=False, capture_stdout=False,
                 capture_stderr=False):
     """
-    Execute a program and capture the return code and text output
+    Execute a program and capture the return code and text output.
 
     Pass a command line formatted for the current shell and then this
     function will execute that command and capture both stdout and stderr if
@@ -772,7 +772,7 @@ def run_command(args, working_dir=None, quiet=False, capture_stdout=False,
 
 def make_version_header(working_dir, outputfilename, verbose=False):
     """
-    Create a C header with the perforce version
+    Create a C header with the perforce version.
 
     This function assumes version control is with perforce!
 
@@ -896,7 +896,7 @@ def make_version_header(working_dir, outputfilename, verbose=False):
 
 def is_codewarrior_mac_allowed():
     """
-    Return True if this machine can run Codewarrior for Mac OS Carbon
+    Return True if this machine can run Codewarrior for Mac OS Carbon.
 
     Test first if the host platform is a mac, and if so, test if it's
     capable of running Mac OS Carbon Codewarrior 9 or 10
@@ -934,7 +934,7 @@ def is_codewarrior_mac_allowed():
 
 def import_py_script(file_name, module_name=None):
     """
-    Manually load in a python file
+    Manually load in a python file.
 
     Load in a python script from disk and parse it, creating
     a .pyc file if needed and reading from a .pyc file if it exists.
@@ -953,6 +953,7 @@ def import_py_script(file_name, module_name=None):
         run_py_script
     """
 
+    # pylint: disable=R0101, R0912
     # If there's no module name, glean one from the filename
     if not module_name:
         module_name = os.path.splitext(os.path.split(file_name)[-1])[0]
@@ -1021,7 +1022,7 @@ def import_py_script(file_name, module_name=None):
 
 def run_py_script(file_name, function_name=None, arg=None):
     """
-    Manually load and run a function in a python file
+    Manually load and run a function in a python file.
 
     Load in a python script from disk and execute a specific function.
     Returns the value returned from the loaded script.
@@ -1057,7 +1058,7 @@ def run_py_script(file_name, function_name=None, arg=None):
 
 def where_is_visual_studio(vs_version):
     """
-    Locate devenv.com for a specific version of Visual Studio
+    Locate devenv.com for a specific version of Visual Studio.
 
     Given a specific version by year, check for the appropriate environment variable
     that contains the path to the executable of the IDE
@@ -1085,58 +1086,32 @@ def where_is_visual_studio(vs_version):
 
     # For each version of Visual Studio, set the default environment variable
     # and path that the specific version of Visual Studio resides
-    if vs_version == 2003:
-        # Is Visual studio 2003 installed?
-        env_path = 'VS71COMNTOOLS'
-        def_path = 'Microsoft Visual Studio .NET 2003'
-    elif vs_version == 2005:
-        # Is Visual studio 2005 installed?
-        env_path = 'VS80COMNTOOLS'
-        def_path = 'Microsoft Visual Studio 8'
-    elif vs_version == 2008:
-        # Is Visual studio 2008 installed?
-        env_path = 'VS90COMNTOOLS'
-        def_path = 'Microsoft Visual Studio 9.0'
-    elif vs_version == 2010:
-        # Is Visual studio 2010 installed?
-        env_path = 'VS100COMNTOOLS'
-        def_path = 'Microsoft Visual Studio 10.0'
-    elif vs_version == 2012:
-        # Is Visual studio 2012 installed?
-        env_path = 'VS110COMNTOOLS'
-        def_path = 'Microsoft Visual Studio 11.0'
-    elif vs_version == 2013:
-        # Is Visual studio 2013 installed?
-        env_path = 'VS120COMNTOOLS'
-        def_path = 'Microsoft Visual Studio 12.0'
-    elif vs_version == 2015:
-        # Is Visual studio 2015 installed?
-        env_path = 'VS140COMNTOOLS'
-        def_path = 'Microsoft Visual Studio 14.0'
-    elif vs_version == 2017:
-        # Is Visual studio 2017 installed?
-        env_path = 'VS150COMNTOOLS'
-        def_path = 'Microsoft Visual Studio\\2017\\Community'
-    elif vs_version == 2019:
-        # Is Visual studio 2019 installed?
-        env_path = 'VS160COMNTOOLS'
-        def_path = 'Microsoft Visual Studio\\2019\\Community'
-    else:
+
+    vs_table = {
+        2003: ('VS71COMNTOOLS', 'Microsoft Visual Studio .NET 2003'),
+        2005: ('VS80COMNTOOLS', 'Microsoft Visual Studio 8'),
+        2008: ('VS90COMNTOOLS', 'Microsoft Visual Studio 9.0'),
+        2010: ('VS100COMNTOOLS', 'Microsoft Visual Studio 10.0'),
+        2012: ('VS110COMNTOOLS', 'Microsoft Visual Studio 11.0'),
+        2013: ('VS120COMNTOOLS', 'Microsoft Visual Studio 12.0'),
+        2015: ('VS140COMNTOOLS', 'Microsoft Visual Studio 14.0'),
+        2017: ('VS150COMNTOOLS', 'Microsoft Visual Studio\\2017\\Community'),
+        2019: ('VS160COMNTOOLS', 'Microsoft Visual Studio\\2019\\Community')
+    }
+
+    table_item = vs_table.get(vs_version, None)
+    if not table_item:
         return None
 
     # Try the environment variable first
-    vstudiopath = os.getenv(env_path, default=None)
+    vstudiopath = os.getenv(table_item[0], default=None)
     if not vstudiopath:
         # Try the pathname next
-        if host_type == 'x86':
-            program_files = 'ProgramFiles'
-        else:
-            program_files = 'ProgramFiles(x86)'
+        program_files = 'ProgramFiles' if host_type == 'x86' else 'ProgramFiles(x86)'
 
         # Generate the proper path to test
         vstudiopath = os.path.expandvars(
-            '%' + program_files + '%\\' + def_path + '\\Common7\\Tools\\')
-
+            '%' + program_files + '%\\' + table_item[1] + '\\Common7\\Tools\\')
     # Locate the launcher
     vstudiopath = os.path.abspath(vstudiopath + r'\..\ide\devenv.com')
     if os.path.isfile(vstudiopath):
@@ -1150,7 +1125,7 @@ def where_is_visual_studio(vs_version):
 
 def where_is_codeblocks(verbose=False, refresh=False, path=None):
     """
-    Return the location of CodeBlocks's executable
+    Return the location of CodeBlocks's executable.
 
     Look for an environment variable CODEBLOCKS and
     determine if the executable resides there, if
@@ -1246,3 +1221,97 @@ def where_is_codeblocks(verbose=False, refresh=False, path=None):
 
     # Can't find it
     return None
+
+########################################
+
+
+def where_is_xcode(xcode_version=None):
+    """
+    Locate xcodebuild for a specific version of XCode.
+
+    Given a specific version by version, scan the locations that the IDE
+    would be found.
+
+    Note:
+        This function will always return None on non-macOS hosts.
+        Minimum version of XCode is 3.
+
+    Examples:
+        # Normal use
+        xcode_path = burger.buildutils.where_is_xcode(10)
+        if not xcode_path:
+            print('XCode 10 not found')
+            raise NameError("XCode 10 not found")
+
+    Args:
+        xcode_version: Version number
+    Returns:
+        Path to xcodebuild for the XCode version or None.
+    """
+
+    # pylint: disable=R0912
+
+    # Test if running on a mac host
+    host_type = get_mac_host_type()
+    if not host_type:
+        return None
+
+    import plistlib
+
+    # XCode 4 and higher reside in the app folder
+    highest_version = 0
+    xcodebuild = None
+
+    # Skip if only checking for version 3
+    if xcode_version != 3:
+
+        # Scan the applications folder for all apps called "XCode"
+        for item in os.listdir('/Applications'):
+
+            # Scan only apps whose name starts with xcode
+            if not item.lower().startswith('xcode'):
+                continue
+
+            temp_path = '/Applications/' + item + '/Contents/version.plist'
+            try:
+                if PY3_4_OR_HIGHER:
+                    with open(temp_path, 'rb') as filefp:
+                        version_dict = plistlib.load(filefp)
+                else:
+                    version_dict = plistlib.readPlist(temp_path) # pylint: disable=W1505
+
+            # Any IO error is acceptable to ignore
+            except IOError:
+                continue
+
+            version = version_dict.get('CFBundleShortVersionString', None)
+            if not version:
+                continue
+
+            temp_path = '/Applications/' + item + '/Contents/Developer/usr/bin/xcodebuild'
+            if not os.path.isfile(temp_path):
+                continue
+
+            # Check the version for a match
+            version = int(version.split('.')[0])
+            if xcode_version:
+                # If scanning for a perfect match, exit if found
+                if version == xcode_version:
+                    highest_version = version
+                    xcodebuild = (temp_path, version)
+                    break
+
+            # Scan for the most recent version of XCode
+            elif version > highest_version:
+                highest_version = version
+                xcodebuild = (temp_path, version)
+
+    # XCode 3 is hard coded to a specific location
+    if (not xcode_version and not highest_version) or xcode_version == 3:
+        # On OSX Lion and higher, XCode 3.1.4 is a separate folder
+        for item in ('/Xcode3.1.4/usr/bin/xcodebuild', '/Developer/usr/bin/xcodebuild'):
+            if os.path.isfile(item):
+                xcodebuild = (item, 3)
+                break
+
+    return xcodebuild
