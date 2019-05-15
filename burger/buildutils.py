@@ -638,7 +638,7 @@ def perforce_add(files, verbose=False):
 ########################################
 
 
-def where_is_watcom(verbose=False, refresh=False, path=None):
+def where_is_watcom(verbose=False, refresh=False, path=None, command=None):
     """
     Return the location of Watcom's executables.
 
@@ -654,6 +654,7 @@ def where_is_watcom(verbose=False, refresh=False, path=None):
         verbose: If True, print a message if watcom was not found
         refresh: If True, reset the cache and force a reload.
         path: Path to watcom to place in the cache
+        command: Watcom program to find.
 
     Returns:
         A path to the Watcom folder or None if not found.
@@ -671,25 +672,41 @@ def where_is_watcom(verbose=False, refresh=False, path=None):
     if path:
         _WATCOM_PATH = path
 
+    # Windows .exe
+    if get_windows_host_type():
+        exe_folder = 'binnt'
+        suffix = '.exe'
+
     # Watcom is not available on macOS yet
-    if get_mac_host_type():
+    elif get_mac_host_type():
         return None
+
+    # Linux
+    else:
+        exe_folder = 'binl'
+        suffix = ''
+
+    # Append the system specific suffix
+    if command:
+        fake_command = command + suffix
+    else:
+        fake_command = 'wcc386' + suffix
 
     # Is cached?
     if _WATCOM_PATH:
+        if command:
+            return os.path.join(_WATCOM_PATH, exe_folder, fake_command)
         return _WATCOM_PATH
-
-    if get_windows_host_type():
-        test_path = 'binnt\\wcc386.exe'
-    else:
-        test_path = 'binl/wcc386'
 
     # Try the environment variable first
     watcom_path = os.getenv('WATCOM', None)
     if watcom_path:
         # Valid?
-        if is_exe(os.path.join(watcom_path, test_path)):
+        full_path = os.path.join(watcom_path, exe_folder, fake_command)
+        if is_exe(full_path):
             _WATCOM_PATH = watcom_path
+            if command:
+                return full_path
             return watcom_path
 
     # List of the usual suspects
@@ -711,9 +728,12 @@ def where_is_watcom(verbose=False, refresh=False, path=None):
     # Scan the list of known locations
     for watcom_path in full_paths:
         # Valid?
-        if is_exe(os.path.join(watcom_path, test_path)):
+        full_path = os.path.join(watcom_path, exe_folder, fake_command)
+        if is_exe(os.path.join(watcom_path, full_path)):
             # Finally found it!
             _WATCOM_PATH = watcom_path
+            if command:
+                return full_path
             return watcom_path
 
     # Oh, dear.
@@ -1278,7 +1298,7 @@ def where_is_xcode(xcode_version=None):
                     with open(temp_path, 'rb') as filefp:
                         version_dict = plistlib.load(filefp)
                 else:
-                    version_dict = plistlib.readPlist(temp_path) # pylint: disable=W1505
+                    version_dict = plistlib.readPlist(temp_path)  # pylint: disable=W1505
 
             # Any IO error is acceptable to ignore
             except IOError:
