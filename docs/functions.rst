@@ -191,6 +191,9 @@ fileutils.read_zero_terminated_string
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. doxygenfunction:: burger::fileutils::read_zero_terminated_string
 
+fileutils.save_text_file_if_newer
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. doxygenfunction:: burger::fileutils::save_text_file_if_newer
 
 Build Helpers
 -------------

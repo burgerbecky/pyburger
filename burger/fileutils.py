@@ -729,7 +729,7 @@ def compare_files(filename1, filename2):
 ########################################
 
 
-def compare_file_to_string(file_name, data):
+def compare_file_to_string(file_name, text_lines):
     """
     Compare text file and a string for equality
 
@@ -738,7 +738,7 @@ def compare_file_to_string(file_name, data):
 
     Args:
         file_name: string object with the pathname of the file to test
-        data: string object to test against
+        text_lines: string object to test against
 
     Returns:
         True if the file and the string are the same, False if not
@@ -756,18 +756,18 @@ def compare_file_to_string(file_name, data):
     if file_one_lines is not None:
 
         # No data? Assume it's empty
-        if data is None:
+        if text_lines is None:
             file_two_lines = []
 
         # Test if this is a StringIO object
-        elif hasattr(data, 'getvalue'):
-            file_two_lines = data.getvalue().splitlines()
+        elif hasattr(text_lines, 'getvalue'):
+            file_two_lines = text_lines.getvalue().splitlines()
         # Test if a single string
-        elif is_string(data):
-            file_two_lines = data.splitlines()
+        elif is_string(text_lines):
+            file_two_lines = text_lines.splitlines()
         else:
             # Assume it's an iterable
-            file_two_lines = data
+            file_two_lines = text_lines
 
         # Compare the file contents taking into account
         # different line endings
@@ -822,3 +822,60 @@ def read_zero_terminated_string(filep, encoding='utf-8'):
 
     # Ensure that UTF-8 data is properly parsed
     return chars.decode(encoding)
+
+########################################
+
+
+def save_text_file_if_newer(file_name, text_lines, line_feed=None,
+                            bom=False, perforce=False, verbose=False):
+    """
+    Save in a text file from an iterable of lines if newer.
+
+    Compare an iterable of lines to a pre-existing text file. If
+    the text file either exists or differs from the input, write
+    a new text file to disk.
+
+    Note:
+        This function will write out the text file using utf-8 encoding.
+
+    Args:
+        file_name: File to load
+        text_lines: Lines to save
+        line_feed: String to use as a line feed
+        bom: If True write the UTF-8 Byte Order Mark
+        perforce: Enable perforce checkout or add if True
+        verbose: Enable messages if True
+    Returns:
+        True if no change was performed, False if the file was written
+
+    See Also:
+        save_text_file, compare_file_to_string, perforce_edit, perforce_add
+    """
+
+    if compare_file_to_string(file_name, text_lines):
+        if verbose:
+            print('{} was not changed.'.format(file_name))
+        return True
+
+    # Check out the file if Perforce is requested
+    do_perforce_add = False
+    if perforce:
+        # New file?
+        if not os.path.isfile(file_name):
+            do_perforce_add = True
+
+        # If write protected, check out the file
+        elif is_write_protected(file_name):
+            from .buildutils import perforce_edit
+            perforce_edit(file_name, verbose=verbose)
+
+    # Save the file
+    if verbose:
+        print('Saving {}.'.format(file_name))
+    save_text_file(file_name, text_lines, line_feed=line_feed, bom=bom)
+
+    # If needed, after the save, mark for add with Perforce
+    if do_perforce_add:
+        from .buildutils import perforce_add
+        perforce_add(file_name, verbose=verbose)
+    return False

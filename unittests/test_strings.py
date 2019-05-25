@@ -53,6 +53,7 @@ def test_isstring():
 
     # Python 2.x tests (Not supported on 3.x or higher)
     if _PY2:
+        # pylint: disable=E0602
         assert burger.is_string(unicode(''))
         assert burger.is_string(unicode('a'))
         assert burger.is_string(unicode(u'a'))
@@ -110,6 +111,7 @@ def test_convert_to_array():
 
     # Python 2.x tests (Not supported on 3.x or higher)
     if _PY2:
+        # pylint: disable=E0602
         assert burger.convert_to_array(unicode('a')) == ['a']
         assert burger.convert_to_array(unicode(u'a')) == ['a']
         assert burger.convert_to_array(unicode(b'a')) == ['a']
