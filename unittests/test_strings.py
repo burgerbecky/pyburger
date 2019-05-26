@@ -475,3 +475,46 @@ def test_translate_to_regex_match():
         assert not item('foo.bar')
         assert not item('py.px')
         assert not item('py')
+
+
+########################################
+
+
+def test_escape_xml_cdata():
+    """
+    Test burger.escape_xml_cdata()
+    """
+
+    tests = (
+        ('before', 'before'),
+        ('foo&foo', 'foo&amp;foo'),
+        ('<token>', '&lt;token&gt;'),
+        ('"quotes"\n', '"quotes"\n')
+    )
+
+    for test in tests:
+        assert burger.escape_xml_cdata(test[0]) == test[1]
+
+
+########################################
+
+
+def test_escape_xml_attribute():
+    """
+    Test burger.escape_xml_attribute()
+    """
+
+    tests = (
+        ('before', 'before'),
+        ('foo&foo', 'foo&amp;foo'),
+        ('<token>', '&lt;token&gt;'),
+        ('"quotes"\n', '&quot;quotes&quot;&#10;'),
+        ('\r\n\n\r', '&#10;&#10;&#10;'),
+        ('mac\rstring', 'mac&#10;string'),
+        ('linux\nstring', 'linux&#10;string'),
+        ('pc\r\nstring', 'pc&#10;string'),
+        ('test\ttabs\tnow', 'test&#09;tabs&#09;now')
+    )
+
+    for test in tests:
+        assert burger.escape_xml_attribute(test[0]) == test[1]

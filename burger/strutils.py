@@ -277,7 +277,6 @@ def convert_to_linux_slashes(path_name, force_ending_slash=False):
 
 
 def encapsulate_path_windows(input_path):
-
     """
     Quote a pathname for use in the Windows system shell
 
@@ -351,7 +350,6 @@ def encapsulate_path_linux(input_path):
 
 
 def encapsulate_path(input_path):
-
     """
     Quote a pathname for use in the native system shell
 
@@ -496,8 +494,8 @@ def parse_csv(csv_string):
             if delimiter in "\"'":
 
                 # If there's a delimiter, properly handle it
-                temp = next(csv.reader([temp], quotechar=str(delimiter), \
-                    delimiter=str(delimiter), quoting=csv.QUOTE_ALL))[0]
+                temp = next(csv.reader([temp], quotechar=str(delimiter),
+                                       delimiter=str(delimiter), quoting=csv.QUOTE_ALL))[0]
         result.append(temp)
     return result
 
@@ -632,3 +630,76 @@ def get_mac_host_type():
         _MAC_HOST_TYPE = cpu
     # Return the resolved global
     return _MAC_HOST_TYPE
+
+
+########################################
+
+def escape_xml_cdata(xml_string):
+    """
+    Convert escape codes for CDATA XML records.
+
+    According to the XML docs, &, < and > cannot exist in a string
+    so they must be replaced with "&amp;", "&lt;" and "&gt;" respectively.
+
+    Args:
+        xml_string: String to convert to one compatible with XML CDATA
+    Return:
+        Original string if no changes, or a new string with escaped characters.
+    """
+
+    # For speed, only perform the replace operation on strings that
+    # actually need conversion.
+
+    # IMPORTANT! Convert & first, since it will be inserted in
+    # operations that follow.
+    if '&' in xml_string:
+        xml_string = xml_string.replace('&', '&amp;')
+
+    if '<' in xml_string:
+        xml_string = xml_string.replace('<', '&lt;')
+    if '>' in xml_string:
+        xml_string = xml_string.replace('>', '&gt;')
+    return xml_string
+
+########################################
+
+
+def escape_xml_attribute(xml_string):
+    """
+    Convert escape codes for XML element attribute records.
+
+    According to the XML docs, ", &, < and > cannot exist in a string
+    so they must be replaced with "&quot'", &amp;", "&lt;" and "&gt;" respectively.
+    Tabs and line feeds will be converted to "&#10;" and "&#09;".
+
+    Note:
+        https://www.w3.org/TR/REC-xml/#sec-line-ends
+    Args:
+        xml_string: String to convert to one compatible with XML attribute strings.
+    Return:
+        Original string if no changes, or a new string with escaped characters.
+    """
+
+    # For speed, only perform the replace operation on strings that
+    # actually need conversion.
+
+    # Process &, < and >
+    xml_string = escape_xml_cdata(xml_string)
+
+    # Attributes are encased in quotes, escape the quote
+    if '"' in xml_string:
+        xml_string = xml_string.replace('"', '&quot;')
+
+    # Line feeds need to be handled carefully because no one
+    # can agree on \r, \n, \r\n, see note URL above
+    if '\r\n' in xml_string:
+        xml_string = xml_string.replace('\r\n', '&#10;')
+    if '\r' in xml_string:
+        xml_string = xml_string.replace('\r', '&#10;')
+    if '\n' in xml_string:
+        xml_string = xml_string.replace('\n', '&#10;')
+
+    # Let's convert tabs
+    if '\t' in xml_string:
+        xml_string = xml_string.replace('\t', '&#09;')
+    return xml_string

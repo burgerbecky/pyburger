@@ -72,6 +72,13 @@ strutils.get_mac_host_type
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. doxygenfunction:: burger::strutils::get_mac_host_type
 
+strutils.escape_xml_cdata
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. doxygenfunction:: burger::strutils::escape_xml_cdata
+
+strutils.escape_xml_attribute
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. doxygenfunction:: burger::strutils::escape_xml_attribute
 
 File Locators
 -------------
