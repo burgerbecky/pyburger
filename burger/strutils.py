@@ -703,3 +703,44 @@ def escape_xml_attribute(xml_string):
     if '\t' in xml_string:
         xml_string = xml_string.replace('\t', '&#09;')
     return xml_string
+
+########################################
+
+
+def packed_paths(entries, slashes=None, seperator=None, force_ending_slash=False):
+    """
+    Convert a list of paths and convert to a PATH string.
+
+    Convert ['a','b','c'] to a;b;c
+
+    Args:
+        entries: list of strings to concatenate
+        slashes: None for no conversion, '/' or '\\' for the desired path seperator
+        seperator: Character to use to seperate entries, ';' is used for None
+        force_ending_slash: If slashes were converted, enforce a trailing slash if true
+    Return:
+        String of all entries seperated by ';' or ``seperator``
+    """
+
+    # Verify the seperator
+    if not seperator:
+        seperator = ';'
+
+    entries = convert_to_array(entries)
+
+    # Slash functionality?
+    if slashes:
+        # Windows?
+        if slashes == '\\':
+            function = convert_to_windows_slashes
+        else:
+            # Everyone else use linux slashes
+            function = convert_to_linux_slashes
+
+        # Don't modify the original list
+        temp_entries = []
+        for item in entries:
+            temp_entries.append(function(item, force_ending_slash=force_ending_slash))
+    else:
+        temp_entries = entries
+    return seperator.join(temp_entries)

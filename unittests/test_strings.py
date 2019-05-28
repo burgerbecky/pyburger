@@ -518,3 +518,57 @@ def test_escape_xml_attribute():
 
     for test in tests:
         assert burger.escape_xml_attribute(test[0]) == test[1]
+
+########################################
+
+
+def test_packed_paths():
+    """
+    Test burger.packed_paths()
+    """
+
+    tests = (
+        ('test', 'test'),
+        (('foo', 'bar'), 'foo;bar'),
+        (['a', 'b', 'c'], 'a;b;c'),
+        (['a','bart','c/c'], 'a;bart;c/c')
+    )
+
+    for test in tests:
+        assert burger.packed_paths(test[0]) == test[1]
+
+    # Test seperator replacement
+    seperators = (
+        ('a', ';', ':', '\n')
+    )
+
+    for sep in seperators:
+        for test in tests:
+            assert burger.packed_paths(test[0], seperator=sep) == test[1].replace(';', sep)
+
+    # Test slashes and forced ending
+    paths = (
+        'c:\\foo\\bar',
+        '/home/usr/bar',
+        '~/.config',
+        'foobar.txt',
+        'c:\\foo\\bar\\',
+        '/home/usr/bar/',
+        '~/.config/',
+        '/break\\me',
+        '\\fun\\fun\\'
+    )
+
+    for path in paths:
+        assert burger.packed_paths(path, slashes='/') == path.replace('\\', '/')
+        assert burger.packed_paths(path, slashes='\\') == path.replace('/', '\\')
+
+        temp = path.replace('\\', '/')
+        if not temp.endswith('/'):
+            temp = temp + '/'
+        assert burger.packed_paths(path, slashes='/', force_ending_slash=True) == temp
+
+        temp = path.replace('/', '\\')
+        if not temp.endswith('\\'):
+            temp = temp + '\\'
+        assert burger.packed_paths(path, slashes='\\', force_ending_slash=True) == temp

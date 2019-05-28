@@ -44,7 +44,8 @@ from .strutils import PY2, unicode_print, is_string, convert_to_array, \
     convert_to_linux_slashes, encapsulate_path_windows, encapsulate_path_linux, \
     encapsulate_path, split_comma_with_quotes, parse_csv, \
     translate_to_regex_match, host_machine, get_windows_host_type, \
-    get_mac_host_type, escape_xml_cdata, escape_xml_attribute
+    get_mac_host_type, escape_xml_cdata, escape_xml_attribute, \
+    packed_paths
 
 from .fileutils import is_write_protected, make_executable, \
     create_folder_if_needed, delete_file, is_source_newer, copy_file_if_needed, \
@@ -122,6 +123,7 @@ __all__ = [
     'get_mac_host_type',
     'escape_xml_cdata',
     'escape_xml_attribute',
+    'packed_paths',
     'is_write_protected',
     'make_executable',
     'create_folder_if_needed',
