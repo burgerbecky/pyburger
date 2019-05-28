@@ -73,12 +73,17 @@ strutils.get_mac_host_type
 .. doxygenfunction:: burger::strutils::get_mac_host_type
 
 strutils.escape_xml_cdata
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^
 .. doxygenfunction:: burger::strutils::escape_xml_cdata
 
 strutils.escape_xml_attribute
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. doxygenfunction:: burger::strutils::escape_xml_attribute
+
+strutils.packed_paths
+^^^^^^^^^^^^^^^^^^^^^
+.. doxygenfunction:: burger::strutils::packed_paths
+
 
 File Locators
 -------------
@@ -112,7 +117,7 @@ buildutils.where_is_codeblocks
 .. doxygenfunction:: burger::buildutils::where_is_codeblocks
 
 buildutils.where_is_xcode
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^
 .. doxygenfunction:: burger::buildutils::where_is_xcode
 
 File Functions
@@ -199,7 +204,7 @@ fileutils.read_zero_terminated_string
 .. doxygenfunction:: burger::fileutils::read_zero_terminated_string
 
 fileutils.save_text_file_if_newer
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. doxygenfunction:: burger::fileutils::save_text_file_if_newer
 
 Build Helpers
