@@ -85,9 +85,13 @@ def unicode_print(input_string):
 
 try:
     # Test if basestring exists (Only in Python 2.x)
-    basestring                                        # pylint: disable=W0104,basestring-builtin
+    # pylint: disable=W0104,basestring-builtin
+    basestring
+
+    # pylint: disable=C0103,basestring-builtin
     ## Internal type to pass to isinstance() for is_string()
-    _IS_STRING_TEST = basestring                    # pylint: disable=C0103,basestring-builtin
+    _IS_STRING_TEST = basestring
+
 
 except NameError:
     # Python 3 or later
@@ -494,8 +498,12 @@ def parse_csv(csv_string):
             if delimiter in "\"'":
 
                 # If there's a delimiter, properly handle it
-                temp = next(csv.reader([temp], quotechar=str(delimiter),
-                                       delimiter=str(delimiter), quoting=csv.QUOTE_ALL))[0]
+                temp = next(
+                    csv.reader(
+                        [temp],
+                        quotechar=str(delimiter),
+                        delimiter=str(delimiter),
+                        quoting=csv.QUOTE_ALL))[0]
         result.append(temp)
     return result
 
@@ -589,8 +597,8 @@ def get_mac_host_type():
     """
     Return Mac OSX host type (PowerPC/Intel)
 
-    Return False if the host is not Mac OSX. 'ppc' or 'ppc64' if it's a Power PC based
-    system, 'x86' or 'x64' for Intel (Both 32 and 64 bit)
+    Return False if the host is not Mac OSX. 'ppc' or 'ppc64' if it's a Power
+    PC based system, 'x86' or 'x64' for Intel (Both 32 and 64 bit)
 
     Returns:
         The string 'x86', 'x64', 'ppc', 'ppc64' or False.
@@ -669,13 +677,15 @@ def escape_xml_attribute(xml_string):
     Convert escape codes for XML element attribute records.
 
     According to the XML docs, ", &, < and > cannot exist in a string
-    so they must be replaced with "&quot'", &amp;", "&lt;" and "&gt;" respectively.
+    so they must be replaced with "&quot'", &amp;", "&lt;" and "&gt;"
+    respectively.
+
     Tabs and line feeds will be converted to "&#10;" and "&#09;".
 
     Note:
         https://www.w3.org/TR/REC-xml/#sec-line-ends
     Args:
-        xml_string: String to convert to one compatible with XML attribute strings.
+        xml_string: String to convert to XML attribute strings.
     Return:
         Original string if no changes, or a new string with escaped characters.
     """
@@ -707,7 +717,8 @@ def escape_xml_attribute(xml_string):
 ########################################
 
 
-def packed_paths(entries, slashes=None, seperator=None, force_ending_slash=False):
+def packed_paths(entries, slashes=None, seperator=None,
+                 force_ending_slash=False):
     """
     Convert a list of paths and convert to a PATH string.
 
@@ -715,9 +726,9 @@ def packed_paths(entries, slashes=None, seperator=None, force_ending_slash=False
 
     Args:
         entries: list of strings to concatenate
-        slashes: None for no conversion, '/' or '\\' for the desired path seperator
+        slashes: None for no conversion, '/' or '\\' path seperator
         seperator: Character to use to seperate entries, ';' is used for None
-        force_ending_slash: If slashes were converted, enforce a trailing slash if true
+        force_ending_slash: Enforce a trailing slash if True
     Return:
         String of all entries seperated by ';' or ``seperator``
     """
@@ -740,7 +751,10 @@ def packed_paths(entries, slashes=None, seperator=None, force_ending_slash=False
         # Don't modify the original list
         temp_entries = []
         for item in entries:
-            temp_entries.append(function(item, force_ending_slash=force_ending_slash))
+            temp_entries.append(
+                function(
+                    item,
+                    force_ending_slash=force_ending_slash))
     else:
         temp_entries = entries
     return seperator.join(temp_entries)

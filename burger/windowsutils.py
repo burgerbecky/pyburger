@@ -61,26 +61,36 @@ def get_file_info(filename, info):
             res_data = create_string_buffer(size)
 
             # Extract the file data
-            windll.version.GetFileVersionInfoW(wchar_filename, None, size, res_data)
+            windll.version.GetFileVersionInfoW(
+                wchar_filename, None, size, res_data)
 
             # Find the default codepage (Not everything is in English)
             record = c_void_p()
             length = c_uint()
-            windll.version.VerQueryValueW(res_data, '\\VarFileInfo\\Translation',
-                                          byref(record), byref(length))
+            windll.version.VerQueryValueW(
+                res_data,
+                '\\VarFileInfo\\Translation',
+                byref(record),
+                byref(length))
             # Was a codepage found?
             if length.value:
 
                 # Parse out the first found codepage (It's the default language)
                 # it's in the form of two 16 bit shorts
-                codepages = array.array('H', string_at(record.value, length.value))
+                codepages = array.array(
+                    'H', string_at(
+                        record.value, length.value))
 
                 # Extract information from the version using unicode and
                 # the proper codepage
                 if windll.version.VerQueryValueW(
-                        res_data, '\\StringFileInfo\\{0:04x}{1:04x}\\{2}'.format(
-                            codepages[0], codepages[1], info),
-                        byref(record), byref(length)):
+                        res_data,
+                        '\\StringFileInfo\\{0:04x}{1:04x}\\{2}'.format(
+                            codepages[0],
+                            codepages[1],
+                            info),
+                        byref(record),
+                        byref(length)):
                     # Return the final result removing the terminating zero
                     return wstring_at(record.value, length.value - 1)
     return None

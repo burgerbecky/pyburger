@@ -28,6 +28,9 @@ def test_isstring():
     Test burger.is_string()
     """
 
+    # unicode not defines
+    # flake8: noqa=F821
+
     # Must return False
     assert not burger.is_string(0)
     assert not burger.is_string(None)
@@ -291,12 +294,13 @@ def test_convert_to_linux_slashes():
 
     assert burger.convert_to_linux_slashes(
         'foo', force_ending_slash=True) == 'foo/'
-    assert burger.convert_to_linux_slashes('C:/foo\\bar',
-                                           force_ending_slash=True) == 'C:/foo/bar/'
-    assert burger.convert_to_linux_slashes('./foo/bar/fug',
-                                           force_ending_slash=True) == './foo/bar/fug/'
-    assert burger.convert_to_linux_slashes('.\\foo\\bar\\fug',
-                                           force_ending_slash=True) == './foo/bar/fug/'
+    assert burger.convert_to_linux_slashes(
+        'C:/foo\\bar', force_ending_slash=True) == 'C:/foo/bar/'
+    assert burger.convert_to_linux_slashes(
+        './foo/bar/fug', force_ending_slash=True) == './foo/bar/fug/'
+    assert burger.convert_to_linux_slashes(
+        '.\\foo\\bar\\fug',
+        force_ending_slash=True) == './foo/bar/fug/'
     assert burger.convert_to_linux_slashes(
         'foo\\', force_ending_slash=True) == 'foo/'
 
@@ -531,7 +535,7 @@ def test_packed_paths():
         ('test', 'test'),
         (('foo', 'bar'), 'foo;bar'),
         (['a', 'b', 'c'], 'a;b;c'),
-        (['a','bart','c/c'], 'a;bart;c/c')
+        (['a', 'bart', 'c/c'], 'a;bart;c/c')
     )
 
     for test in tests:
@@ -544,7 +548,10 @@ def test_packed_paths():
 
     for sep in seperators:
         for test in tests:
-            assert burger.packed_paths(test[0], seperator=sep) == test[1].replace(';', sep)
+            assert burger.packed_paths(
+                test[0],
+                seperator=sep) == test[1].replace(
+                    ';', sep)
 
     # Test slashes and forced ending
     paths = (
@@ -561,14 +568,18 @@ def test_packed_paths():
 
     for path in paths:
         assert burger.packed_paths(path, slashes='/') == path.replace('\\', '/')
-        assert burger.packed_paths(path, slashes='\\') == path.replace('/', '\\')
+        assert burger.packed_paths(
+            path, slashes='\\') == path.replace(
+                '/', '\\')
 
         temp = path.replace('\\', '/')
         if not temp.endswith('/'):
             temp = temp + '/'
-        assert burger.packed_paths(path, slashes='/', force_ending_slash=True) == temp
+        assert burger.packed_paths(
+            path, slashes='/', force_ending_slash=True) == temp
 
         temp = path.replace('/', '\\')
         if not temp.endswith('\\'):
             temp = temp + '\\'
-        assert burger.packed_paths(path, slashes='\\', force_ending_slash=True) == temp
+        assert burger.packed_paths(
+            path, slashes='\\', force_ending_slash=True) == temp

@@ -120,7 +120,8 @@ def test_import_py_script():
     selffile = os.path.dirname(os.path.abspath(__file__))
 
     # Load in from the 'a' folder
-    sample = burger.import_py_script(os.path.join(selffile, 'data', 'sample.py'))
+    sample = burger.import_py_script(
+        os.path.join(selffile, 'data', 'sample.py'))
     assert sample.__name__ == 'sample'
     assert hasattr(sample, 'test')
     assert hasattr(sample, 'testa')
@@ -129,7 +130,8 @@ def test_import_py_script():
     assert sample.testa() == 'testa'
 
     # Switch to the file in the 'b' folder
-    sample = burger.import_py_script(os.path.join(selffile, 'data2', 'sample.py'))
+    sample = burger.import_py_script(
+        os.path.join(selffile, 'data2', 'sample.py'))
     assert sample.__name__ == 'sample'
     assert hasattr(sample, 'test')
     assert not hasattr(sample, 'testa')
@@ -177,6 +179,16 @@ def test_run_py_script():
         os.path.join(selffile, 'data2', 'sample.py'), 'testb') == 'testb'
 
     assert burger.run_py_script(
-        os.path.join(selffile, 'data', 'sample.py'), 'main', 'gerbil') == 'gerbil'
+        os.path.join(
+            selffile,
+            'data',
+            'sample.py'),
+        'main',
+        'gerbil') == 'gerbil'
     assert burger.run_py_script(
-        os.path.join(selffile, 'data2', 'sample.py'), 'main', 'cat') == 'cattest'
+        os.path.join(
+            selffile,
+            'data2',
+            'sample.py'),
+        'main',
+        'cat') == 'cattest'

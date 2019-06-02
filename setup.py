@@ -140,7 +140,10 @@ def clean(working_dir):
     for item in CLEAN_DIR_LIST:
         PROJECT_MODULE.delete_directory(os.path.join(working_dir, item))
 
-    PROJECT_MODULE.clean_directories(working_dir, CLEAN_DIR_RECURSE_LIST, recursive=True)
+    PROJECT_MODULE.clean_directories(
+        working_dir,
+        CLEAN_DIR_RECURSE_LIST,
+        recursive=True)
 
     #
     # Delete all *.pyc and *.pyo files

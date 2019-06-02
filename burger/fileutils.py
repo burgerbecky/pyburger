@@ -15,8 +15,8 @@ import shutil
 import stat
 import codecs
 
-from .strutils import is_string, convert_to_array, encapsulate_path, host_machine, \
-    get_windows_host_type, translate_to_regex_match
+from .strutils import is_string, convert_to_array, encapsulate_path, \
+    host_machine, get_windows_host_type, translate_to_regex_match
 
 # Redefining built-in W0622 (Ignore redefinition of zip)
 
@@ -78,7 +78,7 @@ def make_executable(exe_path):
 
 def create_folder_if_needed(path):
     """
-    Given a pathname to a folder, detect if the folder exists, if not, create it.
+    Given a pathname to a folder, if the folder doesn't exist, create it.
 
     Call os.makedirs(path) but does not throw an
     exception if the directory already exists. All other exceptions
@@ -156,7 +156,8 @@ def is_source_newer(source, destination):
         False if not newer, True if newer, 2 if there is no source file
     """
 
-    # Get the source file's modification time, If there's no source file, return 2
+    # Get the source file's modification time, If there's no source file,
+    # return 2
     try:
         srctime = os.path.getmtime(source)
     except OSError as error:
@@ -449,8 +450,10 @@ def get_tool_path(tool_folder, tool_name, encapsulate=False):
 
     # Windows supports 32 and 64 bit Intel
     elif host == 'windows':
-        exename = os.path.join(tool_folder, 'windows_' + get_windows_host_type(),
-                               tool_name + '.exe')
+        exename = os.path.join(
+            tool_folder,
+            'windows_' + get_windows_host_type(),
+            tool_name + '.exe')
     else:
 
         # On unknown platforms, assume the tool is in the path for the fallback
@@ -572,8 +575,9 @@ def unlock_files(working_dir, recursive=False):
             if not path_mode & stat.S_IWRITE:
 
                 # Remove write protection while retaining the other flags
-                os.chmod(path_name, path_mode + stat.S_IWRITE
-                         + stat.S_IWGRP + stat.S_IWOTH)
+                flags = stat.S_IWRITE + stat.S_IWGRP + stat.S_IWOTH
+                path_mode = path_mode + flags
+                os.chmod(path_name, path_mode)
                 result.append(path_name)
         else:
             # Process recursion
@@ -601,8 +605,8 @@ def lock_files(lock_list):
         path_mode = os.stat(item).st_mode
 
         # Mark it write protected for Perforce
-        os.chmod(item, path_mode
-                 & (~(stat.S_IWRITE + stat.S_IWGRP + stat.S_IWOTH)))
+        mask = ~(stat.S_IWRITE + stat.S_IWGRP + stat.S_IWOTH)
+        os.chmod(item, path_mode & mask)
 
 ########################################
 
@@ -851,6 +855,9 @@ def save_text_file_if_newer(file_name, text_lines, line_feed=None,
     See Also:
         save_text_file, compare_file_to_string, perforce_edit, perforce_add
     """
+
+    # Too many arguments
+    # pylint: disable=R0913
 
     if compare_file_to_string(file_name, text_lines):
         if verbose:

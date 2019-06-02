@@ -106,7 +106,9 @@ def get_sdks_folder(verbose=False, refresh=False, folder=None):
             if sdks:
                 _BURGER_SDKS_FOLDER = sdks[0]
                 if verbose:
-                    print('Assuming {} is the BURGER_SDKS folder'.format(sdks[0]))
+                    print(
+                        'Assuming {} is the BURGER_SDKS folder'.format(
+                            sdks[0]))
 
     return _BURGER_SDKS_FOLDER
 
@@ -130,7 +132,7 @@ def fix_csharp(csharp_application_path):
         csharp_application_path: Pathname string to update
 
     Returns:
-        List of commands appropriate for the platform to launch a C# application.
+        List of commands for the platform to launch a C# application.
     """
 
     # Prepend mono on non-windows systems
@@ -422,7 +424,8 @@ def where_is_doxygen(verbose=False, refresh=False, path=None):
     elif get_mac_host_type():
 
         # MacOSX has it hidden in the application
-        full_paths.append('/Applications/Doxygen.app/Contents/Resources/doxygen')
+        full_paths.append(
+            '/Applications/Doxygen.app/Contents/Resources/doxygen')
         full_paths.append('/opt/local/bin/doxygen')
 
     elif os.name == 'posix':
@@ -440,8 +443,9 @@ def where_is_doxygen(verbose=False, refresh=False, path=None):
     if verbose:
         print('Doxygen not found!')
         if get_mac_host_type():
-            print('Install the desktop application in the Applications folder or '
-                  'use brew or macports for the command line version')
+            print(
+                'Install the desktop application in the Applications folder or '
+                'use brew or macports for the command line version')
 
     # Can't find it
     return None
@@ -658,11 +662,14 @@ def where_is_watcom(verbose=False, refresh=False, path=None, command=None):
 
     Returns:
         A path to the Watcom folder or None if not found.
-
     """
 
-    # pylint: disable=R0912
-    global _WATCOM_PATH                # pylint: disable=W0603
+    # Too many return statements
+    # Too many branches
+    # Global statement
+    # pylint: disable=R0911,R0912,W0603
+
+    global _WATCOM_PATH
 
     # Clear the cache if needed
     if refresh:
@@ -987,7 +994,8 @@ def import_py_script(file_name, module_name=None):
             # touching the cache
             # pylint: disable=E0611, E0401, E1101
             import importlib.util
-            spec = importlib.util.spec_from_file_location(module_name, file_name)
+            spec = importlib.util.spec_from_file_location(
+                module_name, file_name)
             result = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(result)
 
@@ -1003,10 +1011,12 @@ def import_py_script(file_name, module_name=None):
             # Perform the load, throw exception on error
             try:
                 if PY3_3_OR_HIGHER:
-                    # Python 3.3 and 3.4 prefers using the SourceFileLoader class
+                    # Python 3.3 and 3.4 prefers using the SourceFileLoader
+                    # class
                     # pylint: disable=E0611, E0401, E1120, W1505
                     from importlib.machinery import SourceFileLoader
-                    result = SourceFileLoader(module_name, file_name).load_module()
+                    result = SourceFileLoader(
+                        module_name, file_name).load_module()
 
                 else:
                     # Use the imp library for Python 2.x to 3.2
@@ -1080,8 +1090,8 @@ def where_is_visual_studio(vs_version):
     """
     Locate devenv.com for a specific version of Visual Studio.
 
-    Given a specific version by year, check for the appropriate environment variable
-    that contains the path to the executable of the IDE
+    Given a specific version by year, check for the appropriate environment
+    variable that contains the path to the executable of the IDE
 
     Note:
         This function will always return None on non-windows hosts.
@@ -1127,7 +1137,8 @@ def where_is_visual_studio(vs_version):
     vstudiopath = os.getenv(table_item[0], default=None)
     if not vstudiopath:
         # Try the pathname next
-        program_files = 'ProgramFiles' if host_type == 'x86' else 'ProgramFiles(x86)'
+        program_files = 'ProgramFiles' if host_type == 'x86' \
+            else 'ProgramFiles(x86)'
 
         # Generate the proper path to test
         vstudiopath = os.path.expandvars(
@@ -1188,7 +1199,8 @@ def where_is_codeblocks(verbose=False, refresh=False, path=None):
         if get_windows_host_type():
 
             # Windows points to the base path
-            codeblocks_path = os.path.expandvars('${CODEBLOCKS}\\codeblocks.exe')
+            codeblocks_path = os.path.expandvars(
+                '${CODEBLOCKS}\\codeblocks.exe')
         else:
             # Just append the exec name
             codeblocks_path = os.path.expandvars('${CODEBLOCKS}/CodeBlocks')
@@ -1219,7 +1231,8 @@ def where_is_codeblocks(verbose=False, refresh=False, path=None):
     elif get_mac_host_type():
 
         # MacOSX has it hidden in the application
-        full_paths.append('/Applications/CodeBlocks.app/Contents/MacOS/CodeBlocks')
+        full_paths.append(
+            '/Applications/CodeBlocks.app/Contents/MacOS/CodeBlocks')
         full_paths.append('/opt/local/bin/CodeBlocks')
 
     elif os.name == 'posix':
@@ -1269,7 +1282,7 @@ def where_is_xcode(xcode_version=None):
         Path to xcodebuild for the XCode version or None.
     """
 
-    # pylint: disable=R0912
+    # pylint: disable=R0912,W1505
 
     # Test if running on a mac host
     host_type = get_mac_host_type()
@@ -1298,7 +1311,8 @@ def where_is_xcode(xcode_version=None):
                     with open(temp_path, 'rb') as filefp:
                         version_dict = plistlib.load(filefp)
                 else:
-                    version_dict = plistlib.readPlist(temp_path)  # pylint: disable=W1505
+                    version_dict = plistlib.readPlist(
+                        temp_path)
 
             # Any IO error is acceptable to ignore
             except IOError:
@@ -1308,7 +1322,9 @@ def where_is_xcode(xcode_version=None):
             if not version:
                 continue
 
-            temp_path = '/Applications/' + item + '/Contents/Developer/usr/bin/xcodebuild'
+            temp_path = (
+                '/Applications/{}'
+                '/Contents/Developer/usr/bin/xcodebuild').format(item)
             if not os.path.isfile(temp_path):
                 continue
 
@@ -1329,7 +1345,8 @@ def where_is_xcode(xcode_version=None):
     # XCode 3 is hard coded to a specific location
     if (not xcode_version and not highest_version) or xcode_version == 3:
         # On OSX Lion and higher, XCode 3.1.4 is a separate folder
-        for item in ('/Xcode3.1.4/usr/bin/xcodebuild', '/Developer/usr/bin/xcodebuild'):
+        for item in ('/Xcode3.1.4/usr/bin/xcodebuild',
+                     '/Developer/usr/bin/xcodebuild'):
             if os.path.isfile(item):
                 xcodebuild = (item, 3)
                 break

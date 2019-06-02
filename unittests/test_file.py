@@ -119,10 +119,16 @@ def test_load_text_file():
     # Using hard coded test files, ensure all load fine
     assert burger.load_text_file(os.path.join(selffile, 'lf.txt')) == CRLF_TESTS
     assert burger.load_text_file(os.path.join(selffile, 'cr.txt')) == CRLF_TESTS
-    assert burger.load_text_file(os.path.join(selffile, 'crlf.txt')) == CRLF_TESTS
+    assert burger.load_text_file(
+        os.path.join(
+            selffile,
+            'crlf.txt')) == CRLF_TESTS
 
     # Test reading utf-8 with BOM
-    assert burger.load_text_file(os.path.join(selffile, 'senshi.txt')) == [SENSHI]
+    assert burger.load_text_file(
+        os.path.join(
+            selffile,
+            'senshi.txt')) == [SENSHI]
 
 ########################################
 

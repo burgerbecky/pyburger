@@ -41,18 +41,19 @@ from .__pkginfo__ import NUMVERSION, VERSION, AUTHOR, TITLE, SUMMARY, URI, \
 
 from .strutils import PY2, unicode_print, is_string, convert_to_array, \
     TrueFalse, truefalse, TRUEFALSE, convert_to_windows_slashes, \
-    convert_to_linux_slashes, encapsulate_path_windows, encapsulate_path_linux, \
-    encapsulate_path, split_comma_with_quotes, parse_csv, \
-    translate_to_regex_match, host_machine, get_windows_host_type, \
+    convert_to_linux_slashes, encapsulate_path_windows, \
+    encapsulate_path_linux, encapsulate_path, split_comma_with_quotes, \
+    parse_csv, translate_to_regex_match, host_machine, get_windows_host_type, \
     get_mac_host_type, escape_xml_cdata, escape_xml_attribute, \
     packed_paths
 
 from .fileutils import is_write_protected, make_executable, \
-    create_folder_if_needed, delete_file, is_source_newer, copy_file_if_needed, \
-    copy_directory_if_needed, shutil_readonly_cb, delete_directory, \
-    clean_directories, clean_files, get_tool_path, traverse_directory, \
-    unlock_files, lock_files, load_text_file, save_text_file, compare_files, \
-    compare_file_to_string, read_zero_terminated_string, save_text_file_if_newer
+    create_folder_if_needed, delete_file, is_source_newer, \
+    copy_file_if_needed, copy_directory_if_needed, shutil_readonly_cb, \
+    delete_directory, clean_directories, clean_files, get_tool_path, \
+    traverse_directory, unlock_files, lock_files, load_text_file, \
+    save_text_file, compare_files, compare_file_to_string, \
+    read_zero_terminated_string, save_text_file_if_newer
 
 from .buildutils import get_sdks_folder, fix_csharp, is_exe, get_path_ext, \
     make_exe_path, find_in_path, where_is_doxygen, \
@@ -221,7 +222,8 @@ class Interceptstdout(list):
         """
         Disconnect the stdout and store the items into a list of lines.
         @details
-        Using splitlines(), output the buffer into a list of lines into the output field.
+        Using splitlines(), output the buffer into a list of lines into the
+        output field.
         """
 
         # Restore stdout on exit
