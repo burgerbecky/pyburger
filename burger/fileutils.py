@@ -408,7 +408,10 @@ def clean_files(path, name_list, recursive=False):
         if os.path.isfile(file_name):
             for item in match_list:
                 if item(base_name):
-                    os.remove(file_name)
+                    try:
+                        os.remove(file_name)
+                    except OSError:
+                        pass
                     break
 
         # Recurse if desired
