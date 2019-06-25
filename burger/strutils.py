@@ -572,7 +572,7 @@ def get_windows_host_type():
     and 'x64' if it's a 64 bit host, and possibly 'arm' if an arm host
 
     Returns:
-        The string 'x64', 'x86', 'arm' or False
+        The string 'x64', 'x86', 'arm', 'arm64', 'ia64' or False
     See Also:
         get_mac_host_type, host_machine
 
@@ -585,9 +585,11 @@ def get_windows_host_type():
 
     # Test the CPU for the type
 
-    machine = platform.machine()
-    if machine in ('AMD64', 'x86_64'):
+    machine = platform.machine().lower()
+    if machine in ('amd64', 'x86_64', 'em64t'):
         return 'x64'
+    if machine in ('arm64', 'arm', 'ia64'):
+        return machine
     return 'x86'
 
 ########################################

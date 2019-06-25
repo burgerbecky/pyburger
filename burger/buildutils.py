@@ -642,7 +642,7 @@ def perforce_add(files, verbose=False):
 ########################################
 
 
-def where_is_watcom(verbose=False, refresh=False, path=None, command=None):
+def where_is_watcom(command=None, verbose=False, refresh=False, path=None):
     """
     Return the location of Watcom's executables.
 
@@ -655,10 +655,10 @@ def where_is_watcom(verbose=False, refresh=False, path=None, command=None):
     None is returned.
 
     Args:
+        command: Watcom program to find.
         verbose: If True, print a message if watcom was not found
         refresh: If True, reset the cache and force a reload.
         path: Path to watcom to place in the cache
-        command: Watcom program to find.
 
     Returns:
         A path to the Watcom folder or None if not found.
