@@ -15,3 +15,8 @@ BooleanProperty
 ^^^^^^^^^^^^^^^
 .. doxygenclass:: burger::validators::BooleanProperty
     :members:
+
+StringProperty
+^^^^^^^^^^^^^^
+.. doxygenclass:: burger::validators::StringProperty
+    :members:
