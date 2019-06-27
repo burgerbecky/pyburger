@@ -83,9 +83,73 @@ def test_booleanproperty():
 ########################################
 
 
+def test_integerproperty():
+    """
+    Test burger.IntegerProperty()
+    """
+
+    class TestClass(object):
+        """ Test """
+        test_a = burger.IntegerProperty()
+        test_b = burger.IntegerProperty(True)
+        test_c = burger.IntegerProperty(False)
+        test_d = burger.IntegerProperty(1)
+
+    tester = TestClass()
+
+    # Must return False
+    assert tester.test_a is None
+    assert tester.test_b == 1
+    assert tester.test_c == 0
+    assert tester.test_d == 1
+
+    # Write values, ensure they are correct
+    tests = (
+        ('1', 1),
+        ('99', 99),
+        (1, 1),
+        (0, 0),
+        (0.0, 0),
+        (-0.0, 0),
+        ('-0.0', 0),
+        (0x7FFFFFFFFFFFFFFF, 0x7FFFFFFFFFFFFFFF),
+        (-0x8000000000000000, -0x8000000000000000),
+        ('0x7FFFFFFFFFFFFFFF', 0x7FFFFFFFFFFFFFFF),
+        ('-0x8000000000000000', -0x8000000000000000),
+        (True, 1),
+        (False, 0),
+        (None, None)
+    )
+    for test in tests:
+        tester.test_b = test[0]
+        assert tester.test_b == test[1]
+
+    bad_tests = (
+        'skldjsk',
+        tester,
+        '12s',
+        '0xFFFFFFFFFFFFFFFFF',
+        '1.e+20',
+        'NaN'
+    )
+
+    for test in bad_tests:
+        try:
+            # This MUST throw an exception
+            tester.test_b = test
+            assert tester.test_b != tester.test_b
+        except ValueError:
+            pass
+
+    del tester.test_b
+    assert tester.test_b is None
+
+########################################
+
+
 def test_stringproperty():
     """
-    Test burger.BooleanProperty()
+    Test burger.StringProperty()
     """
 
     class TestClass(object):

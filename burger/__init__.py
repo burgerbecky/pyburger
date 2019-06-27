@@ -66,7 +66,7 @@ from .buildutils import get_sdks_folder, fix_csharp, is_exe, get_path_ext, \
 
 from .cleanutils import clean_xcode, clean_codeblocks, clean_setup_py
 
-from .validators import BooleanProperty, StringProperty
+from .validators import BooleanProperty, StringProperty, IntegerProperty
 
 from .windowsutils import get_file_info
 
@@ -178,6 +178,7 @@ __all__ = [
     'clean_codeblocks',
     'clean_setup_py',
     'BooleanProperty',
+    'IntegerProperty',
     'StringProperty',
     'get_file_info'
 ]
