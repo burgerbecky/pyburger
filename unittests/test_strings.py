@@ -150,6 +150,22 @@ def test_convert_to_array():
 ########################################
 
 
+def test_string_to_bool():            # pylint: disable=C0103
+    """
+    Test burger.string_to_bool()
+    """
+
+    true_table = ('yes', 'y', '1', 1, 1.0, True, 'on', 'TrUe', 't', '99', 99)
+    for item in true_table:
+        assert burger.string_to_bool(item)
+
+    false_table = ('no', 'n', '0', 0, -0.0, False, 'off', 'FalSe', 'f')
+    for item in false_table:
+        assert not burger.string_to_bool(item)
+
+########################################
+
+
 def test_TrueFalse():            # pylint: disable=C0103
     """
     Test burger.TrueFalse()

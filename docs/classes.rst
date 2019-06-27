@@ -10,3 +10,8 @@ Interceptstdout
 ^^^^^^^^^^^^^^^
 .. doxygenclass:: burger::Interceptstdout
     :members:
+
+BooleanProperty
+^^^^^^^^^^^^^^^
+.. doxygenclass:: burger::validators::BooleanProperty
+    :members:

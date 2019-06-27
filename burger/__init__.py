@@ -29,6 +29,7 @@ A set of subroutines used by the Burgerlib based scripts written in Python.
 # - \ref burger.cleanutils
 # - \ref burger.fileutils
 # - \ref burger.strutils
+# - \ref burger.validators
 # - \ref burger.windowsutils
 #
 
@@ -40,6 +41,7 @@ from .__pkginfo__ import NUMVERSION, VERSION, AUTHOR, TITLE, SUMMARY, URI, \
     EMAIL, LICENSE, COPYRIGHT
 
 from .strutils import PY2, unicode_print, is_string, convert_to_array, \
+    string_to_bool, \
     TrueFalse, truefalse, TRUEFALSE, convert_to_windows_slashes, \
     convert_to_linux_slashes, encapsulate_path_windows, \
     encapsulate_path_linux, encapsulate_path, split_comma_with_quotes, \
@@ -63,6 +65,8 @@ from .buildutils import get_sdks_folder, fix_csharp, is_exe, get_path_ext, \
     where_is_visual_studio, where_is_codeblocks, where_is_xcode
 
 from .cleanutils import clean_xcode, clean_codeblocks, clean_setup_py
+
+from .validators import BooleanProperty
 
 from .windowsutils import get_file_info
 
@@ -108,6 +112,7 @@ __all__ = [
     'unicode_print',
     'is_string',
     'convert_to_array',
+    'string_to_bool',
     'TrueFalse',
     'truefalse',
     'TRUEFALSE',
@@ -172,6 +177,7 @@ __all__ = [
     'clean_xcode',
     'clean_codeblocks',
     'clean_setup_py',
+    'BooleanProperty',
     'get_file_info'
 ]
 

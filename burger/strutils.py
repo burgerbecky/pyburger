@@ -16,6 +16,7 @@ import re
 import csv
 import fnmatch
 import platform
+from numbers import Number
 
 ## True if the interpreter is Python 2.x
 PY2 = sys.version_info[0] == 2
@@ -139,6 +140,55 @@ def convert_to_array(input_array):
         # Convert a single entry into an array
         input_array = [input_array]
     return input_array
+
+########################################
+
+def string_to_bool(item):
+    """Convert an item to a boolean.
+
+    Strings 'true', 't', ' on', 'yes', and, 'y' return True
+    'false', 'f', 'off', 'no', and 'n' return False
+
+    Non zero numbers or strings that are numbers become True
+    Zero and '0' become False.
+
+    Args:
+        item: String or integer to convert.
+
+    Returns:
+        ``True`` or ``False``
+
+    Exception:
+        ValueError on invalid input.
+    """
+
+    # None becomes False
+    if item is None:
+        return False
+
+    # Already a bool?
+    if isinstance(item, bool):
+        return item
+
+    # Number to bool
+    if isinstance(item, Number):
+        return bool(item)
+
+    if is_string(item):
+        item_lower = item.lower()
+        if item_lower in ('true', 't', 'on', 'yes', 'y'):
+            return True
+        if item_lower in ('false', 'f', 'off', 'no', 'n'):
+            return False
+        try:
+            return bool(int(item))
+        except ValueError:
+            pass
+        try:
+            return bool(float(item))
+        except ValueError:
+            pass
+    raise ValueError("Can't convert {} to bool".format(item))
 
 ########################################
 
