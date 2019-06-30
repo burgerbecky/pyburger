@@ -25,3 +25,13 @@ StringProperty
 ^^^^^^^^^^^^^^
 .. doxygenclass:: burger::validators::StringProperty
     :members:
+
+StringListProperty
+^^^^^^^^^^^^^^^^^^
+.. doxygenclass:: burger::validators::StringListProperty
+    :members:
+
+EnumProperty
+^^^^^^^^^^^^
+.. doxygenclass:: burger::validators::EnumProperty
+    :members:

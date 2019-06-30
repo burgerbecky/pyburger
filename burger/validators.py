@@ -7,24 +7,36 @@ Package that contains class member validators
 
 ## \package burger.validators
 
+# pylint: disable=no-name-in-module,too-few-public-methods
+
 from numbers import Number
 
-from .strutils import string_to_bool, is_string, PY2
+# Try the Python 3 import
+try:
+    from collections.abc import Iterable
+except ImportError:
+    # Try the Python 2 import
+    from collections import Iterable
+
+from .strutils import string_to_bool, is_string, UNICODE as unicode, \
+    LONG as long
 
 # Note: (object) is required for python 2.7 compatiblity
 # pylint: disable=useless-object-inheritance
 
 
 class Property(object):
-    """Base Class to for enforced types """
+    """Base Class to create enforced types """
 
     def __init__(self, value=None):
         """Initialize to default
         Args:
-            value: Initial value, must be None or bool
+            value: Initial value, must be None or requested type
         """
-        ## Boolean value
+        ## Value stored in the class
         self._value = None
+
+        # Set the initial value using the derived class
         self.__set__(None, value)
 
     def __get__(self, obj, objtype=None):
@@ -33,24 +45,32 @@ class Property(object):
         Args:
             obj: Not used
             objtype: Not used
+
         Returns:
-            None, or bool
+            None, or verified data
         """
+
         return self._value
 
     def __set__(self, obj, value):
         """Set the string value
+
         Args:
             obj: Not used
             value: None or value the can be converted to bool
         """
+
         self._value = value
 
     def __delete__(self, obj):
-        """Delete the bool
+        """Delete the value
+
         Args:
             obj: Not used
+
         """
+
+        # Mark as None to release data
         self._value = None
 
 ########################################
@@ -95,24 +115,29 @@ ValueError: Not boolean value
 
     def __set__(self, obj, value):
         """Set the boolean value
+
         Args:
             obj: Not used
             value: None or value the can be converted to bool
+
         Exception:
             ValueError on invalid input.
+
         See Also:
             strutils.string_to_bool
         """
+
         if value is not None:
             # Convert to bool
             value = string_to_bool(value)
+        ## Boolean value
         self._value = value
 
 ########################################
 
 
 class IntegerProperty(Property):
-    """Class to enforce integer in member variable
+    """Class to enforce 64 bit integer in variable
 
 Example:
 'Inherit from (object) for Python 2.7'
@@ -147,14 +172,19 @@ ValueError: Not integer value
 
     def __set__(self, obj, value):
         """Set the integer value
+
         Args:
             obj: Not used
             value: None or value the can be converted to bool
+
         Exception:
             ValueError on invalid input.
+
         See Also:
             strutils.string_to_bool
+
         """
+
         if value is not None:
             # Bool is a special case (0,1)
             if isinstance(value, bool):
@@ -167,24 +197,23 @@ ValueError: Not integer value
                     if is_string(value):
                         # Convert to integer
                         try:
-                            if PY2:
-                                value = long(value, 0)
-                            else:
-                                value = int(value, 0)
+                            value = long(value, 0)
                         # Try again as a float
                         except ValueError:
                             value = float(value)
                     else:
                         raise ValueError(
-                            "Value {} can't convert to a number".format(value))
-                # Verify the number is in range for an integer
+                            'Value "{}" is not a number'.format(value))
+
+                # value is a number, bounds check it
                 if value < -0x8000000000000000 or value > 0x7fffffffffffffff:
                     raise ValueError(
-                        'Value {} must fit in signed 64 bits'.format(value))
-                if PY2:
-                    value = long(value)
-                else:
-                    value = int(value)
+                        'Value "{}" must fit in signed 64 bits'.format(value))
+
+                # Ensure it's an int()
+                value = long(value)
+
+        ## Integer value
         self._value = value
 
 ########################################
@@ -196,7 +225,7 @@ class StringProperty(Property):
 Example:
 'Inherit from (object) for Python 2.7'
 >>> class foo(object):
-    'Init to false'
+    'Init to "foo"'
     x = StringProperty('foo')
     'Init to None'
     y = StringProperty()
@@ -211,7 +240,7 @@ print(f.x)
 f.x = 'False'
 print(f.x)
 
-'Print True
+'Print True'
 f.x = True
 print(f.x)
     """
@@ -225,9 +254,157 @@ print(f.x)
         if value is not None:
             # Convert to string
             if not is_string(value):
-                if PY2:
-                    # pylint: disable=undefined-variable
-                    value = unicode(value)
+                value = unicode(value)
+
+        ## String value
+        self._value = value
+
+
+########################################
+
+
+class StringListProperty(Property):
+    """Class to enforce string list in member variable
+
+Example:
+'Inherit from (object) for Python 2.7'
+>>> class foo(object):
+    'Init to ["foo"]'
+    x = StringListProperty('foo')
+    'Init to None'
+    y = StringListProperty()
+    'Init to ["a","b","c"]'
+    z = StringListProperty(["a","b","c"])
+
+'Create the class'
+f = foo()
+
+'Print ["foo"]'
+print(f.x)
+
+'Print ['False']
+f.x = 'False'
+print(f.x)
+
+'Print True'
+f.x = True
+print(f.x)
+    """
+
+    def __set__(self, obj, value):
+        """Set the string value
+        Args:
+            obj: Not used
+            value: None or value the can be converted to bool
+        """
+
+        if value is None:
+            value = []
+        else:
+            # Convert to string
+            if is_string(value) or not isinstance(value, Iterable):
+                value = [unicode(value)]
+            else:
+                value = [unicode(i) for i in value]
+
+        ## String list value
+        self._value = value
+
+    def __delete__(self, obj):
+        """Delete the value
+
+        Args:
+            obj: Not used
+
+        """
+
+        # Mark as empty list to release data
+        self._value = []
+
+########################################
+
+
+class EnumProperty(Property):
+    """Class to enforce string list in member variable
+
+Example:
+j = (('a', 'b', 'c'), 'd', 'e', ['f', 'g', 'h'], 'i')
+'Inherit from (object) for Python 2.7'
+>>> class foo(object):
+    'Init to 0'
+    x = EnumProperty(j, "a")
+    'Init to 0'
+    y = EnumProperty(j)
+    'Init to 4'
+    z = EnumProperty(j, "i")
+
+'Create the class'
+f = foo()
+
+'Print 0'
+print(f.x)
+
+'Print 2
+f.x = 'g'
+print(f.x)
+
+'Print 2'
+f.x = 'h'
+print(f.x)
+    """
+
+    def __init__(self, enums, value=None):
+        """Initialize to default
+        Args:
+            enums: list of enumeration strings
+            value: Initial value, must be None or requested type
+        """
+
+        ## Enumeration dictionary
+        self._enums = enums
+
+        if not isinstance(enums, Iterable):
+            raise ValueError(
+                'enums "{}" is not an iterable'.format(enums))
+
+        if is_string(enums):
+            raise ValueError(
+                'enums "{}" can not be a string'.format(enums))
+
+        # Set the initial value using the derived class
+        Property.__init__(self, value)
+
+    def __set__(self, obj, value):
+        """Set the string value
+        Args:
+            obj: Not used
+            value: None or value the can be converted to bool
+        """
+
+        if value is not None:
+            if isinstance(value, Number):
+                if value < 0:
+                    raise ValueError(
+                        'Value "{}" is less than zero'.format(value))
+                if value >= len(self._enums):
+                    raise ValueError(
+                        'Value "{}" is higher than {}'.format(
+                            value, len(self._enums)))
+                value = int(value)
+            else:
+                # Convert to string
+                for i, item in enumerate(self._enums):
+                    if isinstance(item, Iterable):
+                        if value in item:
+                            value = i
+                            break
+                    if item == value:
+                        value = i
+                        break
                 else:
-                    value = str(value)
+                    raise ValueError(
+                        'Value "{}" is not found in the list "{}"'.format(
+                            value, self._enums))
+
+        ## String list value
         self._value = value

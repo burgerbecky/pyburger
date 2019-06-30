@@ -66,7 +66,8 @@ from .buildutils import get_sdks_folder, fix_csharp, is_exe, get_path_ext, \
 
 from .cleanutils import clean_xcode, clean_codeblocks, clean_setup_py
 
-from .validators import BooleanProperty, StringProperty, IntegerProperty
+from .validators import BooleanProperty, StringProperty, IntegerProperty, \
+    StringListProperty, EnumProperty
 
 from .windowsutils import get_file_info
 
@@ -180,6 +181,8 @@ __all__ = [
     'BooleanProperty',
     'IntegerProperty',
     'StringProperty',
+    'StringListProperty',
+    'EnumProperty',
     'get_file_info'
 ]
 

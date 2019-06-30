@@ -190,3 +190,101 @@ def test_stringproperty():
 
     del tester.test_b
     assert tester.test_b is None
+
+
+########################################
+
+
+def test_stringlistproperty():
+    """
+    Test burger.StringListProperty()
+    """
+
+    class TestClass(object):
+        """ Test """
+        test_a = burger.StringListProperty()
+        test_b = burger.StringListProperty(True)
+        test_c = burger.StringListProperty('True')
+        test_d = burger.StringListProperty(['a', 'b', 'c'])
+
+    tester = TestClass()
+
+    # Must return False
+    assert tester.test_a == []
+    assert tester.test_b == ['True']
+    assert tester.test_c == ['True']
+    assert tester.test_d == ['a', 'b', 'c']
+
+    # Write values, ensure they are correct
+    tests = (
+        ('1', ['1']),
+        ('99', ['99']),
+        (1, ['1']),
+        (0, ['0']),
+        (0.0, ['0.0']),
+        (-0.0, ['-0.0']),
+        ('-0.0', ['-0.0']),
+        ('yes', ['yes']),
+        ('True', ['True']),
+        (True, ['True']),
+        (False, ['False']),
+        ([1, 2, 3], ['1', '2', '3']),
+        ((1, 2, 3), ['1', '2', '3']),
+        (None, [])
+    )
+    for test in tests:
+        tester.test_b = test[0]
+        assert tester.test_b == test[1]
+
+    del tester.test_b
+    assert tester.test_b == []
+
+
+########################################
+
+
+def test_enumproperty():
+    """
+    Test burger.EnumProperty()
+    """
+
+    j = (('a', 'b', 'c'), 'd', 'e', ['f', 'g', 'h'], 'i')
+
+    class TestClass(object):
+        """ Test """
+        test_a = burger.EnumProperty(j)
+        test_b = burger.EnumProperty(j, 'i')
+        test_c = burger.EnumProperty(j, 2)
+        test_d = burger.EnumProperty(j, 'c')
+
+    tester = TestClass()
+
+    # Must return False
+    assert tester.test_a is None
+    assert tester.test_b == 4
+    assert tester.test_c == 2
+    assert tester.test_d == 0
+
+    # Write values, ensure they are correct
+    tests = (
+        ('a', 0),
+        ('b', 0),
+        ('c', 0),
+        (0, 0),
+        (0.0, 0),
+        (-0.0, 0),
+        (3, 3),
+        ('d', 1),
+        ('e', 2),
+        ('f', 3),
+        ('g', 3),
+        ('h', 3),
+        ('i', 4),
+        (None, None)
+    )
+    for test in tests:
+        tester.test_b = test[0]
+        assert tester.test_b == test[1]
+
+    del tester.test_b
+    assert tester.test_b is None

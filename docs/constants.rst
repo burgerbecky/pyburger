@@ -70,3 +70,11 @@ strutils.PY3_5_OR_HIGHER
 strutils.PYPY
 ^^^^^^^^^^^^^
 .. doxygenvariable:: burger::strutils::PYPY
+
+strutils.UNICODE
+^^^^^^^^^^^^^^^^
+.. doxygenvariable:: burger::strutils::UNICODE
+
+strutils.LONG
+^^^^^^^^^^^^^
+.. doxygenvariable:: burger::strutils::LONG

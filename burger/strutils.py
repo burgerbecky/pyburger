@@ -93,11 +93,17 @@ try:
     ## Internal type to pass to isinstance() for is_string()
     _IS_STRING_TEST = basestring
 
+    ## Class for declaring unicode strings
+    UNICODE = unicode
+
+    ## Class for declaring 64 bit integers
+    LONG = long
 
 except NameError:
     # Python 3 or later
     _IS_STRING_TEST = (str, bytes)
-
+    UNICODE = str
+    LONG = int
 
 def is_string(item):
     """
