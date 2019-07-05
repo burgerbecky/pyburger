@@ -28,50 +28,47 @@ from .strutils import string_to_bool, is_string, UNICODE as unicode, \
 class Property(object):
     """Base Class to create enforced types """
 
-    def __init__(self, value=None):
+    def __init__(self, name, default=None):
         """Initialize to default
         Args:
-            value: Initial value, must be None or requested type
+            name: Name of the instance storage index
+            default: Initial value, must be None or requested type
         """
-        ## Value stored in the class
-        self._value = None
 
-        # Set the initial value using the derived class
-        self.__set__(None, value)
+        ## Name of the variable to store data in parent class instance
+        self._name = '_default'
 
-    def __get__(self, obj, objtype=None):
+        ## Default value to return
+        self._default = default
+
+        # Validate the default data
+        self.__set__(self, default)
+
+        # Set the real name of the class instance
+        self._name = name
+
+    def __get__(self, instance, owner=None):
         """Return value
 
         Args:
-            obj: Not used
-            objtype: Not used
+            instance: Reference to object containing data
+            owner: Not used
 
         Returns:
             None, or verified data
         """
 
-        return self._value
+        return instance.__dict__.get(self._name, self._default)
 
-    def __set__(self, obj, value):
+    def __set__(self, instance, value):
         """Set the string value
 
         Args:
-            obj: Not used
+            instance: Reference to object containing data
             value: None or value the can be converted to bool
         """
 
-        self._value = value
-
-    def __delete__(self, obj):
-        """Delete the value
-
-        Args:
-            obj: Not used
-
-        """
-
-        # Mark as None to release data
-        self._value = None
+        instance.__dict__[self._name] = value
 
 ########################################
 
@@ -113,11 +110,11 @@ Traceback (most recent call last):
 ValueError: Not boolean value
     """
 
-    def __set__(self, obj, value):
+    def __set__(self, instance, value):
         """Set the boolean value
 
         Args:
-            obj: Not used
+            instance: Reference to object containing data
             value: None or value the can be converted to bool
 
         Exception:
@@ -131,7 +128,7 @@ ValueError: Not boolean value
             # Convert to bool
             value = string_to_bool(value)
         ## Boolean value
-        self._value = value
+        instance.__dict__[self._name] = value
 
 ########################################
 
@@ -170,11 +167,11 @@ Traceback (most recent call last):
 ValueError: Not integer value
     """
 
-    def __set__(self, obj, value):
+    def __set__(self, instance, value):
         """Set the integer value
 
         Args:
-            obj: Not used
+            instance: Reference to object containing data
             value: None or value the can be converted to bool
 
         Exception:
@@ -214,7 +211,7 @@ ValueError: Not integer value
                 value = long(value)
 
         ## Integer value
-        self._value = value
+        instance.__dict__[self._name] = value
 
 ########################################
 
@@ -245,10 +242,10 @@ f.x = True
 print(f.x)
     """
 
-    def __set__(self, obj, value):
+    def __set__(self, instance, value):
         """Set the string value
         Args:
-            obj: Not used
+            instance: Reference to object containing data
             value: None or value the can be converted to bool
         """
         if value is not None:
@@ -257,7 +254,7 @@ print(f.x)
                 value = unicode(value)
 
         ## String value
-        self._value = value
+        instance.__dict__[self._name] = value
 
 
 ########################################
@@ -291,10 +288,10 @@ f.x = True
 print(f.x)
     """
 
-    def __set__(self, obj, value):
+    def __set__(self, instance, value):
         """Set the string value
         Args:
-            obj: Not used
+            instance: Reference to object containing data
             value: None or value the can be converted to bool
         """
 
@@ -308,18 +305,8 @@ print(f.x)
                 value = [unicode(i) for i in value]
 
         ## String list value
-        self._value = value
+        instance.__dict__[self._name] = value
 
-    def __delete__(self, obj):
-        """Delete the value
-
-        Args:
-            obj: Not used
-
-        """
-
-        # Mark as empty list to release data
-        self._value = []
 
 ########################################
 
@@ -353,11 +340,12 @@ f.x = 'h'
 print(f.x)
     """
 
-    def __init__(self, enums, value=None):
+    def __init__(self, name, enums, default=None):
         """Initialize to default
         Args:
+            name: Name of the instance storage index
             enums: list of enumeration strings
-            value: Initial value, must be None or requested type
+            default: Initial value, must be None or requested type
         """
 
         ## Enumeration dictionary
@@ -372,12 +360,12 @@ print(f.x)
                 'enums "{}" can not be a string'.format(enums))
 
         # Set the initial value using the derived class
-        Property.__init__(self, value)
+        Property.__init__(self, name, default)
 
-    def __set__(self, obj, value):
+    def __set__(self, instance, value):
         """Set the string value
         Args:
-            obj: Not used
+            instance: Reference to object containing data
             value: None or value the can be converted to bool
         """
 
@@ -388,12 +376,16 @@ print(f.x)
                         'Value "{}" is less than zero'.format(value))
                 if value >= len(self._enums):
                     raise ValueError(
-                        'Value "{}" is higher than {}'.format(
+                        'Value {} is greater than or equal to {}'.format(
                             value, len(self._enums)))
                 value = int(value)
             else:
+                # Check for an override
+                enums = instance.__dict__.get(
+                    self._name + '_enums', self._enums)
+
                 # Convert to string
-                for i, item in enumerate(self._enums):
+                for i, item in enumerate(enums):
                     if isinstance(item, Iterable):
                         if value in item:
                             value = i
@@ -404,7 +396,68 @@ print(f.x)
                 else:
                     raise ValueError(
                         'Value "{}" is not found in the list "{}"'.format(
-                            value, self._enums))
+                            value, enums))
 
         ## String list value
-        self._value = value
+        instance.__dict__[self._name] = value
+
+########################################
+
+
+class NoneProperty(object):
+    """Class to enforce None in member variable
+
+Example:
+'Inherit from (object) for Python 2.7'
+>>> class foo(object):
+    'Init to None'
+    x = NoneProperty()
+
+'Create the class'
+f = foo()
+
+'Print None'
+print(f.x)
+
+'Exception on non None data'
+f.x = 'not None'
+Traceback (most recent call last):
+    ...
+ValueError: Not None value
+    """
+
+    def __init__(self, name):
+        """Initialize to default
+        Args:
+            name: Name of the instance storage index
+        """
+
+        ## Set the real name of the class instance
+        self._name = name
+
+    def __get__(self, instance, owner=None):
+        """Return None
+
+        Args:
+            instance: Reference to object containing data
+            owner: Not used
+
+        Returns:
+            None, or verified data
+        """
+
+        return None
+
+    def __set__(self, instance, value):
+        """Throw if not None
+
+        Args:
+            instance: Reference to object containing data
+            value: None or value the can be converted to bool
+        """
+
+        if value is not None:
+            raise ValueError(
+                '"{}" can only be set to None, not "{}"'.format(
+                    self._name, value))
+        instance.__dict__[self._name] = value

@@ -35,3 +35,8 @@ EnumProperty
 ^^^^^^^^^^^^
 .. doxygenclass:: burger::validators::EnumProperty
     :members:
+
+NoneProperty
+^^^^^^^^^^^^
+.. doxygenclass:: burger::validators::NoneProperty
+    :members:

@@ -31,10 +31,10 @@ def test_booleanproperty():
 
     class TestClass(object):
         """ Test """
-        test_a = burger.BooleanProperty()
-        test_b = burger.BooleanProperty(True)
-        test_c = burger.BooleanProperty(False)
-        test_d = burger.BooleanProperty(1)
+        test_a = burger.BooleanProperty('_test_a')
+        test_b = burger.BooleanProperty('_test_b', True)
+        test_c = burger.BooleanProperty('_test_c', False)
+        test_d = burger.BooleanProperty('_test_d', 1)
 
     tester = TestClass()
 
@@ -77,8 +77,13 @@ def test_booleanproperty():
         except ValueError:
             pass
 
-    del tester.test_b
-    assert tester.test_b is None
+    # Test for unique values across class instances
+    bester = TestClass()
+    tester.test_a = True
+    bester.test_a = False
+
+    assert tester.test_a is True
+    assert bester.test_a is False
 
 ########################################
 
@@ -90,10 +95,10 @@ def test_integerproperty():
 
     class TestClass(object):
         """ Test """
-        test_a = burger.IntegerProperty()
-        test_b = burger.IntegerProperty(True)
-        test_c = burger.IntegerProperty(False)
-        test_d = burger.IntegerProperty(1)
+        test_a = burger.IntegerProperty('_test_a')
+        test_b = burger.IntegerProperty('_test_b', True)
+        test_c = burger.IntegerProperty('_test_c', False)
+        test_d = burger.IntegerProperty('_test_d', 1)
 
     tester = TestClass()
 
@@ -141,8 +146,14 @@ def test_integerproperty():
         except ValueError:
             pass
 
-    del tester.test_b
-    assert tester.test_b is None
+    # Test for unique values across class instances
+    bester = TestClass()
+    tester.test_a = 1
+    bester.test_a = 2
+
+    assert tester.test_a == 1
+    assert bester.test_a == 2
+
 
 ########################################
 
@@ -154,10 +165,10 @@ def test_stringproperty():
 
     class TestClass(object):
         """ Test """
-        test_a = burger.StringProperty()
-        test_b = burger.StringProperty(True)
-        test_c = burger.StringProperty('True')
-        test_d = burger.StringProperty(1)
+        test_a = burger.StringProperty('_test_a')
+        test_b = burger.StringProperty('_test_b', True)
+        test_c = burger.StringProperty('_test_c', 'True')
+        test_d = burger.StringProperty('_test_d', 1)
 
     tester = TestClass()
 
@@ -188,9 +199,13 @@ def test_stringproperty():
         tester.test_b = test[0]
         assert tester.test_b == test[1]
 
-    del tester.test_b
-    assert tester.test_b is None
+    # Test for unique values across class instances
+    bester = TestClass()
+    tester.test_a = 'foo'
+    bester.test_a = 'bar'
 
+    assert tester.test_a == 'foo'
+    assert bester.test_a == 'bar'
 
 ########################################
 
@@ -202,10 +217,10 @@ def test_stringlistproperty():
 
     class TestClass(object):
         """ Test """
-        test_a = burger.StringListProperty()
-        test_b = burger.StringListProperty(True)
-        test_c = burger.StringListProperty('True')
-        test_d = burger.StringListProperty(['a', 'b', 'c'])
+        test_a = burger.StringListProperty('_test_a')
+        test_b = burger.StringListProperty('_test_b', True)
+        test_c = burger.StringListProperty('_test_c', 'True')
+        test_d = burger.StringListProperty('_test_d', ['a', 'b', 'c'])
 
     tester = TestClass()
 
@@ -236,9 +251,13 @@ def test_stringlistproperty():
         tester.test_b = test[0]
         assert tester.test_b == test[1]
 
-    del tester.test_b
-    assert tester.test_b == []
+    # Test for unique values across class instances
+    bester = TestClass()
+    tester.test_a = 'foo'
+    bester.test_a = 'bar'
 
+    assert tester.test_a == ['foo']
+    assert bester.test_a == ['bar']
 
 ########################################
 
@@ -249,13 +268,15 @@ def test_enumproperty():
     """
 
     j = (('a', 'b', 'c'), 'd', 'e', ['f', 'g', 'h'], 'i')
+    k = (('f', 'g', 'h'), 'e', 'd', ['a', 'b', 'c'], 'i')
 
     class TestClass(object):
         """ Test """
-        test_a = burger.EnumProperty(j)
-        test_b = burger.EnumProperty(j, 'i')
-        test_c = burger.EnumProperty(j, 2)
-        test_d = burger.EnumProperty(j, 'c')
+        test_a = burger.EnumProperty('_test_a', j)
+        test_b = burger.EnumProperty('_test_b', j, 'i')
+        test_c = burger.EnumProperty('_test_c', j, 2)
+        test_d = burger.EnumProperty('_test_d', j, 'c')
+        test_e = burger.EnumProperty('_test_e', k, 'c')
 
     tester = TestClass()
 
@@ -286,5 +307,93 @@ def test_enumproperty():
         tester.test_b = test[0]
         assert tester.test_b == test[1]
 
-    del tester.test_b
+    # Test for unique values across class instances
+    bester = TestClass()
+    tester.test_a = 'a'
+    bester.test_a = 'i'
+
+    assert tester.test_a == 0
+    assert bester.test_a == 4
+
+    tester.test_a = 'f'
+    tester.test_e = 'f'
+    assert tester.test_a == 3
+    assert tester.test_e == 0
+
+    class BestClass(object):
+        """ Test """
+        test_a = burger.EnumProperty('_test_a', [])
+
+        def __init__(self, enums):
+            self._test_a_enums = enums
+
+    tester = BestClass(j)
+    bester = BestClass(k)
+
+    tester.test_a = 'f'
+    bester.test_a = 'f'
+    assert tester.test_a == 3
+    assert bester.test_a == 0
+
+########################################
+
+
+def test_noneproperty():
+    """
+    Test burger.NoneProperty()
+    """
+
+    class TestClass(object):
+        """ Test """
+        test_a = burger.NoneProperty('_test_a')
+        test_b = burger.NoneProperty('_test_b')
+
+    tester = TestClass()
+
+    # Must return None
+    assert tester.test_a is None
     assert tester.test_b is None
+
+
+    # Write values, ensure they are correct
+    tests = (
+        '1',
+        '99',
+        1,
+        0,
+        0.0,
+        -0.0,
+        '-0.0',
+        'yes',
+        'True',
+        True,
+        False,
+    )
+    for test in tests:
+        try:
+            tester.test_b = test
+            assert False
+        except ValueError:
+            assert tester.test_b is None
+
+    bad_tests = (
+        'skldjsk',
+        tester,
+        '12s'
+    )
+
+    for test in bad_tests:
+        try:
+            # This MUST throw an exception
+            tester.test_b = test
+            assert False
+        except ValueError:
+            pass
+
+    # Test for unique values across class instances
+    bester = TestClass()
+    tester.test_a = None
+    bester.test_a = None
+
+    assert tester.test_a is None
+    assert bester.test_a is None
