@@ -228,19 +228,18 @@ def make_exe_path(exe_path, pathext=None):
         burger.buildutils.get_path_ext, burger.buildutils.find_in_path
     """
 
+    test_list = [exe_path]
+
     # Get the extension list
     pathext = get_path_ext(pathext)
+    if pathext:
+        # Only convert to lower case once
+        exe_path_lower = exe_path.lower()
 
-    # Only convert to lower case once
-    exe_path_lower = exe_path.lower()
-
-    # Does the file already have an extension?
-    if any(exe_path_lower.endswith(temp.lower()) for temp in pathext):
-        # Just use the file's extension
-        test_list = [exe_path]
-    else:
-        # Create a list of possible file names with extensions
-        test_list = [exe_path + temp for temp in pathext]
+        # Does the file already have an extension?
+        if not any(exe_path_lower.endswith(temp.lower()) for temp in pathext):
+            # Create a list of possible file names with extensions
+            test_list = [exe_path + temp for temp in pathext]
 
     # Try all the extensions (Can be an empty list)
     for temp_path in test_list:
@@ -286,22 +285,20 @@ def find_in_path(filename, search_path=None, executable=False):
     """
 
     # Set up for added standard extentions
+    test_list = [filename]
     if executable:
+
+        # Are there path extensions (Windows)?
         pathext = get_path_ext()
+        if pathext:
 
-        # Only convert to lower case once
-        filename_lower = filename.lower()
+            # Only convert to lower case once
+            filename_lower = filename.lower()
 
-        # Does the file already have an extension?
-        if any(filename_lower.endswith(item.lower()) for item in pathext):
-            # Just use the file's extension
-            test_list = [filename]
-        else:
-            # Create a list of possible file names with extensions
-            test_list = [filename + item for item in pathext]
-
-    else:
-        test_list = [filename]
+            # Does the file already have an extension?
+            if not any(filename_lower.endswith(item.lower()) for item in pathext):
+                # Create a list of possible file names with extensions
+                test_list = [filename + item for item in pathext]
 
     # Is there a search path override?
     if not search_path:
