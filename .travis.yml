@@ -25,11 +25,14 @@ addons:
 
 matrix:
   include:
-  # Windows builds (Not supported for python on 3/19/2019)
-  #- os: windows
-  #  dist: 1803-containers
-  #  python: '2.7'
-  #  env: TOXENV=py27
+  # Windows builds
+  - os: windows
+    language: sh
+    python: '3.7'
+    env: TOXENV=py37
+    before_install:
+        - choco install python3 --version=3.7.4
+        - export PATH="/c/Python37:/c/Python37/Scripts:$PATH"
 
   # Linux builds
   # Linux versions
