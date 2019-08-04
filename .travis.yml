@@ -130,7 +130,7 @@ matrix:
 before_install:
   # macOS needs some pyenv love.
   - export
-  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then choco install python --version=$CHOCOPYTHON
+  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then choco install python --version="$CHOCOPYTHON"
   - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then export PATH="/c/$CHOCOPATH:/c/$CHOCOPATH/Scripts:$PATH"
   - pyenv versions
   - pyenv install --list
