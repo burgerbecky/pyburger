@@ -17,7 +17,7 @@ import errno
 
 from .strutils import is_string, host_machine, encapsulate_path, \
     get_windows_host_type, get_mac_host_type, PY3_3_OR_HIGHER, \
-    PY3_4_OR_HIGHER, PY3_5_OR_HIGHER, IS_CYGWIN
+    PY3_4_OR_HIGHER, PY3_5_OR_HIGHER, IS_CYGWIN, to_cygwin_path
 
 ## Cached location of the BURGER_SDKS folder
 _BURGER_SDKS_FOLDER = None
@@ -39,6 +39,12 @@ _WINDOWS_ENV_PATHS = [
     'ProgramFiles',
     'ProgramFiles(x86)'
 ]
+
+# For some goofy reason, Cygwin converts ProgramFiles
+# into uppercase and preforms case sensitive comparisons
+# To get around this, do the conversion for this table
+if IS_CYGWIN:
+    _WINDOWS_ENV_PATHS[0] = _WINDOWS_ENV_PATHS[0].upper()
 
 ########################################
 
@@ -296,7 +302,8 @@ def find_in_path(filename, search_path=None, executable=False):
             filename_lower = filename.lower()
 
             # Does the file already have an extension?
-            if not any(filename_lower.endswith(item.lower()) for item in pathext):
+            if not any(filename_lower.endswith(item.lower())
+                       for item in pathext):
                 # Create a list of possible file names with extensions
                 test_list = [filename + item for item in pathext]
 
@@ -420,10 +427,12 @@ def where_is_doxygen(verbose=False, refresh=False, path=None):
 
     # Try the environment variable first
     if os.getenv('DOXYGEN', None):
-        if get_windows_host_type():
+        if get_windows_host_type(True):
 
             # Windows points to the base path
             doxygenpath = os.path.expandvars('${DOXYGEN}\\bin\\doxygen.exe')
+            if IS_CYGWIN:
+                doxygenpath = to_cygwin_path(doxygenpath)
         else:
             # Just append the exec name
             doxygenpath = os.path.expandvars('${DOXYGEN}/doxygen')
@@ -443,13 +452,16 @@ def where_is_doxygen(verbose=False, refresh=False, path=None):
     full_paths = []
 
     # Check if it's installed but not in the path
-    if get_windows_host_type():
+    if get_windows_host_type(True):
 
         # Try the 'ProgramFiles' folders
         for item in _WINDOWS_ENV_PATHS:
             if os.getenv(item, None):
-                full_paths.append(os.path.expandvars(
-                    '${' + item + '}\\doxygen\\bin\\doxygen.exe'))
+                doxygenpath = os.path.expandvars(
+                    '${' + item + '}\\doxygen\\bin\\doxygen.exe')
+                if IS_CYGWIN:
+                    doxygenpath = to_cygwin_path(doxygenpath)
+                full_paths.append(doxygenpath)
 
     elif get_mac_host_type():
 
@@ -521,10 +533,12 @@ def where_is_p4(verbose=False, refresh=False, path=None):
 
     # Try the environment variable first
     if os.getenv('PERFORCE', None):
-        if get_windows_host_type():
+        if get_windows_host_type(True):
 
             # Windows points to the base path
             p4path = os.path.expandvars('${PERFORCE}\\p4.exe')
+            if IS_CYGWIN:
+                p4path = to_cygwin_path(p4path)
         else:
             # Just append the exec name
             p4path = os.path.expandvars('${PERFORCE}/p4')
@@ -544,13 +558,16 @@ def where_is_p4(verbose=False, refresh=False, path=None):
     full_paths = []
 
     # Check if it's installed but not in the path
-    if get_windows_host_type():
+    if get_windows_host_type(True):
 
         # Try the 'ProgramFiles' folders
         for item in _WINDOWS_ENV_PATHS:
             if os.getenv(item, None):
-                full_paths.append(os.path.expandvars(
-                    '${' + item + '}\\perforce\\p4.exe'))
+                p4path = os.path.expandvars(
+                    '${' + item + '}\\perforce\\p4.exe')
+                if IS_CYGWIN:
+                    p4path = to_cygwin_path(p4path)
+                full_paths.append(p4path)
 
     elif get_mac_host_type():
 
@@ -710,7 +727,7 @@ def where_is_watcom(command=None, verbose=False, refresh=False, path=None):
         _WATCOM_PATH = path
 
     # Windows .exe
-    if get_windows_host_type():
+    if get_windows_host_type(True):
         exe_folder = 'binnt'
         suffix = '.exe'
 
@@ -739,6 +756,8 @@ def where_is_watcom(command=None, verbose=False, refresh=False, path=None):
     watcom_path = os.getenv('WATCOM', None)
     if watcom_path:
         # Valid?
+        if IS_CYGWIN:
+            watcom_path = to_cygwin_path(watcom_path)
         full_path = os.path.join(watcom_path, exe_folder, fake_command)
         if is_exe(full_path):
             _WATCOM_PATH = watcom_path
@@ -748,15 +767,20 @@ def where_is_watcom(command=None, verbose=False, refresh=False, path=None):
 
     # List of the usual suspects
     full_paths = []
-    if get_windows_host_type():
+    if get_windows_host_type(True):
         # Watcom defaults to the root folder
-        full_paths.append(os.path.expandvars('${HOMEDRIVE}\\WATCOM'))
+        watcom_path = os.path.expandvars('${HOMEDRIVE}\\WATCOM')
+        if IS_CYGWIN:
+            watcom_path = to_cygwin_path(watcom_path)
+        full_paths.append(watcom_path)
 
         # Try the 'ProgramFiles' folders
         for item in _WINDOWS_ENV_PATHS:
             if os.getenv(item, None):
-                full_paths.append(os.path.expandvars(
-                    '${' + item + '}\\watcom'))
+                watcom_path = os.path.expandvars('${' + item + '}\\watcom')
+                if IS_CYGWIN:
+                    watcom_path = to_cygwin_path(watcom_path)
+                full_paths.append(watcom_path)
 
     elif os.name == 'posix':
         # Posix / Linux
@@ -1140,7 +1164,7 @@ def where_is_visual_studio(vs_version):
     """
 
     # Test if running on a windows host
-    host_type = get_windows_host_type()
+    host_type = get_windows_host_type(True)
     if not host_type:
         return None
 
@@ -1167,14 +1191,18 @@ def where_is_visual_studio(vs_version):
     vstudiopath = os.getenv(table_item[0], default=None)
     if not vstudiopath:
         # Try the pathname next
-        program_files = 'ProgramFiles' if host_type == 'x86' \
-            else 'ProgramFiles(x86)'
+        program_files = _WINDOWS_ENV_PATHS[0 if host_type == 'x86' else 1]
 
         # Generate the proper path to test
         vstudiopath = os.path.expandvars(
-            '%' + program_files + '%\\' + table_item[1] + '\\Common7\\Tools\\')
+            '${' + program_files + '}\\' + table_item[1] + '\\Common7\\Tools\\')
+
+    if IS_CYGWIN:
+        vstudiopath = to_cygwin_path(vstudiopath)
+
     # Locate the launcher
-    vstudiopath = os.path.abspath(vstudiopath + r'\..\ide\devenv.com')
+    vstudiopath = os.path.dirname(os.path.abspath(vstudiopath))
+    vstudiopath = os.path.join(vstudiopath, 'ide', 'devenv.com')
     if os.path.isfile(vstudiopath):
         # Return the path if the file was found
         return vstudiopath
@@ -1226,11 +1254,13 @@ def where_is_codeblocks(verbose=False, refresh=False, path=None):
 
     # Try the environment variable first
     if os.getenv('CODEBLOCKS', None):
-        if get_windows_host_type():
+        if get_windows_host_type(True):
 
             # Windows points to the base path
             codeblocks_path = os.path.expandvars(
                 '${CODEBLOCKS}\\codeblocks.exe')
+            if IS_CYGWIN:
+                codeblocks_path = to_cygwin_path(codeblocks_path)
         else:
             # Just append the exec name
             codeblocks_path = os.path.expandvars('${CODEBLOCKS}/CodeBlocks')
@@ -1250,13 +1280,16 @@ def where_is_codeblocks(verbose=False, refresh=False, path=None):
     full_paths = []
 
     # Check if it's installed but not in the path
-    if get_windows_host_type():
+    if get_windows_host_type(True):
 
         # Try the 'ProgramFiles' folders
         for item in _WINDOWS_ENV_PATHS:
             if os.getenv(item, None):
-                full_paths.append(os.path.expandvars(
-                    '${' + item + '}\\CodeBlocks\\codeblocks.exe'))
+                codeblocks_path = os.path.expandvars(
+                    '${' + item + '}\\CodeBlocks\\codeblocks.exe')
+                if IS_CYGWIN:
+                    codeblocks_path = to_cygwin_path(codeblocks_path)
+                full_paths.append(codeblocks_path)
 
     elif get_mac_host_type():
 
