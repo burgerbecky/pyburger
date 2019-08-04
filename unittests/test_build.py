@@ -90,10 +90,10 @@ def test_make_exe_path():
     # Test for a known windows executable
     if os.getenv('SystemRoot', None):
         # Case insensitive test
-        notepad = os.path.expandvars("${SystemRoot}\\notepad").lower()
-        notepadexe = notepad + '.exe'
-        if os.path.isfile(notepadexe):
-            assert burger.make_exe_path(notepad).lower() == notepadexe
+        cmd = os.path.expandvars("${SystemRoot}\\System32\\cmd").lower()
+        cmd_exe = cmd + '.exe'
+        if os.path.isfile(cmd_exe):
+            assert burger.make_exe_path(cmd).lower() == cmd_exe
             ran_test = True
 
     # Test with ls which is in the same place on Linux and macOS

@@ -130,6 +130,7 @@ matrix:
 # Before installing python packages, make sure python is present
 before_install:
   # macOS needs some pyenv love.
+  - export
   - pyenv versions
   - pyenv install --list
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then eval "$(pyenv init -)"; fi
