@@ -29,11 +29,10 @@ matrix:
   - os: windows
     language: sh
     python: '3.7'
-    env: TOXENV=py37
-    before_install:
-        - export
-        - choco install python3 --version=3.7.4
-        - export PATH="/c/Python37:/c/Python37/Scripts:$PATH"
+    env: 
+    - TOXENV=py37
+    - CHOCOPYTHON=python3 --version=3.7.4
+    - CHOCOPATH=Python37
 
   # Linux builds
   # Linux versions
@@ -133,6 +132,8 @@ before_install:
   - export
   - pyenv versions
   - pyenv install --list
+  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then choco install $CHOCOPYTHON
+  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then export PATH="/c/$CHOCOPATH:/c/$CHOCOPATH/Scripts:$PATH"
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then eval "$(pyenv init -)"; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then pyenv install -s $PYENV_VERSION; fi
   - python --version
