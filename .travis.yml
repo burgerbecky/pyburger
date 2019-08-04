@@ -31,7 +31,7 @@ matrix:
     python: '3.7'
     env: 
     - TOXENV=py37
-    - CHOCOPYTHON=python3 --version=3.7.4
+    - CHOCOPYTHON=3.7.4
     - CHOCOPATH=Python37
 
   # Linux builds
@@ -130,10 +130,10 @@ matrix:
 before_install:
   # macOS needs some pyenv love.
   - export
+  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then choco install python --version=$CHOCOPYTHON
+  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then export PATH="/c/$CHOCOPATH:/c/$CHOCOPATH/Scripts:$PATH"
   - pyenv versions
   - pyenv install --list
-  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then choco install $CHOCOPYTHON
-  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then export PATH="/c/$CHOCOPATH:/c/$CHOCOPATH/Scripts:$PATH"
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then eval "$(pyenv init -)"; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then pyenv install -s $PYENV_VERSION; fi
   - python --version
