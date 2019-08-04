@@ -29,10 +29,20 @@ matrix:
   - os: windows
     language: sh
     python: '3.7'
-    env: 
-    - TOXENV=py37
-    - CHOCOPYTHON=3.7.4
-    - CHOCOPATH=Python37
+    env: TOXENV=py37
+    before_install:
+        - export
+        - choco install python3 --version=3.7.4
+        - export PATH="/c/Python37:/c/Python37/Scripts:$PATH"
+
+  - os: windows
+    language: sh
+    python: '2.7'
+    env: TOXENV=py27
+    before_install:
+        - export
+        - choco install python2 --version=2.7.16
+        - export PATH="/c/Python27:/c/Python27/Scripts:$PATH"
 
   # Linux builds
   # Linux versions
@@ -129,9 +139,6 @@ matrix:
 # Before installing python packages, make sure python is present
 before_install:
   # macOS needs some pyenv love.
-  - export
-  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then choco install python --version="$CHOCOPYTHON"
-  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then export PATH="/c/$CHOCOPATH:/c/$CHOCOPATH/Scripts:$PATH"
   - pyenv versions
   - pyenv install --list
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then eval "$(pyenv init -)"; fi
