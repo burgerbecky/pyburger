@@ -47,7 +47,7 @@ from .strutils import PY2, unicode_print, is_string, convert_to_array, \
     encapsulate_path_linux, encapsulate_path, split_comma_with_quotes, \
     parse_csv, translate_to_regex_match, host_machine, get_windows_host_type, \
     get_mac_host_type, escape_xml_cdata, escape_xml_attribute, \
-    packed_paths
+    packed_paths, from_cygwin_path, to_cygwin_path
 
 from .fileutils import is_write_protected, make_executable, \
     create_folder_if_needed, delete_file, is_source_newer, \
@@ -131,6 +131,8 @@ __all__ = [
     'escape_xml_cdata',
     'escape_xml_attribute',
     'packed_paths',
+    'from_cygwin_path',
+    'to_cygwin_path',
     'is_write_protected',
     'make_executable',
     'create_folder_if_needed',

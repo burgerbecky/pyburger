@@ -12,12 +12,12 @@ from __future__ import absolute_import, print_function, unicode_literals
 from ctypes import c_wchar_p, create_string_buffer, c_uint, \
     string_at, wstring_at, byref, c_void_p
 import array
-from .strutils import get_windows_host_type
+from .strutils import get_windows_host_type, from_cygwin_path, IS_CYGWIN
 
 ########################################
 
 
-def get_file_info(filename, info):
+def get_file_info(path_name, info):
     r"""
     Extract information from a windows exe file version resource.
 
@@ -35,24 +35,31 @@ def get_file_info(filename, info):
         This function will always return None on non-windows platforms.
 
     Args:
-        filename: Name of the windows file.
+        path_name: Name of the windows file.
         info: Name of the data chunk to retrieve
 
     Return:
         None if no record found or an error, or a valid string
     """
 
-    # Test if running on a windows host
-    if get_windows_host_type():
+    # Test if running on a windows or cygwin hosts
+    if get_windows_host_type(True):
 
-        # Only import on windows hosts
-        from ctypes import windll
+        # Handle import for Cygwin
+        if IS_CYGWIN:
+            from ctypes import CDLL
+            versiondll = CDLL('version.dll')
+            path_name = from_cygwin_path(path_name)
+        else:
+            # Handle import for Windows
+            from ctypes import windll
+            versiondll = windll.version
 
         # Ensure it's unicode
-        wchar_filename = c_wchar_p(filename)
+        wchar_filename = c_wchar_p(path_name)
 
         # Call windows to get the data size
-        size = windll.version.GetFileVersionInfoSizeW(wchar_filename, None)
+        size = versiondll.GetFileVersionInfoSizeW(wchar_filename, None)
 
         # Was there no data to return?
         if size:
@@ -61,13 +68,13 @@ def get_file_info(filename, info):
             res_data = create_string_buffer(size)
 
             # Extract the file data
-            windll.version.GetFileVersionInfoW(
+            versiondll.GetFileVersionInfoW(
                 wchar_filename, None, size, res_data)
 
             # Find the default codepage (Not everything is in English)
             record = c_void_p()
             length = c_uint()
-            windll.version.VerQueryValueW(
+            versiondll.VerQueryValueW(
                 res_data,
                 '\\VarFileInfo\\Translation',
                 byref(record),
@@ -83,7 +90,7 @@ def get_file_info(filename, info):
 
                 # Extract information from the version using unicode and
                 # the proper codepage
-                if windll.version.VerQueryValueW(
+                if versiondll.VerQueryValueW(
                         res_data,
                         '\\StringFileInfo\\{0:04x}{1:04x}\\{2}'.format(
                             codepages[0],

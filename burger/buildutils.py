@@ -17,7 +17,7 @@ import errno
 
 from .strutils import is_string, host_machine, encapsulate_path, \
     get_windows_host_type, get_mac_host_type, PY3_3_OR_HIGHER, \
-    PY3_4_OR_HIGHER, PY3_5_OR_HIGHER
+    PY3_4_OR_HIGHER, PY3_5_OR_HIGHER, IS_CYGWIN
 
 ## Cached location of the BURGER_SDKS folder
 _BURGER_SDKS_FOLDER = None
@@ -191,8 +191,12 @@ def get_path_ext(pathext=None):
 
     # If a string, or environment variable?
     if is_string(pathext):
+        # Special case for Cygwin, since os.pathsep
+        # is ':' but the environment variable uses
+        # ';' from Windows
+        seperator = ';' if IS_CYGWIN else os.pathsep
         # Parse the string
-        pathext = pathext.split(os.pathsep)
+        pathext = pathext.split(seperator)
 
     # Return the list or iterable
     return pathext
@@ -223,17 +227,27 @@ def make_exe_path(exe_path, pathext=None):
     See Also:
         burger.buildutils.get_path_ext, burger.buildutils.find_in_path
     """
-    # Test the path as is
-    if is_exe(exe_path):
-        return exe_path
+
+    # Get the extension list
+    pathext = get_path_ext(pathext)
+
+    # Only convert to lower case once
+    exe_path_lower = exe_path.lower()
+
+    # Does the file already have an extension?
+    if any(exe_path_lower.endswith(temp.lower()) for temp in pathext):
+        # Just use the file's extension
+        test_list = [exe_path]
+    else:
+        # Create a list of possible file names with extensions
+        test_list = [exe_path + temp for temp in pathext]
 
     # Try all the extensions (Can be an empty list)
-    for ext in get_path_ext(pathext):
-        temp_path = exe_path + ext
+    for temp_path in test_list:
         if is_exe(temp_path):
             break
     else:
-        return None
+        temp_path = None
     return temp_path
 
 ########################################
@@ -274,15 +288,27 @@ def find_in_path(filename, search_path=None, executable=False):
     # Set up for added standard extentions
     if executable:
         pathext = get_path_ext()
+
+        # Only convert to lower case once
+        filename_lower = filename.lower()
+
+        # Does the file already have an extension?
+        if any(filename_lower.endswith(item.lower()) for item in pathext):
+            # Just use the file's extension
+            test_list = [filename]
+        else:
+            # Create a list of possible file names with extensions
+            test_list = [filename + item for item in pathext]
+
     else:
-        pathext = []
+        test_list = [filename]
 
     # Is there a search path override?
-    if search_path is None:
+    if not search_path:
         # Use the environment variable
-        paths = os.getenv('PATH', None)
-        if paths is None:
-            paths = []
+        paths = os.getenv('PATH', '')
+        if not paths:
+            paths = os.defpath
     else:
         paths = search_path
 
@@ -290,30 +316,37 @@ def find_in_path(filename, search_path=None, executable=False):
         # Break it up based on the path seperator
         paths = paths.split(os.pathsep)
 
-    # Since PATH was used, also test the current working directory
-    # first
-    if search_path is None:
+    # On windows platforms, the current directory takes
+    # precedence
+    if search_path is None and get_windows_host_type(True):
         paths.insert(0, os.getcwd())
 
     # Scan the list of paths to find the file
-    for item in paths:
-        # Get the full path
-        temp_path = os.path.join(item, filename)
+    tested = set()
+    for path in paths:
+        # Normalize the path
+        path = os.path.normcase(path)
 
-        # Perform the test as an exe
-        if executable:
-            temp_path = make_exe_path(temp_path, pathext=pathext)
-            if temp_path:
-                break
-        # Test for just a file
-        elif os.path.isfile(temp_path):
-            break
-    else:
-        # Not found in the loops
-        return None
+        # Skip duplicates
+        if not path in tested:
+            tested.add(path)
 
-    # Return the path
-    return os.path.abspath(temp_path)
+            for item in test_list:
+                temp_path = os.path.join(path, item)
+
+                # Perform the test as an exe
+                if executable:
+                    if is_exe(temp_path):
+                        break
+                # Test for just a file
+                elif os.path.isfile(temp_path):
+                    break
+            else:
+                continue
+            return os.path.normcase(os.path.normpath(temp_path))
+
+    # Not found in the loops
+    return None
 
 ########################################
 

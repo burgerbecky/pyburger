@@ -48,6 +48,9 @@ _RE_COMMA_QUOTES = re.compile(r"\\.|[\"',]", re.DOTALL)
 ## Cached result for get_mac_host_type()
 _MAC_HOST_TYPE = None
 
+## True if Cygwin
+IS_CYGWIN = sys.platform.startswith('cygwin')
+
 
 ########################################
 
@@ -105,6 +108,7 @@ except NameError:
     UNICODE = str
     LONG = int
 
+
 def is_string(item):
     """
     Return True if input is a string object
@@ -148,6 +152,7 @@ def convert_to_array(input_array):
     return input_array
 
 ########################################
+
 
 def string_to_bool(item):
     """Convert an item to a boolean.
@@ -620,13 +625,16 @@ def host_machine():
 ########################################
 
 
-def get_windows_host_type():
+def get_windows_host_type(cygwin_allowed=False):
     """
     Return windows host type (32 or 64 bit)
 
     Return False if the host is not Windows, 'x86' if it's a 32 bit host
     and 'x64' if it's a 64 bit host, and possibly 'arm' if an arm host
 
+    Args:
+        cygwin_allowed: If True, allow returning a host type if cygwin
+            is the shell.
     Returns:
         The string 'x64', 'x86', 'arm', 'arm64', 'ia64' or False
     See Also:
@@ -637,7 +645,9 @@ def get_windows_host_type():
     # Not windows?
 
     if os.name != 'nt':
-        return False
+        # Handle the case if host is Cygwin running on windows
+        if not cygwin_allowed or not IS_CYGWIN:
+            return False
 
     # Test the CPU for the type
 
@@ -816,3 +826,77 @@ def packed_paths(entries, slashes=None, seperator=None,
     else:
         temp_entries = entries
     return seperator.join(temp_entries)
+
+########################################
+
+
+def from_cygwin_path(path_name):
+    """
+    Convert a cygwin path to Windows format.
+
+    /cygdrive/c/windows/system32/notepad.exe becomes
+    C:\\windows\\system32\\notepad.exe
+
+    Args:
+        path_name: Cygwin pathname
+    Return:
+        Pathname returned as is, or converted to Windows.
+    Exception:
+        ValueError on invalid input.
+    See Also:
+        to_cygwin_path
+    """
+
+    if path_name.startswith('/cygdrive/'):
+        # Hassan! CHOP /cygdrive/!
+        path_name = path_name[10:]
+
+        # Insert a colon after the drive letter and keep the '/'
+        path_name = path_name[0] + ':' + path_name[1:]
+
+        # Convert Linux slashes to windows
+        path_name = convert_to_windows_slashes(path_name)
+    else:
+        # Was it already converted?
+        if len(path_name) < 3 or path_name[1] != ':':
+            raise ValueError('"{}" is not a Cygwin path'.format(path_name))
+
+    return path_name
+
+########################################
+
+
+def to_cygwin_path(path_name):
+    """
+    Convert an absolute Windows path to cygwin.
+
+    Test if the string starts with 'd:\\' for the drive letter and
+    base directory slash. If they exist, the path is assumed to be
+    a fully qualified Windows pathname and will convert it into
+    the equivalent for Cygwin.
+
+    Note:
+        This function can only accept absolute windows paths.
+        Cygwin's python implementation assumes all paths are Linux
+        format, so os.path.isabs() is useless.
+
+    Args:
+        path_name: Absolute Windows pathname
+    Return:
+        Pathname returned as is, or converted to Cygwin.
+    Exception:
+        ValueError on invalid input.
+    See Also:
+        from_cygwin_path
+    """
+
+    if not path_name.startswith('/cygdrive/'):
+        # It must start with a drive letter followed by a colon
+        # and a slash
+        if len(path_name) >= 3 and path_name[1] == ':' and \
+                (path_name[2] in ('\\', '/')):
+            path_name = convert_to_linux_slashes(
+                '/cygdrive/{}/{}'.format(path_name[0].lower(), path_name[3:]))
+        else:
+            raise ValueError('"{}" is not a Windows path'.format(path_name))
+    return path_name

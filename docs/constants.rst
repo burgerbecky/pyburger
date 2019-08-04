@@ -71,6 +71,10 @@ strutils.PYPY
 ^^^^^^^^^^^^^
 .. doxygenvariable:: burger::strutils::PYPY
 
+strutils.IS_CYGWIN
+^^^^^^^^^^^^^^^^^^
+.. doxygenvariable:: burger::strutils::IS_CYGWIN
+
 strutils.UNICODE
 ^^^^^^^^^^^^^^^^
 .. doxygenvariable:: burger::strutils::UNICODE

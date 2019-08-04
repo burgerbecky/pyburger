@@ -88,6 +88,13 @@ strutils.packed_paths
 ^^^^^^^^^^^^^^^^^^^^^
 .. doxygenfunction:: burger::strutils::packed_paths
 
+strutils.from_cygwin_path
+^^^^^^^^^^^^^^^^^^^^^^^^^
+.. doxygenfunction:: burger::strutils::from_cygwin_path
+
+strutils.to_cygwin_path
+^^^^^^^^^^^^^^^^^^^^^^^
+.. doxygenfunction:: burger::strutils::to_cygwin_path
 
 File Locators
 -------------
