@@ -28,23 +28,13 @@ from .strutils import string_to_bool, is_string, UNICODE as unicode, \
 class Property(object):
     """Base Class to create enforced types """
 
-    def __init__(self, name, default=None):
+    def __init__(self, name):
         """Initialize to default
         Args:
             name: Name of the instance storage index
-            default: Initial value, must be None or requested type
         """
 
-        ## Name of the variable to store data in parent class instance
-        self._name = '_default'
-
-        ## Default value to return
-        self._default = default
-
-        # Validate the default data
-        self.__set__(self, default)
-
-        # Set the real name of the class instance
+        ## Set the real name of the class instance
         self._name = name
 
     def __get__(self, instance, owner=None):
@@ -58,7 +48,7 @@ class Property(object):
             None, or verified data
         """
 
-        return instance.__dict__.get(self._name, self._default)
+        return instance.__dict__.get(self._name, None)
 
     def __set__(self, instance, value):
         """Set the string value
@@ -288,6 +278,25 @@ f.x = True
 print(f.x)
     """
 
+    def __get__(self, instance, owner=None):
+        """Return value
+
+        Args:
+            instance: Reference to object containing data
+            owner: Not used
+
+        Returns:
+            None, or verified data
+        """
+
+        # If never initialized, create an empty list
+        result = instance.__dict__.get(self._name, None)
+        if result is None:
+            result = []
+            # Make sure the value is set to the empty list
+            instance.__dict__[self._name] = result
+        return result
+
     def __set__(self, instance, value):
         """Set the string value
         Args:
@@ -340,12 +349,11 @@ f.x = 'h'
 print(f.x)
     """
 
-    def __init__(self, name, enums, default=None):
+    def __init__(self, name, enums):
         """Initialize to default
         Args:
             name: Name of the instance storage index
             enums: list of enumeration strings
-            default: Initial value, must be None or requested type
         """
 
         ## Enumeration dictionary
@@ -360,7 +368,7 @@ print(f.x)
                 'enums "{}" can not be a string'.format(enums))
 
         # Set the initial value using the derived class
-        Property.__init__(self, name, default)
+        Property.__init__(self, name)
 
     def __set__(self, instance, value):
         """Set the string value

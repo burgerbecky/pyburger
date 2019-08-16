@@ -32,9 +32,14 @@ def test_booleanproperty():
     class TestClass(object):
         """ Test """
         test_a = burger.BooleanProperty('_test_a')
-        test_b = burger.BooleanProperty('_test_b', True)
-        test_c = burger.BooleanProperty('_test_c', False)
-        test_d = burger.BooleanProperty('_test_d', 1)
+        test_b = burger.BooleanProperty('_test_b')
+        test_c = burger.BooleanProperty('_test_c')
+        test_d = burger.BooleanProperty('_test_d')
+
+        def __init__(self):
+            self.test_b = True
+            self.test_c = False
+            self.test_d = 1
 
     tester = TestClass()
 
@@ -96,9 +101,14 @@ def test_integerproperty():
     class TestClass(object):
         """ Test """
         test_a = burger.IntegerProperty('_test_a')
-        test_b = burger.IntegerProperty('_test_b', True)
-        test_c = burger.IntegerProperty('_test_c', False)
-        test_d = burger.IntegerProperty('_test_d', 1)
+        test_b = burger.IntegerProperty('_test_b')
+        test_c = burger.IntegerProperty('_test_c')
+        test_d = burger.IntegerProperty('_test_d')
+
+        def __init__(self):
+            self.test_b = True
+            self.test_c = False
+            self.test_d = 1
 
     tester = TestClass()
 
@@ -166,9 +176,14 @@ def test_stringproperty():
     class TestClass(object):
         """ Test """
         test_a = burger.StringProperty('_test_a')
-        test_b = burger.StringProperty('_test_b', True)
-        test_c = burger.StringProperty('_test_c', 'True')
-        test_d = burger.StringProperty('_test_d', 1)
+        test_b = burger.StringProperty('_test_b')
+        test_c = burger.StringProperty('_test_c')
+        test_d = burger.StringProperty('_test_d')
+
+        def __init__(self):
+            self.test_b = True
+            self.test_c = 'True'
+            self.test_d = 1
 
     tester = TestClass()
 
@@ -218,9 +233,14 @@ def test_stringlistproperty():
     class TestClass(object):
         """ Test """
         test_a = burger.StringListProperty('_test_a')
-        test_b = burger.StringListProperty('_test_b', True)
-        test_c = burger.StringListProperty('_test_c', 'True')
-        test_d = burger.StringListProperty('_test_d', ['a', 'b', 'c'])
+        test_b = burger.StringListProperty('_test_b')
+        test_c = burger.StringListProperty('_test_c')
+        test_d = burger.StringListProperty('_test_d')
+
+        def __init__(self):
+            self.test_b = True
+            self.test_c = 'True'
+            self.test_d = ['a', 'b', 'c']
 
     tester = TestClass()
 
@@ -273,10 +293,16 @@ def test_enumproperty():
     class TestClass(object):
         """ Test """
         test_a = burger.EnumProperty('_test_a', j)
-        test_b = burger.EnumProperty('_test_b', j, 'i')
-        test_c = burger.EnumProperty('_test_c', j, 2)
-        test_d = burger.EnumProperty('_test_d', j, 'c')
-        test_e = burger.EnumProperty('_test_e', k, 'c')
+        test_b = burger.EnumProperty('_test_b', j)
+        test_c = burger.EnumProperty('_test_c', j)
+        test_d = burger.EnumProperty('_test_d', j)
+        test_e = burger.EnumProperty('_test_e', k)
+
+        def __init__(self):
+            self.test_b = 'i'
+            self.test_c = 2
+            self.test_d = 'c'
+            self.test_e = 'c'
 
     tester = TestClass()
 
