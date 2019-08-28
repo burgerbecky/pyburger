@@ -290,6 +290,8 @@ def find_in_path(filename, search_path=None, executable=False):
         burger.buildutils.get_path_ext, burger.buildutils.make_exe_path
     """
 
+    # pylint: disable=too-many-branches
+
     # Set up for added standard extentions
     test_list = [filename]
     if executable:
@@ -1354,62 +1356,76 @@ def where_is_xcode(xcode_version=None):
 
     import plistlib
 
-    # XCode 4 and higher reside in the app folder
+    # XCode 5 and higher reside in the app folder
     highest_version = 0
     xcodebuild = None
 
-    # Skip if only checking for version 3
-    if xcode_version != 3:
+    # Version 3 and 4 is in /Developer while all
+    # others are in /Applications
 
-        # Scan the applications folder for all apps called "XCode"
-        for item in os.listdir('/Applications'):
+    dir_list = []
+    if xcode_version is None or xcode_version < 5:
+        dir_list.append('/Developer/Applications')
+    if xcode_version is None or xcode_version > 4:
+        dir_list.append('/Applications')
 
-            # Scan only apps whose name starts with xcode
-            if not item.lower().startswith('xcode'):
-                continue
+    for base_dir in dir_list:
+        # Check if the directory exists first
+        if os.path.isdir(base_dir):
 
-            temp_path = '/Applications/' + item + '/Contents/version.plist'
-            try:
-                if PY3_4_OR_HIGHER:
-                    with open(temp_path, 'rb') as filefp:
-                        version_dict = plistlib.load(filefp)
+            # Scan the applications folder for all apps called "XCode"
+            for item in os.listdir(base_dir):
+
+                # Scan only apps whose name starts with xcode
+                if not item.lower().startswith('xcode'):
+                    continue
+
+                temp_path = base_dir + '/' + item + '/Contents/version.plist'
+                try:
+                    if PY3_4_OR_HIGHER:
+                        with open(temp_path, 'rb') as filefp:
+                            version_dict = plistlib.load(filefp)
+                    else:
+                        version_dict = plistlib.readPlist(
+                            temp_path)
+
+                # Any IO error is acceptable to ignore
+                except IOError:
+                    continue
+
+                version = version_dict.get('CFBundleShortVersionString', None)
+                if not version:
+                    continue
+
+                # Check the version for a match
+                version = int(version.split('.')[0])
+
+                # XCode 3 and 4 are hard coded to Developer
+                if version in (3, 4):
+                    temp_path = '/Developer/usr/bin/xcodebuild'
                 else:
-                    version_dict = plistlib.readPlist(
-                        temp_path)
+                    temp_path = (
+                        '{}/{}/Contents/Developer'
+                        '/usr/bin/xcodebuild').format(base_dir, item)
 
-            # Any IO error is acceptable to ignore
-            except IOError:
-                continue
+                if not os.path.isfile(temp_path):
+                    continue
 
-            version = version_dict.get('CFBundleShortVersionString', None)
-            if not version:
-                continue
+                if xcode_version:
+                    # If scanning for a perfect match, exit if found
+                    if version == xcode_version:
+                        highest_version = version
+                        return (temp_path, version)
 
-            temp_path = (
-                '/Applications/{}'
-                '/Contents/Developer/usr/bin/xcodebuild').format(item)
-            if not os.path.isfile(temp_path):
-                continue
-
-            # Check the version for a match
-            version = int(version.split('.')[0])
-            if xcode_version:
-                # If scanning for a perfect match, exit if found
-                if version == xcode_version:
+                # Scan for the most recent version of XCode
+                elif version > highest_version:
                     highest_version = version
                     xcodebuild = (temp_path, version)
-                    break
-
-            # Scan for the most recent version of XCode
-            elif version > highest_version:
-                highest_version = version
-                xcodebuild = (temp_path, version)
 
     # XCode 3 is hard coded to a specific location
     if (not xcode_version and not highest_version) or xcode_version == 3:
         # On OSX Lion and higher, XCode 3.1.4 is a separate folder
-        for item in ('/Xcode3.1.4/usr/bin/xcodebuild',
-                     '/Developer/usr/bin/xcodebuild'):
+        for item in ('/Xcode3.1.4/usr/bin/xcodebuild',):
             if os.path.isfile(item):
                 xcodebuild = (item, 3)
                 break
