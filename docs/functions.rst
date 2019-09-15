@@ -253,6 +253,10 @@ buildutils.perforce_add
 ^^^^^^^^^^^^^^^^^^^^^^^
 .. doxygenfunction:: burger::buildutils::perforce_add
 
+buildutils.perforce_opened
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. doxygenfunction:: burger::buildutils::perforce_opened
+
 buildutils.run_command
 ^^^^^^^^^^^^^^^^^^^^^^
 .. doxygenfunction:: burger::buildutils::run_command

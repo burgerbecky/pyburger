@@ -60,9 +60,10 @@ from .fileutils import is_write_protected, make_executable, \
 from .buildutils import get_sdks_folder, fix_csharp, is_exe, get_path_ext, \
     make_exe_path, find_in_path, where_is_doxygen, \
     where_is_p4, expand_and_verify, perforce_command, perforce_edit, \
-    perforce_add, where_is_watcom, run_command, make_version_header, \
-    is_codewarrior_mac_allowed, import_py_script, run_py_script, \
-    where_is_visual_studio, where_is_codeblocks, where_is_xcode
+    perforce_add, perforce_opened, where_is_watcom, run_command, \
+    make_version_header, is_codewarrior_mac_allowed, import_py_script, \
+    run_py_script, where_is_visual_studio, where_is_codeblocks, \
+    where_is_xcode
 
 from .cleanutils import clean_xcode, clean_codeblocks, clean_setup_py
 
@@ -166,6 +167,7 @@ __all__ = [
     'perforce_command',
     'perforce_edit',
     'perforce_add',
+    'perforce_opened',
     'where_is_watcom',
     'run_command',
     'make_version_header',

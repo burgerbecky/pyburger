@@ -691,6 +691,60 @@ def perforce_add(files, verbose=False):
 ########################################
 
 
+def perforce_opened(files=None, verbose=False):
+    """
+    Get the list of opened files in Perforce.
+
+    Check perforce if any files are opened and if so,
+    return the list of files in Perforce format that
+    are currently opened.
+
+    Args:
+        files: List of files or directories to check, None for all.
+        verbose: If True, print the command line and warnings.
+
+    Returns:
+        List of opened files, can be empty if no files are opened.
+    See Also:
+        where_is_p4
+    """
+
+    # Get the p4 executable
+    perforce_path = where_is_p4(verbose=verbose)
+
+    # Not found?
+    if perforce_path is None:
+        return []
+
+    cmd = [perforce_path, "opened"]
+
+    # Add list of file(s) or directories to check
+    if files:
+        if is_string(files):
+            cmd.append(files)
+        else:
+            cmd.extend(files)
+
+    # Issue the command
+    result = run_command(
+        cmd,
+        capture_stdout=True,
+        capture_stderr=True,
+        quiet=not verbose)
+
+    # Was there an error?
+    if result[2] != '':
+        # Print the error on verbose output
+        if verbose:
+            print(result[2])
+        return []
+    # Perforce uses '#' as a delimiter from the filename
+    # to the file version.
+    return [x.split('#')[0] for x in result[1].splitlines()]
+
+########################################
+
+
 def where_is_watcom(command=None, verbose=False, refresh=False, path=None):
     """
     Return the location of Watcom's executables.
@@ -1366,7 +1420,7 @@ def where_is_xcode(xcode_version=None):
     dir_list = []
     if xcode_version is None or xcode_version < 5:
         dir_list.append('/Developer/Applications')
-    if xcode_version is None or xcode_version > 4:
+    if xcode_version is None or xcode_version > 3:
         dir_list.append('/Applications')
 
     for base_dir in dir_list:
@@ -1400,8 +1454,8 @@ def where_is_xcode(xcode_version=None):
                 # Check the version for a match
                 version = int(version.split('.')[0])
 
-                # XCode 3 and 4 are hard coded to Developer
-                if version in (3, 4):
+                # XCode 3 is hard coded to Developer
+                if version == 3:
                     temp_path = '/Developer/usr/bin/xcodebuild'
                 else:
                     temp_path = (
