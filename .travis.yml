@@ -116,6 +116,12 @@ matrix:
   - os: linux
     dist: trusty
     sudo: false
+    python: 'pypy-5.4'
+    env: TOXENV=pypy
+
+  - os: linux
+    dist: trusty
+    sudo: false
     python: 'pypy3'
     env: TOXENV=pypy3
 
