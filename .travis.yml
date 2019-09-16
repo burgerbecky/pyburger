@@ -172,7 +172,7 @@ matrix:
 
   - name: "pypy-5.7.1 on macOS"
     os: osx
-    language:generic
+    language: generic
     env: 
       - TOXENV=pypy
       - PYENV_VERSION=pypy-5.7.1
