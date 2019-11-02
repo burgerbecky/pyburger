@@ -71,9 +71,29 @@ strutils.PYPY
 ^^^^^^^^^^^^^
 .. doxygenvariable:: burger::strutils::PYPY
 
+strutils.IS_LINUX
+^^^^^^^^^^^^^^^^^
+.. doxygenvariable:: burger::strutils::IS_LINUX
+
+strutils.IS_MACOSX
+^^^^^^^^^^^^^^^^^^
+.. doxygenvariable:: burger::strutils::IS_MACOSX
+
 strutils.IS_CYGWIN
 ^^^^^^^^^^^^^^^^^^
 .. doxygenvariable:: burger::strutils::IS_CYGWIN
+
+strutils.IS_MSYS
+^^^^^^^^^^^^^^^^
+.. doxygenvariable:: burger::strutils::IS_MSYS
+
+strutils.IS_WSL
+^^^^^^^^^^^^^^^
+.. doxygenvariable:: burger::strutils::IS_WSL
+
+strutils.IS_WINDOWS
+^^^^^^^^^^^^^^^^^^^
+.. doxygenvariable:: burger::strutils::IS_WINDOWS
 
 strutils.UNICODE
 ^^^^^^^^^^^^^^^^

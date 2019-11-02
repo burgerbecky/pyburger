@@ -10,7 +10,6 @@ Package that contains string manipulation functions
 from __future__ import absolute_import, print_function, unicode_literals
 
 import sys
-import os
 import string
 import re
 import csv
@@ -48,9 +47,36 @@ _RE_COMMA_QUOTES = re.compile(r"\\.|[\"',]", re.DOTALL)
 ## Cached result for get_mac_host_type()
 _MAC_HOST_TYPE = None
 
-## True if Cygwin
+## Running on linux?
+IS_LINUX = sys.platform.startswith('linux')
+
+## Running on macOS X
+IS_MACOSX = sys.platform.startswith('darwin')
+
+## Running on Windows
+IS_WINDOWS = sys.platform.startswith('win')
+
+## Running on Cygwin
 IS_CYGWIN = sys.platform.startswith('cygwin')
 
+## Running on MSYS
+IS_MSYS = sys.platform.startswith('msys')
+
+## Running on Windows Subsystem for Linux
+IS_WSL = IS_LINUX and 'icrosoft' in platform.platform()
+
+## Running on Windows (Including Linux shells on windows)
+IS_WINDOWS_HOST = IS_WINDOWS or IS_CYGWIN or IS_MSYS or IS_WSL
+
+if IS_CYGWIN:
+    ## Prefix string for conversion of Windows paths to Linux.
+    _WINDOWS_HOST_PREFIX = '/cygdrive/'
+elif IS_MSYS:
+    _WINDOWS_HOST_PREFIX = '/'
+elif IS_WSL:
+    _WINDOWS_HOST_PREFIX = '/mnt/'
+else:
+    _WINDOWS_HOST_PREFIX = None
 
 ########################################
 
@@ -173,6 +199,7 @@ def string_to_bool(item):
         ValueError on invalid input.
     """
 
+    # pylint: disable=too-many-return-statements
     # None becomes False
     if item is None:
         return False
@@ -434,7 +461,7 @@ def encapsulate_path(input_path):
     """
 
     # Process for Windows platforms
-    if os.name == 'nt':
+    if IS_WINDOWS:
         return encapsulate_path_windows(input_path)
 
     # Force to linux slashes
@@ -606,16 +633,14 @@ def host_machine():
     """
 
     # Only windows reports as NT
-    if os.name == 'nt':
+    if IS_WINDOWS:
         return 'windows'
 
-    # BSD and GNU report as posix
-    if os.name == 'posix':
+    # MacOSX is the Darwin kernel
+    if IS_MACOSX:
+        return 'macosx'
 
-        # MacOSX is the Darwin kernel
-        if platform.system() == 'Darwin':
-            return 'macosx'
-
+    if IS_LINUX or IS_CYGWIN or IS_MSYS or IS_WSL:
         # Assume linux (Tested on Ubuntu and Red Hat)
         return 'linux'
 
@@ -625,7 +650,7 @@ def host_machine():
 ########################################
 
 
-def get_windows_host_type(cygwin_allowed=False):
+def get_windows_host_type(wsl_allowed=False):
     """
     Return windows host type (32 or 64 bit)
 
@@ -633,7 +658,7 @@ def get_windows_host_type(cygwin_allowed=False):
     and 'x64' if it's a 64 bit host, and possibly 'arm' if an arm host
 
     Args:
-        cygwin_allowed: If True, allow returning a host type if cygwin
+        wsl_allowed: If True, allow returning a host type if cygwin
             is the shell.
     Returns:
         The string 'x64', 'x86', 'arm', 'arm64', 'ia64' or False
@@ -643,10 +668,13 @@ def get_windows_host_type(cygwin_allowed=False):
     """
 
     # Not windows?
+    if not IS_WINDOWS_HOST:
+        return False
 
-    if os.name != 'nt':
-        # Handle the case if host is Cygwin running on windows
-        if not cygwin_allowed or not IS_CYGWIN:
+    # Is Linux under windows allowed?
+    if not IS_WINDOWS:
+        # Handle the case if host is Cygwin/msys/Linux running on windows
+        if not wsl_allowed:
             return False
 
     # Test the CPU for the type
@@ -679,7 +707,7 @@ def get_mac_host_type():
     if _MAC_HOST_TYPE is None:
 
         # Not macOS? Force returning False
-        if os.name != 'posix' or platform.system() != 'Darwin':
+        if not IS_MACOSX:
             cpu = False
         else:
             # Since it's a mac, query the Mac OSX cpu type
@@ -694,10 +722,11 @@ def get_mac_host_type():
             # Special case for Power Macs
             elif cpu in ('PowerPC', 'ppc', 'Power Macintosh'):
 
-                # Issue the command machine and capture the output.
+                # Issue the command `machine` and capture the output.
                 # If it contains 'ppc970' then you're running on a 64 bit
                 # version of macOS, despite what platform.machine() says
 
+                # pylint: disable=import-outside-toplevel
                 from .buildutils import run_command
                 if 'ppc970' in run_command('machine', capture_stdout=True)[1]:
                     cpu = 'ppc64'
