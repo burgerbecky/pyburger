@@ -251,6 +251,8 @@ def generate_doxygen_xml(app):
 
     # Call Doxygen to build the documentation
     try:
+        # Log the Doxygen version number
+        subprocess.call('doxygen -v', cwd=CWD, shell=True)
         retcode = subprocess.call('doxygen', cwd=CWD, shell=True)
         if retcode < 0:
             sys.stderr.write("doxygen terminated by signal %s" % (-retcode))
