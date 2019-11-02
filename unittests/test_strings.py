@@ -14,7 +14,6 @@ Please? It's not like I'm asking you for money!
 """
 
 import sys
-import os
 import burger
 
 # Needed to help perform Python 2.0 exclusive tests
@@ -356,9 +355,9 @@ def test_encapsulate_path():
     Test burger.encapsulate_path()
     """
 
-    savedname = os.name
+    savedname = burger.strutils.IS_WINDOWS
     # Hack to force windows mode
-    os.name = 'nt'
+    burger.strutils.IS_WINDOWS = True
     assert burger.encapsulate_path('') == '""'
     assert burger.encapsulate_path('foo') == 'foo'
     assert burger.encapsulate_path('f$oo') == '"f$oo"'
@@ -366,14 +365,14 @@ def test_encapsulate_path():
     assert burger.encapsulate_path("foo'foo") == '"foo\'foo"'
 
     # Hack to force linux mode
-    os.name = 'linux'
+    burger.strutils.IS_WINDOWS = False
     assert burger.encapsulate_path('') == "''"
     assert burger.encapsulate_path('foo') == "foo"
     assert burger.encapsulate_path('f$oo') == "'f$oo'"
     assert burger.encapsulate_path('f"oo') == "'f\"oo'"
     assert burger.encapsulate_path("foo'foo") == "'foo'\"'\"'foo'"
     # Restore the real value
-    os.name = savedname
+    burger.strutils.IS_WINDOWS = savedname
 
 ########################################
 

@@ -632,16 +632,16 @@ def host_machine():
         get_mac_host_type, get_windows_host_type
     """
 
-    # Only windows reports as NT
+    # Is it ONLY windows, not hosted on windows?
     if IS_WINDOWS:
         return 'windows'
 
-    # MacOSX is the Darwin kernel
+    # Is it macOS X?
     if IS_MACOSX:
         return 'macosx'
 
     if IS_LINUX or IS_CYGWIN or IS_MSYS or IS_WSL:
-        # Assume linux (Tested on Ubuntu and Red Hat)
+        # Assume linux or linux clones
         return 'linux'
 
     # Surrender Dorothy
