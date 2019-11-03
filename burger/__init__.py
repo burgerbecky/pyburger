@@ -20,6 +20,10 @@ A set of subroutines used by the Burgerlib based scripts written in Python.
 #
 # \htmlinclude README.html
 #
+# Chapter list
+# ============
+#
+# - \subpage md_truefalse
 #
 # Module list
 # ===========

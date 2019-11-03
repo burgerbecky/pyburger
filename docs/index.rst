@@ -9,4 +9,5 @@ Table of Contents
     constants
     classes
     functions
+    truefalse
     license

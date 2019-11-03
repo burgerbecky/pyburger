@@ -106,7 +106,7 @@ strutils.to_wsl_path
 
 strutils.from_windows_host_path
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-.. doxygenfunction:: burger::strutils::from_cygwin_path
+.. doxygenfunction:: burger::strutils::from_windows_host_path
 
 strutils.to_windows_host_path
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
