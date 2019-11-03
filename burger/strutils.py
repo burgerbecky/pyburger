@@ -10,6 +10,7 @@ Package that contains string manipulation functions
 from __future__ import absolute_import, print_function, unicode_literals
 
 import sys
+import os
 import string
 import re
 import csv
@@ -863,34 +864,34 @@ def from_cygwin_path(path_name):
     """
     Convert a cygwin path to Windows format.
 
-    /cygdrive/c/windows/system32/notepad.exe becomes
-    C:\\windows\\system32\\notepad.exe
+    `/cygdrive/c/windows/system32/notepad.exe` becomes
+    `C:\\windows\\system32\\notepad.exe`
+
+    Call the tool `cygpath` with the parameters -a and -w to convert the windows
+    pathname to one suitable for Linux.
 
     Args:
         path_name: Cygwin pathname
     Return:
         Pathname returned as is, or converted to Windows.
     Exception:
-        ValueError on invalid input.
+        `EnvironmentError` if not called from Cygwin or MSYS.
     See Also:
         to_cygwin_path
     """
+    if not IS_CYGWIN and not IS_MSYS:
+        raise EnvironmentError("Call only valid on MSYS or Cygwin")
 
-    if path_name.startswith('/cygdrive/'):
-        # Hassan! CHOP /cygdrive/!
-        path_name = path_name[10:]
+    # pylint: disable=import-outside-toplevel
+    from .buildutils import run_command
 
-        # Insert a colon after the drive letter and keep the '/'
-        path_name = path_name[0] + ':' + path_name[1:]
-
-        # Convert Linux slashes to windows
-        path_name = convert_to_windows_slashes(path_name)
-    else:
-        # Was it already converted?
-        if len(path_name) < 3 or path_name[1] != ':':
-            raise ValueError('"{}" is not a Cygwin path'.format(path_name))
-
-    return path_name
+    # The tool doesn't process ~ properly, help it by preprocessing here.
+    result = run_command(
+        ('cygpath', '-a', '-w', os.path.abspath(os.path.expanduser(path_name))),
+        capture_stdout=True)
+    if result[0]:
+        return None
+    return result[1].strip()
 
 ########################################
 
@@ -899,33 +900,168 @@ def to_cygwin_path(path_name):
     """
     Convert an absolute Windows path to cygwin.
 
-    Test if the string starts with 'd:\\' for the drive letter and
-    base directory slash. If they exist, the path is assumed to be
-    a fully qualified Windows pathname and will convert it into
-    the equivalent for Cygwin.
+    `C:\\windows\\system32\\notepad.exe` becomes
+    `/cygdrive/c/windows/system32/notepad.exe`
 
-    Note:
-        This function can only accept absolute windows paths.
-        Cygwin's python implementation assumes all paths are Linux
-        format, so os.path.isabs() is useless.
+    Call the tool `cygpath` with the parameters -a and -w to convert the windows
+    pathname to one suitable for Linux.
 
     Args:
         path_name: Absolute Windows pathname
     Return:
         Pathname returned as is, or converted to Cygwin.
     Exception:
-        ValueError on invalid input.
+        `EnvironmentError` if not called from Cygwin or MSYS.
     See Also:
         from_cygwin_path
     """
 
-    if not path_name.startswith('/cygdrive/'):
-        # It must start with a drive letter followed by a colon
-        # and a slash
-        if len(path_name) >= 3 and path_name[1] == ':' and \
-                (path_name[2] in ('\\', '/')):
-            path_name = convert_to_linux_slashes(
-                '/cygdrive/{}/{}'.format(path_name[0].lower(), path_name[3:]))
-        else:
-            raise ValueError('"{}" is not a Windows path'.format(path_name))
-    return path_name
+    if not IS_CYGWIN and not IS_MSYS:
+        raise EnvironmentError("Call only valid on MSYS or Cygwin")
+
+    # pylint: disable=import-outside-toplevel
+    from .buildutils import run_command
+    result = run_command(
+        ('cygpath', '-a', '-u', path_name),
+        capture_stdout=True)
+    if result[0]:
+        return None
+    return result[1].strip()
+
+########################################
+
+
+def from_wsl_path(path_name):
+    """
+    Convert a Windows Subsystem for Linux path to Windows format.
+
+    `/mnt/c/windows/system32/notepad.exe` becomes
+    `C:\\windows\\system32\\notepad.exe`
+
+    Call the tool `wslpath` with the parameters -a and -w to convert the windows
+    pathname to one suitable for Linux.
+
+    Args:
+        path_name: WSL pathname
+    Return:
+        Pathname converted to Windows.
+    Exception:
+        `EnvironmentError` if not called from WSL.
+    See Also:
+        to_wsl_path
+    """
+    if not IS_WSL:
+        raise EnvironmentError("Call only valid on Windows Subsystem for Linux")
+
+    # pylint: disable=import-outside-toplevel
+    from .buildutils import run_command
+    result = run_command(
+        ('wslpath', '-a', '-w', os.path.abspath(os.path.expanduser(path_name))),
+        capture_stdout=True)
+    if result[0]:
+        return None
+    return result[1].strip()
+
+########################################
+
+
+def to_wsl_path(path_name):
+    """
+    Convert an absolute Windows path to Windows Subsystem for Linux.
+
+    `C:\\windows\\system32\\notepad.exe` becomes
+    `/mnt/c/windows/system32/notepad.exe`
+
+    Call the tool `wslpath` with the parameters -a and -u to convert the windows
+    pathname to one suitable for Linux.
+
+    Note:
+        At this time, wslpath will fail on paths to network drives.
+
+    Args:
+        path_name: Absolute Windows pathname
+    Return:
+        Pathname converted to WSL.
+    Exception:
+        `EnvironmentError` if not called from WSL.
+    See Also:
+        from_wsl_path
+    """
+
+    if not IS_WSL:
+        raise EnvironmentError("Call only valid on Windows Subsystem for Linux")
+
+    # pylint: disable=import-outside-toplevel
+    from .buildutils import run_command
+    result = run_command(
+        ('wslpath', '-a', '-u', path_name),
+        capture_stdout=True)
+    if result[0]:
+        return None
+    return result[1].strip()
+
+########################################
+
+
+def from_windows_host_path(path_name):
+    """
+    Convert a linux path to windows if needed.
+
+    If a Linux OS is running under a Windows host, this function
+    will convert a linux path to the Windows path for the underlying host.
+
+    If the path is already Windows format, it will be returned unchanged.
+
+    Args:
+        path_name: Windows or Linux pathname
+    Return:
+        Pathname converted to Windows.
+    See Also:
+        to_windows_host_path
+    """
+
+    # Only change the path if on a Linux system under windows.
+    if not IS_WINDOWS_HOST or IS_WINDOWS:
+        return path_name
+
+    # Network drive name?
+    if path_name.startswith('\\\\') or ':' in path_name:
+        return path_name
+
+    if IS_WSL:
+        return from_wsl_path(path_name)
+
+    return from_cygwin_path(path_name)
+
+########################################
+
+
+def to_windows_host_path(path_name):
+    """
+    Convert an absolute Windows path to Linux.
+
+    If a Linux OS is running under a Windows host, this function
+    will convert a windows path to the Linux path from the underlying host.
+
+    If the path is already Linux format, it will be returned unchanged.
+
+    Args:
+        path_name: Absolute Windows pathname
+    Return:
+        Pathname converted to Linux.
+    See Also:
+        from_windows_host_path
+    """
+
+    # Only change the path if on a Linux system under windows.
+    if not IS_WINDOWS_HOST or IS_WINDOWS:
+        return path_name
+
+    # Network drive name?
+    if path_name[0] in ('~', '/'):
+        return path_name
+
+    if IS_WSL:
+        return to_wsl_path(path_name)
+
+    return to_cygwin_path(path_name)

@@ -16,7 +16,8 @@ import stat
 import codecs
 
 from .strutils import is_string, convert_to_array, encapsulate_path, \
-    host_machine, get_windows_host_type, translate_to_regex_match
+    get_windows_host_type, translate_to_regex_match, \
+    IS_MACOSX, IS_WINDOWS_HOST, IS_LINUX
 
 # Redefining built-in W0622 (Ignore redefinition of zip)
 
@@ -208,6 +209,7 @@ def copy_file_if_needed(source, destination, verbose=True, perforce=False):
 
         # Alert perforce that the file is to be modified
         if perforce and is_write_protected(destination):
+            # pylint: disable=import-outside-toplevel
             from .buildutils import perforce_edit
             perforce_edit(destination, verbose=verbose)
 
@@ -440,23 +442,22 @@ def get_tool_path(tool_folder, tool_name, encapsulate=False):
         Full pathname to the tool to execute
     """
 
-    host = host_machine()
-
     # Macosx uses fat binaries
-    if host == 'macosx':
+    if IS_MACOSX:
         exename = os.path.join(tool_folder, 'macosx', tool_name)
+
+    # Windows supports 32 and 64 bit Intel
+    elif IS_WINDOWS_HOST:
+        exename = os.path.join(
+            tool_folder,
+            'windows_' + get_windows_host_type(True),
+            tool_name + '.exe')
 
     # Linux is currently just 64 bit Intel, will have to update
     # as more platforms are supported
-    elif host == 'linux':
+    elif IS_LINUX:
         exename = os.path.join(tool_folder, 'linux', tool_name)
 
-    # Windows supports 32 and 64 bit Intel
-    elif host == 'windows':
-        exename = os.path.join(
-            tool_folder,
-            'windows_' + get_windows_host_type(),
-            tool_name + '.exe')
     else:
 
         # On unknown platforms, assume the tool is in the path for the fallback
@@ -867,6 +868,7 @@ def save_text_file_if_newer(file_name, text_lines, line_feed=None,
             print('{} was not changed.'.format(file_name))
         return True
 
+    # pylint: disable=import-outside-toplevel
     # Check out the file if Perforce is requested
     do_perforce_add = False
     if perforce:

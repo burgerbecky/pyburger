@@ -12,7 +12,8 @@ from __future__ import absolute_import, print_function, unicode_literals
 from ctypes import c_wchar_p, create_string_buffer, c_uint, \
     string_at, wstring_at, byref, c_void_p
 import array
-from .strutils import get_windows_host_type, from_cygwin_path, IS_CYGWIN
+from .strutils import get_windows_host_type, from_windows_host_path, \
+    IS_CYGWIN, IS_MSYS, IS_WSL
 
 ########################################
 
@@ -45,11 +46,12 @@ def get_file_info(path_name, info):
     # Test if running on a windows or cygwin hosts
     if get_windows_host_type(True):
 
+        # pylint: disable=import-outside-toplevel
         # Handle import for Cygwin
-        if IS_CYGWIN:
+        if IS_CYGWIN or IS_MSYS or IS_WSL:
             from ctypes import CDLL
             versiondll = CDLL('version.dll')
-            path_name = from_cygwin_path(path_name)
+            path_name = from_windows_host_path(path_name)
         else:
             # Handle import for Windows
             from ctypes import windll
