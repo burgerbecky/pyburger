@@ -10,4 +10,5 @@ Table of Contents
     classes
     functions
     truefalse
+    wsl_cygwin
     license
