@@ -12,7 +12,7 @@ Package that contains version specific information for burger
 from __future__ import unicode_literals
 
 ## Numeric version
-NUMVERSION = (1, 1, 35)
+NUMVERSION = (1, 1, 36)
 
 ## Current version of the library
 VERSION = '.'.join([str(num) for num in NUMVERSION])

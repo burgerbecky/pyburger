@@ -52,6 +52,10 @@ strutils.encapsulate_path
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 .. doxygenfunction:: burger::strutils::encapsulate_path
 
+strutils.encapsulate_hosted_path
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. doxygenfunction:: burger::strutils::encapsulate_hosted_path
+
 strutils.split_comma_with_quotes
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. doxygenfunction:: burger::strutils::split_comma_with_quotes

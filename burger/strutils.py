@@ -471,6 +471,31 @@ def encapsulate_path(input_path):
 ########################################
 
 
+def encapsulate_hosted_path(input_path):
+    """
+    Quote a pathname for use in the windows system shell
+
+    If the platform is hosted on Windows, convert the pathname
+    to Windows and then use Windows encapsulation rules.
+
+    Args:
+        input_path: string with the path to encapsulate
+    Returns:
+        Input string or input properly quoted
+    See Also:
+        encapsulate_path_windows, encapsulate_path_linux, encapsulate_path
+    """
+
+    # Process for Windows platforms
+    if IS_WINDOWS_HOST:
+        return encapsulate_path_windows(from_windows_host_path(input_path))
+
+    # Force to linux slashes
+    return encapsulate_path_linux(input_path)
+
+########################################
+
+
 def split_comma_with_quotes(comma_string):
     """
     Split comma seperated string while handling quotes
