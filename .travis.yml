@@ -45,7 +45,6 @@ matrix:
       before_install:
         - export
         - choco install python3 --version=3.4.4
-        - choco install pip
         - export PATH="/c/Python34:/c/Python34/Scripts:$PATH"
         - python -m pip install -U pip
 
