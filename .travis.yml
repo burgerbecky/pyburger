@@ -36,34 +36,34 @@ matrix:
         - choco install python2 --version=2.7.18
         - export PATH="/c/Python27:/c/Python27/Scripts:$PATH"
 
-    - name: "Python3.4.10 on Windows"
+    - name: "Python3.4.4 on Windows"
       os: windows
       language: sh
       python: "3.4"
       env: TOXENV=py34
       before_install:
         - export
-        - choco install python3 --version=3.4.10
+        - choco install python3 --version=3.4.4
         - export PATH="/c/Python34:/c/Python34/Scripts:$PATH"
 
-    - name: "Python3.5.10 on Windows"
+    - name: "Python3.5.4 on Windows"
       os: windows
       language: sh
       python: "3.5"
       env: TOXENV=py35
       before_install:
         - export
-        - choco install python3 --version=3.5.10
+        - choco install python3 --version=3.5.4
         - export PATH="/c/Python35:/c/Python35/Scripts:$PATH"
 
-    - name: "Python3.6.12 on Windows"
+    - name: "Python3.6.8 on Windows"
       os: windows
       language: sh
       python: "3.6"
       env: TOXENV=py36
       before_install:
         - export
-        - choco install python3 --version=3.6.12
+        - choco install python3 --version=3.6.8
         - export PATH="/c/Python36:/c/Python36/Scripts:$PATH"
 
     - name: "Python3.7.9 on Windows"
@@ -84,7 +84,7 @@ matrix:
       before_install:
         - export
         - choco install python3 --version=3.8.6
-        - export PATH="/c/Python37:/c/Python37/Scripts:$PATH"
+        - export PATH="/c/Python38:/c/Python38/Scripts:$PATH"
 
     - name: "Python3.9.0 on Windows"
       os: windows
@@ -94,7 +94,7 @@ matrix:
       before_install:
         - export
         - choco install python3 --version=3.9.0
-        - export PATH="/c/Python37:/c/Python37/Scripts:$PATH"
+        - export PATH="/c/Python39:/c/Python39/Scripts:$PATH"
 
     # Linux builds
     # Linux versions
