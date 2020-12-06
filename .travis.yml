@@ -36,7 +36,8 @@ matrix:
         - choco install python2 --version=2.7.18
         - export PATH="/c/Python27:/c/Python27/Scripts:$PATH"
 
-    # Added pip install -U pip to fix NameError: name 'platform_system' is not defined error
+    # Added pip install pip==19.1.1 to fix NameError: name 'platform_system' is not defined error
+    # Note: pip 19.1.1 is the last version that supports Python 3.4
     - name: "Python3.4.4 on Windows"
       os: windows
       language: sh
@@ -46,7 +47,7 @@ matrix:
         - export
         - choco install python3 --version=3.4.4
         - export PATH="/c/Python34:/c/Python34/Scripts:$PATH"
-        - python -m pip install -U pip
+        - python -m pip install pip==19.1.1
 
     - name: "Python3.5.4 on Windows"
       os: windows
