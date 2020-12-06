@@ -45,8 +45,9 @@ matrix:
       before_install:
         - export
         - choco install python3 --version=3.4.4
+        - choco install pip
         - export PATH="/c/Python34:/c/Python34/Scripts:$PATH"
-        - pip install -U pip
+        - python -m pip install -U pip
 
     - name: "Python3.5.4 on Windows"
       os: windows
