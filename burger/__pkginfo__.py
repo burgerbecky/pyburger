@@ -36,4 +36,4 @@ EMAIL = 'becky@burgerbecky.com'
 LICENSE = 'MIT License'
 
 ## Copyright owner
-COPYRIGHT = 'Copyright 2013-2019 Rebecca Ann Heineman'
+COPYRIGHT = 'Copyright 2013-2020 Rebecca Ann Heineman'

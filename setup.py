@@ -9,7 +9,7 @@ setup.py build
 setup.py sdist
 setup.py upload
 
-Copyright 2013-2019 by Rebecca Ann Heineman becky@burgerbecky.com
+Copyright 2013-2020 by Rebecca Ann Heineman becky@burgerbecky.com
 
 It is released under an MIT Open Source license. Please see LICENSE
 for license details. Yes, you can use it in a
@@ -64,7 +64,9 @@ CLASSIFIERS = [
     'Programming Language :: Python :: 3.4',
     'Programming Language :: Python :: 3.5',
     'Programming Language :: Python :: 3.6',
-    'Programming Language :: Python :: 3.7'
+    'Programming Language :: Python :: 3.7',
+    'Programming Language :: Python :: 3.8',
+    'Programming Language :: Python :: 3.9'
 ]
 
 # Extra files to include in the form of this tuple (directory,[files])
@@ -153,7 +155,6 @@ def clean(working_dir):
         working_dir,
         name_list=CLEAN_EXTENSION_LIST,
         recursive=True)
-
 
 #
 # Perform the setup

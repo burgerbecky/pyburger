@@ -4,7 +4,7 @@
 """
 Unit tests for burger string functions
 
-Copyright 2013-2019 by Rebecca Ann Heineman becky@burgerbecky.com
+Copyright 2013-2020 by Rebecca Ann Heineman becky@burgerbecky.com
 
 It is released under an MIT Open Source license. Please see LICENSE
 for license details. Yes, you can use it in a
