@@ -278,6 +278,7 @@ before_install:
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
       find / -name pypy3.6-7.2.0
+      brew install --ignore-dependencies pyenv
       eval "$(pyenv init -)"
       pyenv install -s $PYENV_VERSION
     fi
