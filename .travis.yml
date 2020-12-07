@@ -25,74 +25,18 @@ addons:
 
 matrix:
   include:
-    # Windows builds
-    - name: "Python2.7.18 on Windows"
-      os: windows
-      language: sh
-      python: "2.7"
-      env: TOXENV=py27
-      before_install:
-        - choco install python2 --version=2.7.18
-        - export PATH="/c/Python27:/c/Python27/Scripts:$PATH"
-
-    # Added pip install pip==19.1.1 to fix NameError: name 'platform_system' is not defined error
-    # Note: pip 19.1.1 is the last version that supports Python 3.4
-    - name: "Python3.4.4 on Windows"
-      os: windows
-      language: sh
-      python: "3.4"
-      env: TOXENV=py34
-      before_install:
-        - choco install python3 --version=3.4.4
-        - export PATH="/c/Python34:/c/Python34/Scripts:$PATH"
-        - python -m pip install pip==19.1.1
-
-    - name: "Python3.5.4 on Windows"
-      os: windows
-      language: sh
-      python: "3.5"
-      env: TOXENV=py35
-      before_install:
-        - choco install python3 --version=3.5.4
-        - export PATH="/c/Python35:/c/Python35/Scripts:$PATH"
-
-    - name: "Python3.6.8 on Windows"
-      os: windows
-      language: sh
-      python: "3.6"
-      env: TOXENV=py36
-      before_install:
-        - choco install python3 --version=3.6.8
-        - export PATH="/c/Python36:/c/Python36/Scripts:$PATH"
-
-    - name: "Python3.7.9 on Windows"
-      os: windows
-      language: sh
-      python: "3.7"
-      env: TOXENV=py37
-      before_install:
-        - choco install python3 --version=3.7.9
-        - export PATH="/c/Python37:/c/Python37/Scripts:$PATH"
-
-    - name: "Python3.8.6 on Windows"
-      os: windows
-      language: sh
-      python: "3.8"
-      env: TOXENV=py38
-      before_install:
-        - choco install python3 --version=3.8.6
-        - export PATH="/c/Python38:/c/Python38/Scripts:$PATH"
-
-    - name: "Python3.9.0 on Windows"
-      os: windows
-      language: sh
-      python: "3.9"
-      env: TOXENV=py39
-      before_install:
-        - choco install python3 --version=3.9.0
-        - export PATH="/c/Python39:/c/Python39/Scripts:$PATH"
-
-
+    # Linux builds
+    # precise = 12.04
+    # trusty = 14.04
+    # xenial = 16.04
+    # bionic = 18.04
+    # focal = 20.04
+    - name: "pypy on Ubuntu 14.04"
+      os: linux
+      dist: trusty
+      python: "pypy"
+      env: TOXENV=pypy
+      before_install: true
 # Before installing python packages, make sure python is present
 before_install:
   # macOS needs some pyenv love. Note, not all Linux systems have pyenv, so test for
