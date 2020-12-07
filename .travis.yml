@@ -268,8 +268,8 @@ matrix:
 before_install:
   # macOS needs some pyenv love.
   - export
-  - pyenv versions
-  - pyenv install --list
+  - if (command -v pyenv >/dev/null); then pyenv versions; fi
+  - if (command -v pyenv >/dev/null); then pyenv install --list; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then eval "$(pyenv init -)"; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then pyenv install -s $PYENV_VERSION; fi
   - python --version
