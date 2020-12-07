@@ -277,8 +277,8 @@ before_install:
     fi
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-      find / -name pypy3.6-7.2.0
-      brew upgrade --skip-cask-deps pyenv
+      brew uninstall pyenv
+      brew install --ignore-dependencies pyenv
       eval "$(pyenv init -)"
       pyenv install -s $PYENV_VERSION
     fi
