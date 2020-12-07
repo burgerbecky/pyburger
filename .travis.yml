@@ -271,12 +271,12 @@ before_install:
   - export
   - |
     if (command -v pyenv >/dev/null); then
+      which pyenv
       pyenv versions
       pyenv install --list
     fi
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-      install_package
       eval "$(pyenv init -)"
       pyenv install -s $PYENV_VERSION
     fi
