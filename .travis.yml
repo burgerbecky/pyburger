@@ -36,6 +36,17 @@ matrix:
         - eval "$(pyenv init -)"
         - pyenv install -s $PYENV_VERSION
 
+    - name: "Python3.4.10 on macOS"
+      os: osx
+      language: generic
+      env:
+        - TOXENV=py34
+        - PYENV_VERSION=3.4.10
+      before_install:
+        - brew update
+        - eval "$(pyenv init -)"
+        - pyenv install -s $PYENV_VERSION
+
 # Before installing python packages, make sure python is present
 #before_install:
 #  # macOS needs some pyenv love. Note, not all Linux systems have pyenv, so test for
