@@ -25,105 +25,17 @@ addons:
 
 matrix:
   include:
-    # Linux builds
-    # precise = 12.04
-    # trusty = 14.04
-    # xenial = 16.04
-    # bionic = 18.04
-    # focal = 20.04
-    - name: "pypy on Ubuntu 14.04"
-      os: linux
-      dist: trusty
-      python: "pypy"
-      env: TOXENV=pypy
+    # macOS builds
+    - name: "Python2.7.17 on macOS"
+      os: osx
+      language: generic
+      env:
+        - TOXENV=py27
+        - PYENV_VERSION=2.7.17
+      before_install:
+        - eval "$(pyenv init -)"
+        - pyenv install -s $PYENV_VERSION
 
-    - name: "pypy3 on Ubuntu 14.04"
-      os: linux
-      dist: trusty
-      python: "pypy3"
-      env: TOXENV=pypy3
-
-    - name: "pypy3.5 on Ubuntu 14.04"
-      os: linux
-      dist: trusty
-      python: "pypy3.5"
-      env: TOXENV=pypy
-
-    - name: "Python2.7 on Ubuntu 14.04"
-      os: linux
-      dist: trusty
-      python: "2.7"
-      env: TOXENV=py27
-
-    - name: "Python2.7 on Ubuntu 16.04"
-      os: linux
-      dist: xenial
-      python: "2.7"
-      env: TOXENV=py27
-
-    - name: "Python3.4 on Ubuntu 14.04"
-      os: linux
-      dist: trusty
-      python: "3.4"
-      env: TOXENV=py34
-
-    - name: "Python3.4 on Ubuntu 16.04"
-      os: linux
-      dist: xenial
-      python: "3.4"
-      env: TOXENV=py34
-
-    - name: "Python3.5 on Ubuntu 16.04"
-      os: linux
-      dist: xenial
-      python: "3.5"
-      env: TOXENV=py35
-
-    - name: "Python3.6 on Ubuntu 16.04"
-      os: linux
-      dist: xenial
-      python: "3.6"
-      env: TOXENV=py36
-
-    - name: "Python3.7 on Ubuntu 16.04"
-      os: linux
-      dist: bionic
-      python: "3.7"
-      env: TOXENV=py37
-
-    - name: "Python3.8 on Ubuntu 20.04"
-      os: linux
-      dist: focal
-      python: "3.8"
-      env: TOXENV=py38
-
-    - name: "Python3.9 on AMD64 Ubuntu 20.04"
-      os: linux
-      dist: focal
-      arch: amd64
-      python: 3.9
-      env: TOXENV=py39
-
-    - name: "Python3.9 on PowerPC Ubuntu 20.04"
-      os: linux
-      dist: focal
-      arch: ppc64le
-      python: 3.9
-      env: TOXENV=py39
-
-    - name: "Python3.9 on S390X Ubuntu 20.04"
-      os: linux
-      dist: focal
-      arch: s390x
-      python: 3.9
-      env: TOXENV=py39
-
-    - name: "Python3.9 on ARM64 Ubuntu 20.04"
-      os: linux
-      dist: focal
-      arch: arm64
-      python: 3.9
-      env: TOXENV=py39
 # Before installing python packages, make sure python is present
 #before_install:
 #  # macOS needs some pyenv love. Note, not all Linux systems have pyenv, so test for
