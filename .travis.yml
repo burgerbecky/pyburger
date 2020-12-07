@@ -36,34 +36,34 @@ matrix:
       dist: trusty
       python: "pypy"
       env: TOXENV=pypy
-      before_install: true
+
 # Before installing python packages, make sure python is present
-before_install:
-  # macOS needs some pyenv love. Note, not all Linux systems have pyenv, so test for
-  # the command before executing it.
-  - export
-  - |
-    if (command -v pyenv >/dev/null); then
-      pyenv versions
-      pyenv install --list
-    fi
-  - |
-    if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-      brew uninstall pyenv
-      brew install --ignore-dependencies pyenv
-      eval "$(pyenv init -)"
-      pyenv install -s $PYENV_VERSION
-    fi
-  - python --version
-  - uname -a
-  - echo $PATH
-  # Debug spew for linux
-  - |
-    if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
-      lsb_release -a
-      readlink -f `which python`
-      ls $(dirname $(readlink -f `which python`))
-    fi
+#before_install:
+#  # macOS needs some pyenv love. Note, not all Linux systems have pyenv, so test for
+#  # the command before executing it.
+#  - export
+#  - |
+#    if (command -v pyenv >/dev/null); then
+#      pyenv versions
+#      pyenv install --list
+#    fi
+#  - |
+#    if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+#      brew uninstall pyenv
+#      brew install --ignore-dependencies pyenv
+#      eval "$(pyenv init -)"
+#      pyenv install -s $PYENV_VERSION
+#    fi
+#  - python --version
+#  - uname -a
+#  - echo $PATH
+#  # Debug spew for linux
+#  - |
+#    if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+#      lsb_release -a
+#      readlink -f `which python`
+#      ls $(dirname $(readlink -f `which python`))
+#    fi
 
 # Install python packages needed for this test and get versions for log
 install:
