@@ -276,7 +276,7 @@ before_install:
     fi
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-      brew upgrade pyenv
+      install_package
       eval "$(pyenv init -)"
       pyenv install -s $PYENV_VERSION
     fi
