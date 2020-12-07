@@ -270,12 +270,13 @@ before_install:
   # the command before executing it.
   - export
   - |
-    if (command -v pyenv >/dev/null); then 
+    if (command -v pyenv >/dev/null); then
       pyenv versions
       pyenv install --list
     fi
   - |
-    if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then 
+    if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+      brew upgrade pyenv
       eval "$(pyenv init -)"
       pyenv install -s $PYENV_VERSION
     fi
