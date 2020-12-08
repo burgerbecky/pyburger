@@ -33,7 +33,9 @@ matrix:
         - PYENV_VERSION=3.4.10
       before_install:
         - brew uninstall pyenv
+        - brew uninstall --ignore-dependencies openssl
         - brew install --ignore-dependencies pyenv
+        - brew install --ignore-dependencies openssl
         - eval "$(pyenv init -)"
         - pyenv install -s $PYENV_VERSION
 
