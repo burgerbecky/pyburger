@@ -25,32 +25,32 @@ addons:
 
 matrix:
   include:
-    - name: "Python3.4.6 on macOS"
+    - name: "Python3.4.3 on macOS"
       os: osx
       language: generic
       env:
         - TOXENV=py34
-        - PYENV_VERSION=3.4.6
+        - PYENV_VERSION=3.4.3
       before_install:
         - eval "$(pyenv init -)"
         - pyenv install -s $PYENV_VERSION
 
-    - name: "Python3.4.5 on macOS"
+    - name: "Python3.4.2 on macOS"
       os: osx
       language: generic
       env:
         - TOXENV=py34
-        - PYENV_VERSION=3.4.5
+        - PYENV_VERSION=3.4.2
       before_install:
         - eval "$(pyenv init -)"
         - pyenv install -s $PYENV_VERSION
 
-    - name: "Python3.4.4 on macOS"
+    - name: "Python3.4.1 on macOS"
       os: osx
       language: generic
       env:
         - TOXENV=py34
-        - PYENV_VERSION=3.4.4
+        - PYENV_VERSION=3.4.1
       before_install:
         - eval "$(pyenv init -)"
         - pyenv install -s $PYENV_VERSION
