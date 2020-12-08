@@ -25,44 +25,261 @@ addons:
 
 matrix:
   include:
-    - name: "Python3.4.0 on macOS"
+    # Windows builds
+    - name: "Python2.7.18 on Windows"
+      os: windows
+      language: sh
+      python: "2.7"
+      env: TOXENV=py27
+      before_install:
+        - choco install python2 --version=2.7.18
+        - export PATH="/c/Python27:/c/Python27/Scripts:$PATH"
+
+    # Added pip install pip==19.1.1 to fix NameError: name 'platform_system' is not defined error
+    # Note: pip 19.1.1 is the last version that supports Python 3.4
+    - name: "Python3.4.4 on Windows"
+      os: windows
+      language: sh
+      python: "3.4"
+      env: TOXENV=py34
+      before_install:
+        - choco install python3 --version=3.4.4
+        - export PATH="/c/Python34:/c/Python34/Scripts:$PATH"
+        - python -m pip install pip==19.1.1
+
+    - name: "Python3.5.4 on Windows"
+      os: windows
+      language: sh
+      python: "3.5"
+      env: TOXENV=py35
+      before_install:
+        - choco install python3 --version=3.5.4
+        - export PATH="/c/Python35:/c/Python35/Scripts:$PATH"
+
+    - name: "Python3.6.8 on Windows"
+      os: windows
+      language: sh
+      python: "3.6"
+      env: TOXENV=py36
+      before_install:
+        - choco install python3 --version=3.6.8
+        - export PATH="/c/Python36:/c/Python36/Scripts:$PATH"
+
+    - name: "Python3.7.9 on Windows"
+      os: windows
+      language: sh
+      python: "3.7"
+      env: TOXENV=py37
+      before_install:
+        - choco install python3 --version=3.7.9
+        - export PATH="/c/Python37:/c/Python37/Scripts:$PATH"
+
+    - name: "Python3.8.6 on Windows"
+      os: windows
+      language: sh
+      python: "3.8"
+      env: TOXENV=py38
+      before_install:
+        - choco install python3 --version=3.8.6
+        - export PATH="/c/Python38:/c/Python38/Scripts:$PATH"
+
+    - name: "Python3.9.0 on Windows"
+      os: windows
+      language: sh
+      python: "3.9"
+      env: TOXENV=py39
+      before_install:
+        - choco install python3 --version=3.9.0
+        - export PATH="/c/Python39:/c/Python39/Scripts:$PATH"
+
+    # Linux builds
+    # precise = 12.04
+    # trusty = 14.04
+    # xenial = 16.04
+    # bionic = 18.04
+    # focal = 20.04
+    - name: "pypy on Ubuntu 14.04"
+      os: linux
+      dist: trusty
+      python: "pypy"
+      env: TOXENV=pypy
+
+    - name: "pypy3 on Ubuntu 14.04"
+      os: linux
+      dist: trusty
+      python: "pypy3"
+      env: TOXENV=pypy3
+
+    - name: "pypy3.5 on Ubuntu 14.04"
+      os: linux
+      dist: trusty
+      python: "pypy3.5"
+      env: TOXENV=pypy
+
+    - name: "Python2.7 on Ubuntu 14.04"
+      os: linux
+      dist: trusty
+      python: "2.7"
+      env: TOXENV=py27
+
+    - name: "Python2.7 on Ubuntu 16.04"
+      os: linux
+      dist: xenial
+      python: "2.7"
+      env: TOXENV=py27
+
+    - name: "Python3.4 on Ubuntu 14.04"
+      os: linux
+      dist: trusty
+      python: "3.4"
+      env: TOXENV=py34
+
+    - name: "Python3.4 on Ubuntu 16.04"
+      os: linux
+      dist: xenial
+      python: "3.4"
+      env: TOXENV=py34
+
+    - name: "Python3.5 on Ubuntu 16.04"
+      os: linux
+      dist: xenial
+      python: "3.5"
+      env: TOXENV=py35
+
+    - name: "Python3.6 on Ubuntu 16.04"
+      os: linux
+      dist: xenial
+      python: "3.6"
+      env: TOXENV=py36
+
+    - name: "Python3.7 on Ubuntu 16.04"
+      os: linux
+      dist: bionic
+      python: "3.7"
+      env: TOXENV=py37
+
+    - name: "Python3.8 on Ubuntu 20.04"
+      os: linux
+      dist: focal
+      python: "3.8"
+      env: TOXENV=py38
+
+    - name: "Python3.9 on AMD64 Ubuntu 20.04"
+      os: linux
+      dist: focal
+      arch: amd64
+      python: 3.9
+      env: TOXENV=py39
+
+    - name: "Python3.9 on PowerPC Ubuntu 20.04"
+      os: linux
+      dist: focal
+      arch: ppc64le
+      python: 3.9
+      env: TOXENV=py39
+
+    - name: "Python3.9 on S390X Ubuntu 20.04"
+      os: linux
+      dist: focal
+      arch: s390x
+      python: 3.9
+      env: TOXENV=py39
+
+    - name: "Python3.9 on ARM64 Ubuntu 20.04"
+      os: linux
+      dist: focal
+      arch: arm64
+      python: 3.9
+      env: TOXENV=py39
+
+    # macOS builds
+    # on macOS, the python version must be specific since pyenv
+    # requires it for installing the python version
+    - name: "Python2.7.17 on macOS"
       os: osx
       language: generic
       env:
-        - TOXENV=py34
-        - PYENV_VERSION=3.4.0
+        - TOXENV=py27
+        - PYENV_VERSION=2.7.17
       before_install:
-        - python -m pip install pip==19.1.1
         - eval "$(pyenv init -)"
         - pyenv install -s $PYENV_VERSION
 
-# Before installing python packages, make sure python is present
-#before_install:
-#  # macOS needs some pyenv love. Note, not all Linux systems have pyenv, so test for
-#  # the command before executing it.
-#  - export
-#  - |
-#    if (command -v pyenv >/dev/null); then
-#      pyenv versions
-#      pyenv install --list
-#    fi
-#  - |
-#    if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-#      brew uninstall pyenv
-#      brew install --ignore-dependencies pyenv
-#      eval "$(pyenv init -)"
-#      pyenv install -s $PYENV_VERSION
-#    fi
-#  - python --version
-#  - uname -a
-#  - echo $PATH
-#  # Debug spew for linux
-#  - |
-#    if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
-#      lsb_release -a
-#      readlink -f `which python`
-#      ls $(dirname $(readlink -f `which python`))
-#    fi
+    - name: "Python3.5.8 on macOS"
+      os: osx
+      language: generic
+      env:
+        - TOXENV=py35
+        - PYENV_VERSION=3.5.8
+      before_install:
+        - eval "$(pyenv init -)"
+        - pyenv install -s $PYENV_VERSION
+
+    - name: "Python3.6.9 on macOS"
+      os: osx
+      language: generic
+      env:
+        - TOXENV=py36
+        - PYENV_VERSION=3.6.9
+      before_install:
+        - eval "$(pyenv init -)"
+        - pyenv install -s $PYENV_VERSION
+
+    - name: "Python3.7.5 on macOS"
+      os: osx
+      language: generic
+      env:
+        - TOXENV=py37
+        - PYENV_VERSION=3.7.5
+      before_install:
+        - eval "$(pyenv init -)"
+        - pyenv install -s $PYENV_VERSION
+
+    - name: "Python3.8.0 on macOS"
+      os: osx
+      language: generic
+      env:
+        - TOXENV=py38
+        - PYENV_VERSION=3.8.0
+      before_install:
+        - eval "$(pyenv init -)"
+        - pyenv install -s $PYENV_VERSION
+
+    - name: "Python3.9-dev on macOS"
+      os: osx
+      language: generic
+      env:
+        - TOXENV=py39
+        - PYENV_VERSION=3.9-dev
+      before_install:
+        - eval "$(pyenv init -)"
+        - pyenv install -s $PYENV_VERSION
+
+    # pyenv in Travis is outdated for pypy2, upgrade it
+    - name: "pypy2.7-7.2.0 on macOS"
+      os: osx
+      language: generic
+      env:
+        - TOXENV=pypy
+        - PYENV_VERSION=pypy2.7-7.2.0
+      before_install:
+        - brew uninstall pyenv
+        - brew install --ignore-dependencies pyenv
+        - eval "$(pyenv init -)"
+        - pyenv install -s $PYENV_VERSION
+
+    # pyenv in Travis is outdated for pypy3, upgrade it
+    - name: "pypy3.6-7.2.0 on macOS"
+      os: osx
+      language: generic
+      env:
+        - TOXENV=pypy3
+        - PYENV_VERSION=pypy3.6-7.2.0
+      before_install:
+        - brew uninstall pyenv
+        - brew install --ignore-dependencies pyenv
+        - eval "$(pyenv init -)"
+        - pyenv install -s $PYENV_VERSION
 
 # Install python packages needed for this test and get versions for log
 install:
