@@ -25,35 +25,35 @@ addons:
 
 matrix:
   include:
-    - name: "Python3.4.9 on macOS"
+    - name: "Python3.4.6 on macOS"
       os: osx
       language: generic
       env:
         - TOXENV=py34
-        - PYENV_VERSION=3.4.9
+        - PYENV_VERSION=3.4.6
       before_install:
         - eval "$(pyenv init -)"
-        - CFLAGS="-I$(brew --prefix openssl)/include" LDFLAGS="-L$(brew --prefix openssl)/lib" pyenv install -s $PYENV_VERSION
+        - pyenv install -s $PYENV_VERSION
 
-    - name: "Python3.4.8 on macOS"
+    - name: "Python3.4.5 on macOS"
       os: osx
       language: generic
       env:
         - TOXENV=py34
-        - PYENV_VERSION=3.4.8
+        - PYENV_VERSION=3.4.5
       before_install:
         - eval "$(pyenv init -)"
-        - CFLAGS="-I$(brew --prefix openssl)/include" LDFLAGS="-L$(brew --prefix openssl)/lib" pyenv install -s $PYENV_VERSION
+        - pyenv install -s $PYENV_VERSION
 
-    - name: "Python3.4.7 on macOS"
+    - name: "Python3.4.4 on macOS"
       os: osx
       language: generic
       env:
         - TOXENV=py34
-        - PYENV_VERSION=3.4.7
+        - PYENV_VERSION=3.4.4
       before_install:
         - eval "$(pyenv init -)"
-        - CFLAGS="-I$(brew --prefix openssl)/include" LDFLAGS="-L$(brew --prefix openssl)/lib" pyenv install -s $PYENV_VERSION
+        - pyenv install -s $PYENV_VERSION
 
 # Before installing python packages, make sure python is present
 #before_install:
