@@ -33,7 +33,7 @@ matrix:
         - PYENV_VERSION=3.4.9
       before_install:
         - eval "$(pyenv init -)"
-        - pyenv install -s $PYENV_VERSION
+        - CFLAGS="-I$(brew --prefix openssl)/include" LDFLAGS="-L$(brew --prefix openssl)/lib" pyenv install -s $PYENV_VERSION
 
     - name: "Python3.4.8 on macOS"
       os: osx
@@ -43,7 +43,7 @@ matrix:
         - PYENV_VERSION=3.4.8
       before_install:
         - eval "$(pyenv init -)"
-        - pyenv install -s $PYENV_VERSION
+        - CFLAGS="-I$(brew --prefix openssl)/include" LDFLAGS="-L$(brew --prefix openssl)/lib" pyenv install -s $PYENV_VERSION
 
     - name: "Python3.4.7 on macOS"
       os: osx
@@ -53,7 +53,7 @@ matrix:
         - PYENV_VERSION=3.4.7
       before_install:
         - eval "$(pyenv init -)"
-        - pyenv install -s $PYENV_VERSION
+        - CFLAGS="-I$(brew --prefix openssl)/include" LDFLAGS="-L$(brew --prefix openssl)/lib" pyenv install -s $PYENV_VERSION
 
 # Before installing python packages, make sure python is present
 #before_install:
