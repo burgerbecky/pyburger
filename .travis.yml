@@ -32,8 +32,8 @@ matrix:
         - TOXENV=py34
         - PYENV_VERSION=3.4.10
       before_install:
-        - brew uninstall pyenv openssl
-        - brew install --ignore-dependencies pyenv openssl
+        - brew uninstall pyenv
+        - brew install --ignore-dependencies pyenv
         - eval "$(pyenv init -)"
         - pyenv install -s $PYENV_VERSION
 
