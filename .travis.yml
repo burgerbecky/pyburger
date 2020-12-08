@@ -33,6 +33,7 @@ matrix:
         - PYENV_VERSION=3.4.10
       before_install:
         - brew install openssl readline
+        - brew outdated pyenv || brew upgrade pyenv
         - eval "$(pyenv init -)"
         - pyenv install -s $PYENV_VERSION
 
