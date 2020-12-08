@@ -25,17 +25,33 @@ addons:
 
 matrix:
   include:
-    - name: "Python3.4.10 on macOS"
+    - name: "Python3.4.9 on macOS"
       os: osx
       language: generic
       env:
         - TOXENV=py34
-        - PYENV_VERSION=3.4.10
+        - PYENV_VERSION=3.4.9
       before_install:
-        - brew uninstall pyenv
-        - brew uninstall --ignore-dependencies openssl
-        - brew install --ignore-dependencies pyenv
-        - brew install --ignore-dependencies openssl
+        - eval "$(pyenv init -)"
+        - pyenv install -s $PYENV_VERSION
+
+    - name: "Python3.4.8 on macOS"
+      os: osx
+      language: generic
+      env:
+        - TOXENV=py34
+        - PYENV_VERSION=3.4.8
+      before_install:
+        - eval "$(pyenv init -)"
+        - pyenv install -s $PYENV_VERSION
+
+    - name: "Python3.4.7 on macOS"
+      os: osx
+      language: generic
+      env:
+        - TOXENV=py34
+        - PYENV_VERSION=3.4.7
+      before_install:
         - eval "$(pyenv init -)"
         - pyenv install -s $PYENV_VERSION
 
