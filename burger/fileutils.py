@@ -361,7 +361,10 @@ def clean_directories(path, name_list, recursive=False):
 
    Examples:
         # Delete all temp and __pycache__ files recursively
-        burger.fileutils.clean_directories('.', ('*.temp', '__pycache__'), True)
+        burger.fileutils.clean_directories(
+            '.',
+            ('*.temp', '__pycache__'),
+            True)
 
     See Also:
         clean_files, delete_directory

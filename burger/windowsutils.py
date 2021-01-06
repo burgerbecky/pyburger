@@ -84,8 +84,8 @@ def get_file_info(path_name, info):
             # Was a codepage found?
             if length.value:
 
-                # Parse out the first found codepage (It's the default language)
-                # it's in the form of two 16 bit shorts
+                # Parse out the first found codepage (It's the default
+                # language) it's in the form of two 16 bit shorts
                 codepages = array.array(
                     'H', string_at(
                         record.value, length.value))

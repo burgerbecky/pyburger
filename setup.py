@@ -5,9 +5,8 @@
 Build the egg file for burger for python
 
 setup.py clean
-setup.py build
-setup.py sdist
-setup.py upload
+setup.py sdist bdist_wheel
+twine upload --verbose dist/*
 
 Copyright 2013-2020 by Rebecca Ann Heineman becky@burgerbecky.com
 

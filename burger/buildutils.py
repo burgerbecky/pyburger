@@ -345,7 +345,7 @@ def find_in_path(filename, search_path=None, executable=False):
         path = os.path.normcase(path)
 
         # Skip duplicates
-        if not path in tested:
+        if path not in tested:
             tested.add(path)
 
             for item in test_list:
@@ -498,8 +498,8 @@ def where_is_doxygen(verbose=False, refresh=False, path=None):
         print('Doxygen not found!')
         if get_mac_host_type():
             print(
-                'Install the desktop application in the Applications folder or '
-                'use brew or macports for the command line version')
+                'Install the desktop application in the Applications folder '
+                'or use brew or macports for the command line version')
 
     # Can't find it
     return None

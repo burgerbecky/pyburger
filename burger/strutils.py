@@ -237,8 +237,8 @@ def TrueFalse(item):            # pylint: disable=C0103
     Convert the input into a boolean and return the string 'True' or 'False'
 
     If the input was a string of '0' or 'False' (Case insensitive comparision),
-    this function will return 'False'. Empty dictionary, string or list objects,
-    or the number zero will also return 'False'
+    this function will return 'False'. Empty dictionary, string or list
+    objects, or the number zero will also return 'False'
 
     Args:
         item: Object to convert to a bool before converting into a string
@@ -264,8 +264,8 @@ def truefalse(item):
     Convert the input into a boolean and return the string 'true' or 'false'
 
     If the input was a string of '0' or 'False' (Case insensitive comparision),
-    this function will return 'false'. Empty dictionary, string or list objects,
-    or the number zero will also return 'false'
+    this function will return 'false'. Empty dictionary, string or list
+    objects, or the number zero will also return 'false'
 
     Args:
         item: Object to convert to a bool before converting into a string
@@ -291,8 +291,8 @@ def TRUEFALSE(item):            # pylint: disable=C0103
     Convert the input into a boolean and return the string 'TRUE' or 'FALSE'
 
     If the input was a string of '0' or 'False' (Case insensitive comparision),
-    this function will return 'FALSE'. Empty dictionary, string or list objects,
-    or the number zero will also return 'FALSE'
+    this function will return 'FALSE'. Empty dictionary, string or list
+    objects, or the number zero will also return 'FALSE'
 
     Args:
         item: Object to convert to a bool before converting into a string
@@ -584,7 +584,8 @@ def parse_csv(csv_string):
         lines = burger.strutils.split_comma_with_quotes('"foo,bar",foo,bar')
 
         # Result is ['foo"bar',"'boo'boo'"]
-        lines = burger.strutils.split_comma_with_quotes('"foo""bar","'boo,boo'")
+        lines = burger.strutils.split_comma_with_quotes(
+            '"foo""bar","'boo,boo'")
 
         # Will raise an error due to missing end quote
         willraise = burger.strutils.split_comma_with_quote('"foo,bar')
@@ -892,8 +893,8 @@ def from_cygwin_path(path_name):
     `/cygdrive/c/windows/system32/notepad.exe` becomes
     `C:\\windows\\system32\\notepad.exe`
 
-    Call the tool `cygpath` with the parameters -a and -w to convert the windows
-    pathname to one suitable for Linux.
+    Call the tool `cygpath` with the parameters -a and -w to convert the
+    windows pathname to one suitable for Linux.
 
     Args:
         path_name: Cygwin pathname
@@ -912,7 +913,10 @@ def from_cygwin_path(path_name):
 
     # The tool doesn't process ~ properly, help it by preprocessing here.
     result = run_command(
-        ('cygpath', '-a', '-w', os.path.abspath(os.path.expanduser(path_name))),
+        ('cygpath',
+        '-a',
+        '-w',
+        os.path.abspath(os.path.expanduser(path_name))),
         capture_stdout=True)
     if result[0]:
         return None
@@ -928,8 +932,8 @@ def to_cygwin_path(path_name):
     `C:\\windows\\system32\\notepad.exe` becomes
     `/cygdrive/c/windows/system32/notepad.exe`
 
-    Call the tool `cygpath` with the parameters -a and -w to convert the windows
-    pathname to one suitable for Linux.
+    Call the tool `cygpath` with the parameters -a and -w to convert the
+    windows pathname to one suitable for Linux.
 
     Args:
         path_name: Absolute Windows pathname
@@ -963,8 +967,8 @@ def from_wsl_path(path_name):
     `/mnt/c/windows/system32/notepad.exe` becomes
     `C:\\windows\\system32\\notepad.exe`
 
-    Call the tool `wslpath` with the parameters -a and -w to convert the windows
-    pathname to one suitable for Linux.
+    Call the tool `wslpath` with the parameters -a and -w to convert the
+    windows pathname to one suitable for Linux.
 
     Args:
         path_name: WSL pathname
@@ -976,12 +980,16 @@ def from_wsl_path(path_name):
         to_wsl_path
     """
     if not IS_WSL:
-        raise EnvironmentError("Call only valid on Windows Subsystem for Linux")
+        raise EnvironmentError(
+            "Call only valid on Windows Subsystem for Linux")
 
     # pylint: disable=import-outside-toplevel
     from .buildutils import run_command
     result = run_command(
-        ('wslpath', '-a', '-w', os.path.abspath(os.path.expanduser(path_name))),
+        ('wslpath',
+        '-a',
+        '-w',
+        os.path.abspath(os.path.expanduser(path_name))),
         capture_stdout=True)
     if result[0]:
         return None
@@ -997,8 +1005,8 @@ def to_wsl_path(path_name):
     `C:\\windows\\system32\\notepad.exe` becomes
     `/mnt/c/windows/system32/notepad.exe`
 
-    Call the tool `wslpath` with the parameters -a and -u to convert the windows
-    pathname to one suitable for Linux.
+    Call the tool `wslpath` with the parameters -a and -u to convert the
+    windows pathname to one suitable for Linux.
 
     Note:
         At this time, wslpath will fail on paths to network drives.
@@ -1014,7 +1022,8 @@ def to_wsl_path(path_name):
     """
 
     if not IS_WSL:
-        raise EnvironmentError("Call only valid on Windows Subsystem for Linux")
+        raise EnvironmentError(
+            "Call only valid on Windows Subsystem for Linux")
 
     # pylint: disable=import-outside-toplevel
     from .buildutils import run_command
