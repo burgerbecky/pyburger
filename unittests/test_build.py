@@ -34,7 +34,7 @@ class TestBuild(unittest.TestCase):
         """
         self.saved_cwd = os.getcwd()
         self.burger_sdks = os.getenv('BURGER_SDKS', default=None)
-        self.tmpdir = tempfile.mkdtemp()
+        self.tmpdir = os.path.realpath(tempfile.mkdtemp())
         self.addCleanup(shutil.rmtree, self.tmpdir)
 
     def tearDown(self):
