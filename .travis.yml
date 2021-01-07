@@ -202,6 +202,8 @@ matrix:
         - TOXENV=py27
         - PYENV_VERSION=2.7.17
       before_install:
+        - pyenv versions
+        - pyenv install --list
         - eval "$(pyenv init -)"
         - pyenv install -s $PYENV_VERSION
 
@@ -212,6 +214,8 @@ matrix:
         - TOXENV=py35
         - PYENV_VERSION=3.5.8
       before_install:
+        - pyenv versions
+        - pyenv install --list
         - eval "$(pyenv init -)"
         - pyenv install -s $PYENV_VERSION
 
@@ -222,6 +226,8 @@ matrix:
         - TOXENV=py36
         - PYENV_VERSION=3.6.9
       before_install:
+        - pyenv versions
+        - pyenv install --list
         - eval "$(pyenv init -)"
         - pyenv install -s $PYENV_VERSION
 
@@ -232,6 +238,8 @@ matrix:
         - TOXENV=py37
         - PYENV_VERSION=3.7.5
       before_install:
+        - pyenv versions
+        - pyenv install --list
         - eval "$(pyenv init -)"
         - pyenv install -s $PYENV_VERSION
 
@@ -242,16 +250,20 @@ matrix:
         - TOXENV=py38
         - PYENV_VERSION=3.8.0
       before_install:
+        - pyenv versions
+        - pyenv install --list
         - eval "$(pyenv init -)"
         - pyenv install -s $PYENV_VERSION
 
-    - name: "Python3.9-dev on macOS"
+    - name: "Python3.9.0rc2 on macOS"
       os: osx
       language: generic
       env:
         - TOXENV=py39
-        - PYENV_VERSION=3.9-dev
+        - PYENV_VERSION=3.9.0rc2
       before_install:
+        - pyenv versions
+        - pyenv install --list
         - eval "$(pyenv init -)"
         - pyenv install -s $PYENV_VERSION
 
@@ -265,6 +277,8 @@ matrix:
       before_install:
         - brew uninstall pyenv
         - brew install --ignore-dependencies pyenv
+        - pyenv versions
+        - pyenv install --list
         - eval "$(pyenv init -)"
         - pyenv install -s $PYENV_VERSION
 
@@ -278,6 +292,8 @@ matrix:
       before_install:
         - brew uninstall pyenv
         - brew install --ignore-dependencies pyenv
+        - pyenv versions
+        - pyenv install --list
         - eval "$(pyenv init -)"
         - pyenv install -s $PYENV_VERSION
 
