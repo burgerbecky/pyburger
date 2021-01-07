@@ -3,7 +3,7 @@
 
 """ Unit tests for burger file functions
 
-Copyright 2013-2020 by Rebecca Ann Heineman becky@burgerbecky.com
+Copyright 2013-2021 by Rebecca Ann Heineman becky@burgerbecky.com
 
 It is released under an MIT Open Source license. Please see LICENSE
 for license details. Yes, you can use it in a
@@ -12,12 +12,18 @@ Please? It's not like I'm asking you for money!
 
 """
 
-from __future__ import absolute_import, print_function, unicode_literals
+# pylint: disable=wrong-import-position
 
+from __future__ import absolute_import, print_function, unicode_literals
 import os
+import sys
 import unittest
 import shutil
 import tempfile
+
+# Insert the location of wslwinreg at the begining so it's the first
+# to be processed
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import burger
 
 ########################################
@@ -37,6 +43,8 @@ class TestBuild(unittest.TestCase):
         self.tmpdir = os.path.realpath(tempfile.mkdtemp())
         self.addCleanup(shutil.rmtree, self.tmpdir)
 
+########################################
+
     def tearDown(self):
         """
         Restore directory
@@ -45,6 +53,8 @@ class TestBuild(unittest.TestCase):
         if self.burger_sdks:
             os.putenv('BURGER_SDKS', self.burger_sdks)
             burger.get_sdks_folder(refresh=True, folder=self.burger_sdks)
+
+########################################
 
     def test_get_sdks_folder(self):
         """

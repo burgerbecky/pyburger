@@ -4,7 +4,7 @@
 """
 Unit tests for burger string functions
 
-Copyright 2013-2020 by Rebecca Ann Heineman becky@burgerbecky.com
+Copyright 2013-2021 by Rebecca Ann Heineman becky@burgerbecky.com
 
 It is released under an MIT Open Source license. Please see LICENSE
 for license details. Yes, you can use it in a
@@ -13,7 +13,15 @@ Please? It's not like I'm asking you for money!
 
 """
 
+# pylint: disable=wrong-import-position
+
 import sys
+import unittest
+import os
+
+# Insert the location of wslwinreg at the begining so it's the first
+# to be processed
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import burger
 
 # Needed to help perform Python 2.0 exclusive tests
@@ -22,579 +30,616 @@ _PY2 = sys.version_info[0] == 2
 ########################################
 
 
-def test_isstring():
+class TestStrings(unittest.TestCase):
     """
-    Test burger.is_string()
+    Test the file functions
     """
 
-    # unicode not defines
-    # flake8: noqa=F821
+########################################
 
-    # Must return False
-    assert not burger.is_string(0)
-    assert not burger.is_string(None)
-    assert not burger.is_string(True)
-    assert not burger.is_string(False)
-    assert not burger.is_string(1.0)
-    assert not burger.is_string(())
-    assert not burger.is_string({})
-    assert not burger.is_string([])
-    assert not burger.is_string(bytearray())
-    assert not burger.is_string(bytearray(b'abc'))
+    def test_isstring(self):
+        """
+        Test burger.is_string()
+        """
 
-    # Actual strings
-    assert burger.is_string('')
-    assert burger.is_string('a')
-    assert burger.is_string(u'a')
-    assert burger.is_string(b'a')
-    assert burger.is_string(str('a'))
-    assert burger.is_string('abc')
-    assert burger.is_string(u'abc')
-    assert burger.is_string(b'abc')
-    assert burger.is_string(str('abc'))
+        # unicode not defines
+        # flake8: noqa=F821
 
-    # Python 2.x tests (Not supported on 3.x or higher)
-    if _PY2:
-        # pylint: disable=E0602
-        assert burger.is_string(unicode(''))
-        assert burger.is_string(unicode('a'))
-        assert burger.is_string(unicode(u'a'))
-        assert burger.is_string(unicode(b'a'))
-        assert burger.is_string(unicode('abc'))
-        assert burger.is_string(unicode(u'abc'))
-        assert burger.is_string(unicode(b'abc'))
+        # Must return False
+        self.assertFalse(burger.is_string(0))
+        self.assertFalse(burger.is_string(None))
+        self.assertFalse(burger.is_string(True))
+        self.assertFalse(burger.is_string(False))
+        self.assertFalse(burger.is_string(1.0))
+        self.assertFalse(burger.is_string(()))
+        self.assertFalse(burger.is_string({}))
+        self.assertFalse(burger.is_string([]))
+        self.assertFalse(burger.is_string(bytearray()))
+        self.assertFalse(burger.is_string(bytearray(b'abc')))
 
-    # Bytes need specific encoding passed in for Python 3.0 or higher
-    if _PY2:
-        assert burger.is_string(bytes(''))
-        assert burger.is_string(bytes('a'))
-        assert burger.is_string(bytes(u'a'))
-    else:
-        assert burger.is_string(bytes('', 'ascii'))
-        assert burger.is_string(bytes('a', 'ascii'))
-        assert burger.is_string(bytes(u'a', 'utf-8'))
-    assert burger.is_string(bytes(b'a'))
+        # Actual strings
+        self.assertTrue(burger.is_string(''))
+        self.assertTrue(burger.is_string('a'))
+        self.assertTrue(burger.is_string(u'a'))
+        self.assertTrue(burger.is_string(b'a'))
+        self.assertTrue(burger.is_string(str('a')))
+        self.assertTrue(burger.is_string('abc'))
+        self.assertTrue(burger.is_string(u'abc'))
+        self.assertTrue(burger.is_string(b'abc'))
+        self.assertTrue(burger.is_string(str('abc')))
 
-    if _PY2:
-        assert burger.is_string(bytes('abc'))
-        assert burger.is_string(bytes(u'abc'))
-    else:
-        assert burger.is_string(bytes('abc', 'ascii'))
-        assert burger.is_string(bytes(u'abc', 'utf-8'))
-    assert burger.is_string(bytes(b'abc'))
+        # Python 2.x tests (Not supported on 3.x or higher)
+        if _PY2:
+            # pylint: disable=E0602
+            self.assertTrue(burger.is_string(unicode('')))
+            self.assertTrue(burger.is_string(unicode('a')))
+            self.assertTrue(burger.is_string(unicode(u'a')))
+            self.assertTrue(burger.is_string(unicode(b'a')))
+            self.assertTrue(burger.is_string(unicode('abc')))
+            self.assertTrue(burger.is_string(unicode(u'abc')))
+            self.assertTrue(burger.is_string(unicode(b'abc')))
 
-    # False if it's a group of strings
-    assert not burger.is_string(('a',))
-    assert not burger.is_string(['a'])
-    assert not burger.is_string({'a'})
-    assert not burger.is_string(('a', 'b'))
-    assert not burger.is_string(['a', 'b'])
-    assert not burger.is_string({'a', 'b'})
+        # Bytes need specific encoding passed in for Python 3.0 or higher
+        if _PY2:
+            self.assertTrue(burger.is_string(bytes('')))
+            self.assertTrue(burger.is_string(bytes('a')))
+            self.assertTrue(burger.is_string(bytes(u'a')))
+        else:
+            self.assertTrue(burger.is_string(bytes('', 'ascii')))
+            self.assertTrue(burger.is_string(bytes('a', 'ascii')))
+            self.assertTrue(burger.is_string(bytes(u'a', 'utf-8')))
+        self.assertTrue(burger.is_string(bytes(b'a')))
+
+        if _PY2:
+            self.assertTrue(burger.is_string(bytes('abc')))
+            self.assertTrue(burger.is_string(bytes(u'abc')))
+        else:
+            self.assertTrue(burger.is_string(bytes('abc', 'ascii')))
+            self.assertTrue(burger.is_string(bytes(u'abc', 'utf-8')))
+        self.assertTrue(burger.is_string(bytes(b'abc')))
+
+        # False if it's a group of strings
+        self.assertFalse(burger.is_string(('a',)))
+        self.assertFalse(burger.is_string(['a']))
+        self.assertFalse(burger.is_string({'a'}))
+        self.assertFalse(burger.is_string(('a', 'b')))
+        self.assertFalse(burger.is_string(['a', 'b']))
+        self.assertFalse(burger.is_string({'a', 'b'}))
+
+
+########################################
+
+    def test_convert_to_array(self):
+        """
+        Test burger.convert_to_array()
+        """
+
+        self.assertEqual(burger.convert_to_array(0), 0)
+        self.assertEqual(burger.convert_to_array(None), [])
+        self.assertTrue(burger.convert_to_array(True))
+        self.assertFalse(burger.convert_to_array(False))
+        self.assertEqual(burger.convert_to_array(1.0), 1.0)
+        self.assertEqual(burger.convert_to_array(()), ())
+        self.assertEqual(burger.convert_to_array({}), {})
+        self.assertEqual(burger.convert_to_array([]), [])
+        self.assertEqual(burger.convert_to_array(bytearray()), bytearray())
+        self.assertEqual(
+            burger.convert_to_array(
+                bytearray(b'abc')),
+            bytearray(b'abc'))
+
+        # Python 2.x tests (Not supported on 3.x or higher)
+        if _PY2:
+            # pylint: disable=E0602
+            self.assertEqual(burger.convert_to_array(unicode('a')), ['a'])
+            self.assertEqual(burger.convert_to_array(unicode(u'a')), ['a'])
+            self.assertEqual(burger.convert_to_array(unicode(b'a')), ['a'])
+            self.assertEqual(burger.convert_to_array(unicode('abc')), ['abc'])
+            self.assertEqual(burger.convert_to_array(unicode(u'abc')), ['abc'])
+            self.assertEqual(burger.convert_to_array(unicode(b'abc')), ['abc'])
+
+        # Bytes need specific encoding passed in for Python 3.0 or higher
+        if _PY2:
+            self.assertEqual(burger.convert_to_array(bytes('a')), ['a'])
+            self.assertEqual(burger.convert_to_array(bytes(u'a')), ['a'])
+        else:
+            self.assertEqual(
+                burger.convert_to_array(
+                    bytes(
+                        'a',
+                        'ascii')),
+                [b'a'])
+            self.assertEqual(
+                burger.convert_to_array(
+                    bytes(
+                        u'a',
+                        'utf-8')),
+                [b'a'])
+        self.assertEqual(burger.convert_to_array(bytes(b'a')), [b'a'])
+
+        if _PY2:
+            self.assertEqual(burger.convert_to_array(bytes('abc')), [b'abc'])
+            self.assertEqual(burger.convert_to_array(bytes(u'abc')), [b'abc'])
+        else:
+            self.assertEqual(
+                burger.convert_to_array(
+                    bytes(
+                        'abc',
+                        'ascii')),
+                [b'abc'])
+            self.assertEqual(
+                burger.convert_to_array(
+                    bytes(
+                        u'abc',
+                        'utf-8')),
+                [b'abc'])
+        self.assertEqual(burger.convert_to_array(bytes(b'abc')), [b'abc'])
+
+        # False if it's a group of strings
+        self.assertEqual(burger.convert_to_array(('a',)), ('a',))
+        self.assertEqual(burger.convert_to_array(['a']), ['a'])
+        self.assertEqual(burger.convert_to_array({'a'}), {'a'})
+        self.assertEqual(burger.convert_to_array(('a', 'b')), ('a', 'b'))
+        self.assertEqual(burger.convert_to_array(['a', 'b']), ['a', 'b'])
+        self.assertEqual(burger.convert_to_array({'a', 'b'}), {'a', 'b'})
+
+########################################
+
+    def test_string_to_bool(self):            # pylint: disable=C0103
+        """
+        Test burger.string_to_bool()
+        """
+
+        true_table = (
+            'yes',
+            'y',
+            '1',
+            1,
+            1.0,
+            True,
+            'on',
+            'TrUe',
+            't',
+            '99',
+            99)
+        for item in true_table:
+            self.assertTrue(burger.string_to_bool(item))
+
+        false_table = ('no', 'n', '0', 0, -0.0, False, 'off', 'FalSe', 'f')
+        for item in false_table:
+            self.assertFalse(burger.string_to_bool(item))
+
+########################################
+
+    def test_TrueFalse(self):            # pylint: disable=C0103
+        """
+        Test burger.TrueFalse()
+        """
+
+        self.assertEqual(burger.TrueFalse(0), 'False')
+        self.assertEqual(burger.TrueFalse(0.0), 'False')
+        self.assertEqual(burger.TrueFalse('0'), 'False')
+        self.assertEqual(burger.TrueFalse('FALSE'), 'False')
+        self.assertEqual(burger.TrueFalse('false'), 'False')
+        self.assertEqual(burger.TrueFalse('False'), 'False')
+        self.assertEqual(burger.TrueFalse(False), 'False')
+        self.assertEqual(burger.TrueFalse([]), 'False')
+        self.assertEqual(burger.TrueFalse({}), 'False')
+        self.assertEqual(burger.TrueFalse(()), 'False')
+
+        self.assertEqual(burger.TrueFalse(1), 'True')
+        self.assertEqual(burger.TrueFalse(1.0), 'True')
+        self.assertEqual(burger.TrueFalse('1'), 'True')
+        self.assertEqual(burger.TrueFalse('TRUE'), 'True')
+        self.assertEqual(burger.TrueFalse('true'), 'True')
+        self.assertEqual(burger.TrueFalse('True'), 'True')
+        self.assertEqual(burger.TrueFalse(True), 'True')
+        self.assertEqual(burger.TrueFalse([1]), 'True')
+        self.assertEqual(burger.TrueFalse({1}), 'True')
+        self.assertEqual(burger.TrueFalse((1,)), 'True')
+
+        self.assertEqual(burger.TrueFalse('testing'), 'True')
+
+########################################
+
+    def test_truefalse(self):
+        """
+        Test burger.truefalse()
+        """
+
+        self.assertEqual(burger.truefalse(0), 'false')
+        self.assertEqual(burger.truefalse(0.0), 'false')
+        self.assertEqual(burger.truefalse('0'), 'false')
+        self.assertEqual(burger.truefalse('FALSE'), 'false')
+        self.assertEqual(burger.truefalse('false'), 'false')
+        self.assertEqual(burger.truefalse('False'), 'false')
+        self.assertEqual(burger.truefalse(False), 'false')
+        self.assertEqual(burger.truefalse([]), 'false')
+        self.assertEqual(burger.truefalse({}), 'false')
+        self.assertEqual(burger.truefalse(()), 'false')
+
+        self.assertEqual(burger.truefalse(1), 'true')
+        self.assertEqual(burger.truefalse(1.0), 'true')
+        self.assertEqual(burger.truefalse('1'), 'true')
+        self.assertEqual(burger.truefalse('TRUE'), 'true')
+        self.assertEqual(burger.truefalse('true'), 'true')
+        self.assertEqual(burger.truefalse('True'), 'true')
+        self.assertEqual(burger.truefalse(True), 'true')
+        self.assertEqual(burger.truefalse([1]), 'true')
+        self.assertEqual(burger.truefalse({1}), 'true')
+        self.assertEqual(burger.truefalse((1,)), 'true')
+
+        self.assertEqual(burger.truefalse('testing'), 'true')
+
+########################################
+
+    def test_TRUEFALSE(self):        # pylint: disable=C0103
+        """
+        Test burger.TRUEFALSE()
+        """
+
+        self.assertEqual(burger.TRUEFALSE(0), 'FALSE')
+        self.assertEqual(burger.TRUEFALSE(0.0), 'FALSE')
+        self.assertEqual(burger.TRUEFALSE('0'), 'FALSE')
+        self.assertEqual(burger.TRUEFALSE('FALSE'), 'FALSE')
+        self.assertEqual(burger.TRUEFALSE('false'), 'FALSE')
+        self.assertEqual(burger.TRUEFALSE('False'), 'FALSE')
+        self.assertEqual(burger.TRUEFALSE(False), 'FALSE')
+        self.assertEqual(burger.TRUEFALSE([]), 'FALSE')
+        self.assertEqual(burger.TRUEFALSE({}), 'FALSE')
+        self.assertEqual(burger.TRUEFALSE(()), 'FALSE')
+
+        self.assertEqual(burger.TRUEFALSE(1), 'TRUE')
+        self.assertEqual(burger.TRUEFALSE(1.0), 'TRUE')
+        self.assertEqual(burger.TRUEFALSE('1'), 'TRUE')
+        self.assertEqual(burger.TRUEFALSE('TRUE'), 'TRUE')
+        self.assertEqual(burger.TRUEFALSE('true'), 'TRUE')
+        self.assertEqual(burger.TRUEFALSE('True'), 'TRUE')
+        self.assertEqual(burger.TRUEFALSE(True), 'TRUE')
+        self.assertEqual(burger.TRUEFALSE([1]), 'TRUE')
+        self.assertEqual(burger.TRUEFALSE({1}), 'TRUE')
+        self.assertEqual(burger.TRUEFALSE((1,)), 'TRUE')
+
+        self.assertEqual(burger.TRUEFALSE('testing'), 'TRUE')
+
+########################################
+
+    def test_convert_to_windows_slashes(self):
+        """
+        Test burger.convert_to_windows_slashes()
+        """
+
+        self.assertEqual(burger.convert_to_windows_slashes(
+            'foo', force_ending_slash=False), 'foo')
+        self.assertEqual(burger.convert_to_windows_slashes(
+            'C:/foo\\bar', force_ending_slash=False), 'C:\\foo\\bar')
+        self.assertEqual(burger.convert_to_windows_slashes(
+            './foo/bar/fug', force_ending_slash=False), '.\\foo\\bar\\fug')
+        self.assertEqual(burger.convert_to_windows_slashes(
+            '.\\foo\\bar\\fug', force_ending_slash=False), '.\\foo\\bar\\fug')
+        self.assertEqual(burger.convert_to_windows_slashes(
+            'foo\\', force_ending_slash=False), 'foo\\')
+
+        self.assertEqual(burger.convert_to_windows_slashes(
+            'foo', force_ending_slash=True), 'foo\\')
+        self.assertEqual(burger.convert_to_windows_slashes(
+            'C:/foo\\bar', force_ending_slash=True), 'C:\\foo\\bar\\')
+        self.assertEqual(burger.convert_to_windows_slashes(
+            './foo/bar/fug', force_ending_slash=True), '.\\foo\\bar\\fug\\')
+        self.assertEqual(burger.convert_to_windows_slashes(
+            '.\\foo\\bar\\fug', force_ending_slash=True), '.\\foo\\bar\\fug\\')
+        self.assertEqual(burger.convert_to_windows_slashes(
+            'foo\\', force_ending_slash=True), 'foo\\')
+
+########################################
+
+    def test_convert_to_linux_slashes(self):
+        """
+        Test burger.convert_to_linux_slashes()
+        """
+
+        self.assertEqual(burger.convert_to_linux_slashes(
+            'foo', force_ending_slash=False), 'foo')
+        self.assertEqual(burger.convert_to_linux_slashes(
+            'C:/foo\\bar', force_ending_slash=False), 'C:/foo/bar')
+        self.assertEqual(burger.convert_to_linux_slashes(
+            './foo/bar/fug', force_ending_slash=False), './foo/bar/fug')
+        self.assertEqual(burger.convert_to_linux_slashes(
+            '.\\foo\\bar\\fug', force_ending_slash=False), './foo/bar/fug')
+        self.assertEqual(burger.convert_to_linux_slashes(
+            'foo\\', force_ending_slash=False), 'foo/')
+
+        self.assertEqual(burger.convert_to_linux_slashes(
+            'foo', force_ending_slash=True), 'foo/')
+        self.assertEqual(burger.convert_to_linux_slashes(
+            'C:/foo\\bar', force_ending_slash=True), 'C:/foo/bar/')
+        self.assertEqual(burger.convert_to_linux_slashes(
+            './foo/bar/fug', force_ending_slash=True), './foo/bar/fug/')
+        self.assertEqual(burger.convert_to_linux_slashes(
+            '.\\foo\\bar\\fug',
+            force_ending_slash=True), './foo/bar/fug/')
+        self.assertEqual(burger.convert_to_linux_slashes(
+            'foo\\', force_ending_slash=True), 'foo/')
+
+########################################
+
+    def test_encapsulate_path_windows(self):
+        """
+        Test burger.encapsulate_path_windows()
+        """
+
+        self.assertEqual(burger.encapsulate_path_windows(''), '""')
+        self.assertEqual(burger.encapsulate_path_windows('foo'), 'foo')
+        self.assertEqual(burger.encapsulate_path_windows('f$oo'), '"f$oo"')
+        self.assertEqual(burger.encapsulate_path_windows('f"oo'), '"f\\"oo"')
+        self.assertEqual(
+            burger.encapsulate_path_windows("foo'foo"),
+            '"foo\'foo"')
+
+########################################
+
+    def test_encapsulate_path_linux(self):
+        """
+        Test burger.encapsulate_path_linux()
+        """
+
+        self.assertEqual(burger.encapsulate_path_linux(''), "''")
+        self.assertEqual(burger.encapsulate_path_linux('foo'), "foo")
+        self.assertEqual(burger.encapsulate_path_linux('f$oo'), "'f$oo'")
+        self.assertEqual(burger.encapsulate_path_linux('f"oo'), "'f\"oo'")
+        self.assertEqual(
+            burger.encapsulate_path_linux("foo'foo"),
+            "'foo'\"'\"'foo'")
+
+########################################
+
+    def test_encapsulate_path(self):
+        """
+        Test burger.encapsulate_path()
+        """
+
+        savedname = burger.strutils.IS_WINDOWS
+        # Hack to force windows mode
+        burger.strutils.IS_WINDOWS = True
+        self.assertEqual(burger.encapsulate_path(''), '""')
+        self.assertEqual(burger.encapsulate_path('foo'), 'foo')
+        self.assertEqual(burger.encapsulate_path('f$oo'), '"f$oo"')
+        self.assertEqual(burger.encapsulate_path('f"oo'), '"f\\"oo"')
+        self.assertEqual(burger.encapsulate_path("foo'foo"), '"foo\'foo"')
+
+        # Hack to force linux mode
+        burger.strutils.IS_WINDOWS = False
+        self.assertEqual(burger.encapsulate_path(''), "''")
+        self.assertEqual(burger.encapsulate_path('foo'), "foo")
+        self.assertEqual(burger.encapsulate_path('f$oo'), "'f$oo'")
+        self.assertEqual(burger.encapsulate_path('f"oo'), "'f\"oo'")
+        self.assertEqual(burger.encapsulate_path("foo'foo"), "'foo'\"'\"'foo'")
+        # Restore the real value
+        burger.strutils.IS_WINDOWS = savedname
+
+########################################
+
+    def test_split_comma_with_quotes(self):
+        """
+        Test burger.split_comma_with_quotes()
+        """
+
+        # Test for normal behavior
+        self.assertEqual(burger.split_comma_with_quotes('x'), ['x'])
+        self.assertEqual(burger.split_comma_with_quotes('x,y'), ['x', 'y'])
+        self.assertEqual(burger.split_comma_with_quotes('x,y,'), ['x', 'y'])
+        self.assertEqual(
+            burger.split_comma_with_quotes('x,y,z,'), [
+                'x', 'y', 'z'])
+        self.assertEqual(
+            burger.split_comma_with_quotes(',x,y,z'), [
+                '', 'x', 'y', 'z'])
+        self.assertEqual(
+            burger.split_comma_with_quotes(',x,y,z,'), [
+                '', 'x', 'y', 'z'])
+
+        # Test for normal behavior
+        self.assertEqual(burger.split_comma_with_quotes('\nx'), ['\nx'])
+        self.assertEqual(burger.split_comma_with_quotes('\tx,y'), ['\tx', 'y'])
+        self.assertEqual(burger.split_comma_with_quotes('\rx,y,'), ['\rx', 'y'])
+        self.assertEqual(burger.split_comma_with_quotes('\n\rx,y,z,'), [
+            '\n\rx', 'y', 'z'])
+        self.assertEqual(burger.split_comma_with_quotes(
+            ',x,y,z\t'), ['', 'x', 'y', 'z\t'])
+        self.assertEqual(burger.split_comma_with_quotes(
+            ',x,y,z\t,'), ['', 'x', 'y', 'z\t'])
+
+        # Test for quote behavior
+        self.assertEqual(burger.split_comma_with_quotes('"x"'), ['"x"'])
+        self.assertEqual(
+            burger.split_comma_with_quotes('"x","y"'), [
+                '"x"', '"y"'])
+        self.assertEqual(burger.split_comma_with_quotes('"x",y,'), ['"x"', 'y'])
+        self.assertEqual(
+            burger.split_comma_with_quotes("x,'y',z,"), [
+                'x', "'y'", 'z'])
+        self.assertEqual(burger.split_comma_with_quotes(
+            ',x,y,"z"'), ['', 'x', 'y', '"z"'])
+        self.assertEqual(
+            burger.split_comma_with_quotes(',x,"y,z",'), [
+                '', 'x', '"y,z"'])
+
+        # Test for Exceptions
+        self.assertRaises(ValueError, burger.split_comma_with_quotes, "'foo")
+
+        self.assertRaises(ValueError, burger.split_comma_with_quotes, '"foo')
+
+        self.assertRaises(
+            ValueError,
+            burger.split_comma_with_quotes,
+            '"foo,bar')
 
 
 ########################################
 
 
-def test_convert_to_array():
-    """
-    Test burger.convert_to_array()
-    """
+    def test_parse_csv(self):
+        """
+        Test burger.parse_csv()
+        """
 
-    assert burger.convert_to_array(0) == 0
-    assert burger.convert_to_array(None) == []
-    assert burger.convert_to_array(True) is True
-    assert burger.convert_to_array(False) is False
-    assert burger.convert_to_array(1.0) == 1.0
-    assert burger.convert_to_array(()) == ()
-    assert burger.convert_to_array({}) == {}
-    assert burger.convert_to_array([]) == []
-    assert burger.convert_to_array(bytearray()) == bytearray()
-    assert burger.convert_to_array(bytearray(b'abc')) == bytearray(b'abc')
+        # Test for normal behavior
+        self.assertEqual(burger.parse_csv('x'), ['x'])
+        self.assertEqual(burger.parse_csv('x,y'), ['x', 'y'])
+        self.assertEqual(burger.parse_csv('x,y,'), ['x', 'y'])
+        self.assertEqual(burger.parse_csv('x,y,z,'), ['x', 'y', 'z'])
+        self.assertEqual(burger.parse_csv(',x,y,z'), ['', 'x', 'y', 'z'])
+        self.assertEqual(burger.parse_csv(',x,y,z,'), ['', 'x', 'y', 'z'])
 
-    # Python 2.x tests (Not supported on 3.x or higher)
-    if _PY2:
-        # pylint: disable=E0602
-        assert burger.convert_to_array(unicode('a')) == ['a']
-        assert burger.convert_to_array(unicode(u'a')) == ['a']
-        assert burger.convert_to_array(unicode(b'a')) == ['a']
-        assert burger.convert_to_array(unicode('abc')) == ['abc']
-        assert burger.convert_to_array(unicode(u'abc')) == ['abc']
-        assert burger.convert_to_array(unicode(b'abc')) == ['abc']
+        # Test for normal behavior
+        self.assertEqual(burger.parse_csv('\nx'), ['x'])
+        self.assertEqual(burger.parse_csv('\tx,y'), ['x', 'y'])
+        self.assertEqual(burger.parse_csv('\rx,y,'), ['x', 'y'])
+        self.assertEqual(burger.parse_csv('\n\rx,y,z,'), ['x', 'y', 'z'])
+        self.assertEqual(burger.parse_csv(',x,y,z\t'), ['', 'x', 'y', 'z'])
+        self.assertEqual(burger.parse_csv(',x,y,z\t,'), ['', 'x', 'y', 'z'])
 
-    # Bytes need specific encoding passed in for Python 3.0 or higher
-    if _PY2:
-        assert burger.convert_to_array(bytes('a')) == ['a']
-        assert burger.convert_to_array(bytes(u'a')) == ['a']
-    else:
-        assert burger.convert_to_array(bytes('a', 'ascii')) == [b'a']
-        assert burger.convert_to_array(bytes(u'a', 'utf-8')) == [b'a']
-    assert burger.convert_to_array(bytes(b'a')) == [b'a']
+        # Test for quote behavior
+        self.assertEqual(burger.parse_csv('"x"'), ['x'])
+        self.assertEqual(burger.parse_csv('"x","y"'), ['x', 'y'])
+        self.assertEqual(burger.parse_csv('"x",y,'), ['x', 'y'])
+        self.assertEqual(burger.parse_csv("x,'y',z,"), ['x', 'y', 'z'])
+        self.assertEqual(burger.parse_csv(',x,y,"z"'), ['', 'x', 'y', 'z'])
+        self.assertEqual(burger.parse_csv(',x,"y,z",'), ['', 'x', 'y,z'])
+        self.assertEqual(burger.parse_csv('x,"y""z",'), ['x', 'y"z'])
+        self.assertEqual(burger.parse_csv('x,\'y\'\'z\','), ['x', 'y\'z'])
 
-    if _PY2:
-        assert burger.convert_to_array(bytes('abc')) == [b'abc']
-        assert burger.convert_to_array(bytes(u'abc')) == [b'abc']
-    else:
-        assert burger.convert_to_array(bytes('abc', 'ascii')) == [b'abc']
-        assert burger.convert_to_array(bytes(u'abc', 'utf-8')) == [b'abc']
-    assert burger.convert_to_array(bytes(b'abc')) == [b'abc']
-
-    # False if it's a group of strings
-    assert burger.convert_to_array(('a',)) == ('a',)
-    assert burger.convert_to_array(['a']) == ['a']
-    assert burger.convert_to_array({'a'}) == {'a'}
-    assert burger.convert_to_array(('a', 'b')) == ('a', 'b')
-    assert burger.convert_to_array(['a', 'b']) == ['a', 'b']
-    assert burger.convert_to_array({'a', 'b'}) == {'a', 'b'}
+        # Test for Exceptions
+        self.assertRaises(ValueError, burger.parse_csv, "'foo")
+        self.assertRaises(ValueError, burger.parse_csv, '"foo')
+        self.assertRaises(ValueError, burger.parse_csv, '"foo,bar')
 
 ########################################
 
-
-def test_string_to_bool():            # pylint: disable=C0103
-    """
-    Test burger.string_to_bool()
-    """
-
-    true_table = ('yes', 'y', '1', 1, 1.0, True, 'on', 'TrUe', 't', '99', 99)
-    for item in true_table:
-        assert burger.string_to_bool(item)
-
-    false_table = ('no', 'n', '0', 0, -0.0, False, 'off', 'FalSe', 'f')
-    for item in false_table:
-        assert not burger.string_to_bool(item)
-
-########################################
-
-
-def test_TrueFalse():            # pylint: disable=C0103
-    """
-    Test burger.TrueFalse()
-    """
-
-    assert burger.TrueFalse(0) == 'False'
-    assert burger.TrueFalse(0.0) == 'False'
-    assert burger.TrueFalse('0') == 'False'
-    assert burger.TrueFalse('FALSE') == 'False'
-    assert burger.TrueFalse('false') == 'False'
-    assert burger.TrueFalse('False') == 'False'
-    assert burger.TrueFalse(False) == 'False'
-    assert burger.TrueFalse([]) == 'False'
-    assert burger.TrueFalse({}) == 'False'
-    assert burger.TrueFalse(()) == 'False'
-
-    assert burger.TrueFalse(1) == 'True'
-    assert burger.TrueFalse(1.0) == 'True'
-    assert burger.TrueFalse('1') == 'True'
-    assert burger.TrueFalse('TRUE') == 'True'
-    assert burger.TrueFalse('true') == 'True'
-    assert burger.TrueFalse('True') == 'True'
-    assert burger.TrueFalse(True) == 'True'
-    assert burger.TrueFalse([1]) == 'True'
-    assert burger.TrueFalse({1}) == 'True'
-    assert burger.TrueFalse((1)) == 'True'
-
-    assert burger.TrueFalse('testing') == 'True'
-
-########################################
-
-
-def test_truefalse():
-    """
-    Test burger.truefalse()
-    """
-
-    assert burger.truefalse(0) == 'false'
-    assert burger.truefalse(0.0) == 'false'
-    assert burger.truefalse('0') == 'false'
-    assert burger.truefalse('FALSE') == 'false'
-    assert burger.truefalse('false') == 'false'
-    assert burger.truefalse('False') == 'false'
-    assert burger.truefalse(False) == 'false'
-    assert burger.truefalse([]) == 'false'
-    assert burger.truefalse({}) == 'false'
-    assert burger.truefalse(()) == 'false'
-
-    assert burger.truefalse(1) == 'true'
-    assert burger.truefalse(1.0) == 'true'
-    assert burger.truefalse('1') == 'true'
-    assert burger.truefalse('TRUE') == 'true'
-    assert burger.truefalse('true') == 'true'
-    assert burger.truefalse('True') == 'true'
-    assert burger.truefalse(True) == 'true'
-    assert burger.truefalse([1]) == 'true'
-    assert burger.truefalse({1}) == 'true'
-    assert burger.truefalse((1)) == 'true'
-
-    assert burger.truefalse('testing') == 'true'
-
-########################################
-
-
-def test_TRUEFALSE():        # pylint: disable=C0103
-    """
-    Test burger.TRUEFALSE()
-    """
-
-    assert burger.TRUEFALSE(0) == 'FALSE'
-    assert burger.TRUEFALSE(0.0) == 'FALSE'
-    assert burger.TRUEFALSE('0') == 'FALSE'
-    assert burger.TRUEFALSE('FALSE') == 'FALSE'
-    assert burger.TRUEFALSE('false') == 'FALSE'
-    assert burger.TRUEFALSE('False') == 'FALSE'
-    assert burger.TRUEFALSE(False) == 'FALSE'
-    assert burger.TRUEFALSE([]) == 'FALSE'
-    assert burger.TRUEFALSE({}) == 'FALSE'
-    assert burger.TRUEFALSE(()) == 'FALSE'
-
-    assert burger.TRUEFALSE(1) == 'TRUE'
-    assert burger.TRUEFALSE(1.0) == 'TRUE'
-    assert burger.TRUEFALSE('1') == 'TRUE'
-    assert burger.TRUEFALSE('TRUE') == 'TRUE'
-    assert burger.TRUEFALSE('true') == 'TRUE'
-    assert burger.TRUEFALSE('True') == 'TRUE'
-    assert burger.TRUEFALSE(True) == 'TRUE'
-    assert burger.TRUEFALSE([1]) == 'TRUE'
-    assert burger.TRUEFALSE({1}) == 'TRUE'
-    assert burger.TRUEFALSE((1)) == 'TRUE'
-
-    assert burger.TRUEFALSE('testing') == 'TRUE'
-
-########################################
-
-
-def test_convert_to_windows_slashes():
-    """
-    Test burger.convert_to_windows_slashes()
-    """
-
-    assert burger.convert_to_windows_slashes(
-        'foo', force_ending_slash=False) == 'foo'
-    assert burger.convert_to_windows_slashes(
-        'C:/foo\\bar', force_ending_slash=False) == 'C:\\foo\\bar'
-    assert burger.convert_to_windows_slashes(
-        './foo/bar/fug', force_ending_slash=False) == '.\\foo\\bar\\fug'
-    assert burger.convert_to_windows_slashes(
-        '.\\foo\\bar\\fug', force_ending_slash=False) == '.\\foo\\bar\\fug'
-    assert burger.convert_to_windows_slashes(
-        'foo\\', force_ending_slash=False) == 'foo\\'
-
-    assert burger.convert_to_windows_slashes(
-        'foo', force_ending_slash=True) == 'foo\\'
-    assert burger.convert_to_windows_slashes(
-        'C:/foo\\bar', force_ending_slash=True) == 'C:\\foo\\bar\\'
-    assert burger.convert_to_windows_slashes(
-        './foo/bar/fug', force_ending_slash=True) == '.\\foo\\bar\\fug\\'
-    assert burger.convert_to_windows_slashes(
-        '.\\foo\\bar\\fug', force_ending_slash=True) == '.\\foo\\bar\\fug\\'
-    assert burger.convert_to_windows_slashes(
-        'foo\\', force_ending_slash=True) == 'foo\\'
-
-########################################
-
-
-def test_convert_to_linux_slashes():
-    """
-    Test burger.convert_to_linux_slashes()
-    """
-
-    assert burger.convert_to_linux_slashes(
-        'foo', force_ending_slash=False) == 'foo'
-    assert burger.convert_to_linux_slashes(
-        'C:/foo\\bar', force_ending_slash=False) == 'C:/foo/bar'
-    assert burger.convert_to_linux_slashes(
-        './foo/bar/fug', force_ending_slash=False) == './foo/bar/fug'
-    assert burger.convert_to_linux_slashes(
-        '.\\foo\\bar\\fug', force_ending_slash=False) == './foo/bar/fug'
-    assert burger.convert_to_linux_slashes(
-        'foo\\', force_ending_slash=False) == 'foo/'
-
-    assert burger.convert_to_linux_slashes(
-        'foo', force_ending_slash=True) == 'foo/'
-    assert burger.convert_to_linux_slashes(
-        'C:/foo\\bar', force_ending_slash=True) == 'C:/foo/bar/'
-    assert burger.convert_to_linux_slashes(
-        './foo/bar/fug', force_ending_slash=True) == './foo/bar/fug/'
-    assert burger.convert_to_linux_slashes(
-        '.\\foo\\bar\\fug',
-        force_ending_slash=True) == './foo/bar/fug/'
-    assert burger.convert_to_linux_slashes(
-        'foo\\', force_ending_slash=True) == 'foo/'
-
-########################################
-
-
-def test_encapsulate_path_windows():
-    """
-    Test burger.encapsulate_path_windows()
-    """
-
-    assert burger.encapsulate_path_windows('') == '""'
-    assert burger.encapsulate_path_windows('foo') == 'foo'
-    assert burger.encapsulate_path_windows('f$oo') == '"f$oo"'
-    assert burger.encapsulate_path_windows('f"oo') == '"f\\"oo"'
-    assert burger.encapsulate_path_windows("foo'foo") == '"foo\'foo"'
-
-########################################
-
-
-def test_encapsulate_path_linux():
-    """
-    Test burger.encapsulate_path_linux()
-    """
-
-    assert burger.encapsulate_path_linux('') == "''"
-    assert burger.encapsulate_path_linux('foo') == "foo"
-    assert burger.encapsulate_path_linux('f$oo') == "'f$oo'"
-    assert burger.encapsulate_path_linux('f"oo') == "'f\"oo'"
-    assert burger.encapsulate_path_linux("foo'foo") == "'foo'\"'\"'foo'"
-
-########################################
-
-
-def test_encapsulate_path():
-    """
-    Test burger.encapsulate_path()
-    """
-
-    savedname = burger.strutils.IS_WINDOWS
-    # Hack to force windows mode
-    burger.strutils.IS_WINDOWS = True
-    assert burger.encapsulate_path('') == '""'
-    assert burger.encapsulate_path('foo') == 'foo'
-    assert burger.encapsulate_path('f$oo') == '"f$oo"'
-    assert burger.encapsulate_path('f"oo') == '"f\\"oo"'
-    assert burger.encapsulate_path("foo'foo") == '"foo\'foo"'
-
-    # Hack to force linux mode
-    burger.strutils.IS_WINDOWS = False
-    assert burger.encapsulate_path('') == "''"
-    assert burger.encapsulate_path('foo') == "foo"
-    assert burger.encapsulate_path('f$oo') == "'f$oo'"
-    assert burger.encapsulate_path('f"oo') == "'f\"oo'"
-    assert burger.encapsulate_path("foo'foo") == "'foo'\"'\"'foo'"
-    # Restore the real value
-    burger.strutils.IS_WINDOWS = savedname
-
-########################################
-
-
-def test_split_comma_with_quotes():
-    """
-    Test burger.split_comma_with_quotes()
-    """
-
-    # Test for normal behavior
-    assert burger.split_comma_with_quotes('x') == ['x']
-    assert burger.split_comma_with_quotes('x,y') == ['x', 'y']
-    assert burger.split_comma_with_quotes('x,y,') == ['x', 'y']
-    assert burger.split_comma_with_quotes('x,y,z,') == ['x', 'y', 'z']
-    assert burger.split_comma_with_quotes(',x,y,z') == ['', 'x', 'y', 'z']
-    assert burger.split_comma_with_quotes(',x,y,z,') == ['', 'x', 'y', 'z']
-
-    # Test for normal behavior
-    assert burger.split_comma_with_quotes('\nx') == ['\nx']
-    assert burger.split_comma_with_quotes('\tx,y') == ['\tx', 'y']
-    assert burger.split_comma_with_quotes('\rx,y,') == ['\rx', 'y']
-    assert burger.split_comma_with_quotes('\n\rx,y,z,') == ['\n\rx', 'y', 'z']
-    assert burger.split_comma_with_quotes(',x,y,z\t') == ['', 'x', 'y', 'z\t']
-    assert burger.split_comma_with_quotes(',x,y,z\t,') == ['', 'x', 'y', 'z\t']
-
-    # Test for quote behavior
-    assert burger.split_comma_with_quotes('"x"') == ['"x"']
-    assert burger.split_comma_with_quotes('"x","y"') == ['"x"', '"y"']
-    assert burger.split_comma_with_quotes('"x",y,') == ['"x"', 'y']
-    assert burger.split_comma_with_quotes("x,'y',z,") == ['x', "'y'", 'z']
-    assert burger.split_comma_with_quotes(',x,y,"z"') == ['', 'x', 'y', '"z"']
-    assert burger.split_comma_with_quotes(',x,"y,z",') == ['', 'x', '"y,z"']
-
-    # Test for Exceptions
-    try:
-        burger.split_comma_with_quotes("'foo")
-        assert 0
-    except ValueError:
-        pass
-    try:
-        burger.split_comma_with_quotes('"foo')
-        assert 0
-    except ValueError:
-        pass
-    try:
-        burger.split_comma_with_quotes('"foo,bar')
-        assert 0
-    except ValueError:
-        pass
-
-########################################
-
-
-def test_parse_csv():
-    """
-    Test burger.parse_csv()
-    """
-
-    # Test for normal behavior
-    assert burger.parse_csv('x') == ['x']
-    assert burger.parse_csv('x,y') == ['x', 'y']
-    assert burger.parse_csv('x,y,') == ['x', 'y']
-    assert burger.parse_csv('x,y,z,') == ['x', 'y', 'z']
-    assert burger.parse_csv(',x,y,z') == ['', 'x', 'y', 'z']
-    assert burger.parse_csv(',x,y,z,') == ['', 'x', 'y', 'z']
-
-    # Test for normal behavior
-    assert burger.parse_csv('\nx') == ['x']
-    assert burger.parse_csv('\tx,y') == ['x', 'y']
-    assert burger.parse_csv('\rx,y,') == ['x', 'y']
-    assert burger.parse_csv('\n\rx,y,z,') == ['x', 'y', 'z']
-    assert burger.parse_csv(',x,y,z\t') == ['', 'x', 'y', 'z']
-    assert burger.parse_csv(',x,y,z\t,') == ['', 'x', 'y', 'z']
-
-    # Test for quote behavior
-    assert burger.parse_csv('"x"') == ['x']
-    assert burger.parse_csv('"x","y"') == ['x', 'y']
-    assert burger.parse_csv('"x",y,') == ['x', 'y']
-    assert burger.parse_csv("x,'y',z,") == ['x', 'y', 'z']
-    assert burger.parse_csv(',x,y,"z"') == ['', 'x', 'y', 'z']
-    assert burger.parse_csv(',x,"y,z",') == ['', 'x', 'y,z']
-    assert burger.parse_csv('x,"y""z",') == ['x', 'y"z']
-    assert burger.parse_csv('x,\'y\'\'z\',') == ['x', 'y\'z']
-
-    # Test for Exceptions
-    try:
-        burger.parse_csv("'foo")
-        assert 0
-    except ValueError:
-        pass
-    try:
-        burger.parse_csv('"foo')
-        assert 0
-    except ValueError:
-        pass
-    try:
-        burger.parse_csv('"foo,bar')
-        assert 0
-    except ValueError:
-        pass
-
-########################################
-
-
-def test_translate_to_regex_match():
-    """
-    Test burger.translate_to_regex_match()
-    """
-
-    # Get an empty list
-    assert not burger.translate_to_regex_match([])
-
-    dir_list = burger.translate_to_regex_match(('foo.txt', '*.py'))
-    assert dir_list
-
-    # Find positive matches
-    for item in dir_list:
-        assert item('foo.txt') or item('a.py')
-        assert not item('foo.bar')
-        assert not item('py.px')
-        assert not item('py')
+    def test_translate_to_regex_match(self):
+        """
+        Test burger.translate_to_regex_match()
+        """
+
+        # Get an empty list
+        self.assertFalse(burger.translate_to_regex_match([]))
+
+        dir_list = burger.translate_to_regex_match(('foo.txt', '*.py'))
+        self.assertTrue(dir_list)
+
+        # Find positive matches
+        for item in dir_list:
+            self.assertTrue(item('foo.txt') or item('a.py'))
+            self.assertFalse(item('foo.bar'))
+            self.assertFalse(item('py.px'))
+            self.assertFalse(item('py'))
 
 
 ########################################
 
 
-def test_escape_xml_cdata():
-    """
-    Test burger.escape_xml_cdata()
-    """
+    def test_escape_xml_cdata(self):
+        """
+        Test burger.escape_xml_cdata()
+        """
 
-    tests = (
-        ('before', 'before'),
-        ('foo&foo', 'foo&amp;foo'),
-        ('<token>', '&lt;token&gt;'),
-        ('"quotes"\n', '"quotes"\n')
-    )
+        tests = (
+            ('before', 'before'),
+            ('foo&foo', 'foo&amp;foo'),
+            ('<token>', '&lt;token&gt;'),
+            ('"quotes"\n', '"quotes"\n')
+        )
 
-    for test in tests:
-        assert burger.escape_xml_cdata(test[0]) == test[1]
-
-
-########################################
-
-
-def test_escape_xml_attribute():
-    """
-    Test burger.escape_xml_attribute()
-    """
-
-    tests = (
-        ('before', 'before'),
-        ('foo&foo', 'foo&amp;foo'),
-        ('<token>', '&lt;token&gt;'),
-        ('"quotes"\n', '&quot;quotes&quot;&#10;'),
-        ('\r\n\n\r', '&#10;&#10;&#10;'),
-        ('mac\rstring', 'mac&#10;string'),
-        ('linux\nstring', 'linux&#10;string'),
-        ('pc\r\nstring', 'pc&#10;string'),
-        ('test\ttabs\tnow', 'test&#09;tabs&#09;now')
-    )
-
-    for test in tests:
-        assert burger.escape_xml_attribute(test[0]) == test[1]
-
-########################################
-
-
-def test_packed_paths():
-    """
-    Test burger.packed_paths()
-    """
-
-    tests = (
-        ('test', 'test'),
-        (('foo', 'bar'), 'foo;bar'),
-        (['a', 'b', 'c'], 'a;b;c'),
-        (['a', 'bart', 'c/c'], 'a;bart;c/c')
-    )
-
-    for test in tests:
-        assert burger.packed_paths(test[0]) == test[1]
-
-    # Test seperator replacement
-    seperators = (
-        ('a', ';', ':', '\n')
-    )
-
-    for sep in seperators:
         for test in tests:
-            assert burger.packed_paths(
-                test[0],
-                seperator=sep) == test[1].replace(
-                    ';', sep)
+            self.assertEqual(burger.escape_xml_cdata(test[0]), test[1])
 
-    # Test slashes and forced ending
-    paths = (
-        'c:\\foo\\bar',
-        '/home/usr/bar',
-        '~/.config',
-        'foobar.txt',
-        'c:\\foo\\bar\\',
-        '/home/usr/bar/',
-        '~/.config/',
-        '/break\\me',
-        '\\fun\\fun\\'
-    )
 
-    for path in paths:
-        assert burger.packed_paths(path, slashes='/') == path.replace('\\', '/')
-        assert burger.packed_paths(
-            path, slashes='\\') == path.replace(
-                '/', '\\')
+########################################
 
-        temp = path.replace('\\', '/')
-        if not temp.endswith('/'):
-            temp = temp + '/'
-        assert burger.packed_paths(
-            path, slashes='/', force_ending_slash=True) == temp
 
-        temp = path.replace('/', '\\')
-        if not temp.endswith('\\'):
-            temp = temp + '\\'
-        assert burger.packed_paths(
-            path, slashes='\\', force_ending_slash=True) == temp
+    def test_escape_xml_attribute(self):
+        """
+        Test burger.escape_xml_attribute()
+        """
+
+        tests = (
+            ('before', 'before'),
+            ('foo&foo', 'foo&amp;foo'),
+            ('<token>', '&lt;token&gt;'),
+            ('"quotes"\n', '&quot;quotes&quot;&#10;'),
+            ('\r\n\n\r', '&#10;&#10;&#10;'),
+            ('mac\rstring', 'mac&#10;string'),
+            ('linux\nstring', 'linux&#10;string'),
+            ('pc\r\nstring', 'pc&#10;string'),
+            ('test\ttabs\tnow', 'test&#09;tabs&#09;now')
+        )
+
+        for test in tests:
+            self.assertEqual(burger.escape_xml_attribute(test[0]), test[1])
+
+########################################
+
+    def test_packed_paths(self):
+        """
+        Test burger.packed_paths()
+        """
+
+        tests = (
+            ('test', 'test'),
+            (('foo', 'bar'), 'foo;bar'),
+            (['a', 'b', 'c'], 'a;b;c'),
+            (['a', 'bart', 'c/c'], 'a;bart;c/c')
+        )
+
+        for test in tests:
+            self.assertEqual(burger.packed_paths(test[0]), test[1])
+
+        # Test seperator replacement
+        seperators = (
+            ('a', ';', ':', '\n')
+        )
+
+        for sep in seperators:
+            for test in tests:
+                self.assertEqual(burger.packed_paths(
+                    test[0],
+                    seperator=sep), test[1].replace(
+                        ';', sep))
+
+        # Test slashes and forced ending
+        paths = (
+            'c:\\foo\\bar',
+            '/home/usr/bar',
+            '~/.config',
+            'foobar.txt',
+            'c:\\foo\\bar\\',
+            '/home/usr/bar/',
+            '~/.config/',
+            '/break\\me',
+            '\\fun\\fun\\'
+        )
+
+        for path in paths:
+            self.assertEqual(burger.packed_paths(
+                path, slashes='/'), path.replace('\\', '/'))
+            self.assertEqual(burger.packed_paths(
+                path, slashes='\\'), path.replace(
+                    '/', '\\'))
+
+            temp = path.replace('\\', '/')
+            if not temp.endswith('/'):
+                temp = temp + '/'
+            self.assertEqual(burger.packed_paths(
+                path, slashes='/', force_ending_slash=True), temp)
+
+            temp = path.replace('/', '\\')
+            if not temp.endswith('\\'):
+                temp = temp + '\\'
+            self.assertEqual(burger.packed_paths(
+                path, slashes='\\', force_ending_slash=True), temp)
+
+########################################
+
+
+if __name__ == '__main__':
+    unittest.main()
