@@ -12,18 +12,19 @@ from __future__ import absolute_import, print_function, unicode_literals
 from ctypes import c_wchar_p, create_string_buffer, c_uint, \
     string_at, wstring_at, byref, c_void_p
 import array
-from .strutils import get_windows_host_type, from_windows_host_path, \
+from wslwinreg import convert_to_windows_path
+from .strutils import get_windows_host_type, \
     IS_CYGWIN, IS_MSYS, IS_WSL
 
 ########################################
 
 
-def get_file_info(path_name, info):
+def get_file_info(path_name, string_name):
     r"""
     Extract information from a windows exe file version resource.
 
     Given a windows exe file, extract the 'StringFileInfo' resource and
-    parse out the data chunk named by info.
+    parse out the data chunk named by string_name.
 
     Full list of resource names:
         https://docs.microsoft.com/en-us/windows/desktop/menurc/stringfileinfo-block
@@ -37,7 +38,7 @@ def get_file_info(path_name, info):
 
     Args:
         path_name: Name of the windows file.
-        info: Name of the data chunk to retrieve
+        string_name: Name of the data chunk to retrieve
 
     Return:
         None if no record found or an error, or a valid string
@@ -51,7 +52,7 @@ def get_file_info(path_name, info):
         if IS_CYGWIN or IS_MSYS or IS_WSL:
             from ctypes import CDLL
             versiondll = CDLL('version.dll')
-            path_name = from_windows_host_path(path_name)
+            path_name = convert_to_windows_path(path_name)
         else:
             # Handle import for Windows
             from ctypes import windll
@@ -97,7 +98,7 @@ def get_file_info(path_name, info):
                         '\\StringFileInfo\\{0:04x}{1:04x}\\{2}'.format(
                             codepages[0],
                             codepages[1],
-                            info),
+                            string_name),
                         byref(record),
                         byref(length)):
                     # Return the final result removing the terminating zero

@@ -17,7 +17,7 @@ If the path for windows looks like this, `C:\Windows\Notepad.exe`, it will look 
 Pathname translation
 --------------------
 
-If the `burger` library is running under WSL, Cygwin or MSYS2, the function burger.strutils.from_windows_host_path() will convert a Linux style path into a Windows path and burger.strutils.to_windows_host_path() will convert from a Windows path to a Linux style path. If burger is not running under these environments, these pathname translators will return the input without modification.
+If the `burger` library is running under WSL, Cygwin or MSYS2, the function wslwinreg.convert_to_windows_path() will convert a Linux style path into a Windows path and wslwinreg.convert_from_windows_path() will convert from a Windows path to a Linux style path. If burger is not running under these environments, these pathname translators will return the input without modification.
 
 Environment flags
 -----------------

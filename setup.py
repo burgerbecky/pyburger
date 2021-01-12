@@ -43,7 +43,8 @@ with io.open(os.path.join(CWD, 'README.rst'), encoding='utf-8') as filep:
 
 # Create the dependency list
 INSTALL_REQUIRES = [
-    'setuptools >= 0.7.0'
+    'setuptools >= 0.7.0',
+    'wslwinreg >= 1.0.2'
 ]
 
 # Project classifiers
