@@ -16,7 +16,11 @@ import csv
 import fnmatch
 import platform
 from numbers import Number
-from wslwinreg import convert_to_windows_path
+
+try:
+    from wslwinreg import convert_to_windows_path
+except ImportError:
+    pass
 
 ## True if the interpreter is Python 2.x
 PY2 = sys.version_info[0] == 2

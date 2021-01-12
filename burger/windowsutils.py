@@ -12,7 +12,12 @@ from __future__ import absolute_import, print_function, unicode_literals
 from ctypes import c_wchar_p, create_string_buffer, c_uint, \
     string_at, wstring_at, byref, c_void_p
 import array
-from wslwinreg import convert_to_windows_path
+
+try:
+    from wslwinreg import convert_to_windows_path
+except ImportError:
+    pass
+
 from .strutils import get_windows_host_type, \
     IS_CYGWIN, IS_MSYS, IS_WSL
 

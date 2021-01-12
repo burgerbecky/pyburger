@@ -19,7 +19,7 @@ import sys
 import unittest
 import os
 
-# Insert the location of wslwinreg at the begining so it's the first
+# Insert the location of burger at the begining so it's the first
 # to be processed
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import burger

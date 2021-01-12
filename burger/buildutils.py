@@ -14,7 +14,11 @@ import platform
 import subprocess
 import sys
 import errno
-from wslwinreg import convert_to_windows_path, convert_from_windows_path
+
+try:
+    from wslwinreg import convert_to_windows_path, convert_from_windows_path
+except ImportError:
+    pass
 
 from .strutils import is_string, encapsulate_path, get_windows_host_type, \
     get_mac_host_type, PY3_3_OR_HIGHER, PY3_4_OR_HIGHER, PY3_5_OR_HIGHER, \
