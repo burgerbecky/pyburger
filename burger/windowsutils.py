@@ -3,6 +3,9 @@
 
 """
 Package that contains windows only functions
+
+They will operate on Windows, Cygwin, MSYS2 and Windows Subsystem for
+Linux. On macOS and pure Linux, they will return no data.
 """
 
 ## \package burger.windowsutils
@@ -28,6 +31,10 @@ def find_visual_studios(refresh=False):
 
     More info is here @ref md_find_visual_studio
 
+    Note:
+        This function will return an empty list on macOS and pure Linux.
+        It has been tested on Windows, Cygwin, MSYS2 and Ubuntu Windows
+        Subsystem for Linux.
     Args:
         refresh: Force the cache to be reset if True.
     Returns:
