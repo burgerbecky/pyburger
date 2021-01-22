@@ -886,3 +886,37 @@ def packed_paths(entries, slashes=None, seperator=None,
     else:
         temp_entries = entries
     return seperator.join(temp_entries)
+
+########################################
+
+
+def make_version_tuple(version_string):
+    """
+    Convert numeric version string into an int tuple.
+
+    Given a string like '1.0.5rc' and return a tuple of (1, 0, 5).
+    The numbers are seperated by periods and members that start with
+    a non number are skipped.
+
+    Args:
+        version_string: String for the version number.
+    Returns:
+        tuple of integers with the version. Can be an empty tuple.
+    """
+
+    if not version_string or not is_string(version_string):
+        return tuple()
+
+    result = []
+    for item in version_string.split('.'):
+        # If a pure number, convert to an int
+        try:
+            result.append(int(item))
+        except ValueError:
+            # None numeric, parse out the numbers
+            found = re.findall(r'\d+', item)
+            if not found:
+                # Not a number? Abort here.
+                break
+            result.append(int(found[0]))
+    return tuple(result)

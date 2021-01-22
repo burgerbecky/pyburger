@@ -640,6 +640,31 @@ class TestStrings(unittest.TestCase):
 
 ########################################
 
+    def test_make_version_tuple(self):
+        """
+        Test burger.make_version_tuple()
+        """
+
+        self.assertEqual(burger.make_version_tuple('0.0.0'), (0, 0, 0))
+        self.assertEqual(burger.make_version_tuple('12.34.56'), (12, 34, 56))
+        self.assertEqual(burger.make_version_tuple('1.0.1.2rc'), (1, 0, 1, 2))
+        self.assertEqual(burger.make_version_tuple('1.2.9.beta'), (1, 2, 9))
+        self.assertEqual(burger.make_version_tuple('1.2.beta.9'), (1, 2))
+        self.assertEqual(burger.make_version_tuple('4'), (4,))
+        self.assertEqual(burger.make_version_tuple('1,2,3'), (1,))
+        self.assertEqual(burger.make_version_tuple('foobar'), tuple())
+        self.assertEqual(burger.make_version_tuple(
+            '1.2.3.4.5.6.7'), (1, 2, 3, 4, 5, 6, 7))
+        self.assertEqual(burger.make_version_tuple(None), tuple())
+        self.assertEqual(burger.make_version_tuple(''), tuple())
+        self.assertEqual(burger.make_version_tuple(1.0), tuple())
+        self.assertEqual(burger.make_version_tuple([]), tuple())
+        self.assertEqual(burger.make_version_tuple(()), tuple())
+        self.assertEqual(burger.make_version_tuple({}), tuple())
+        self.assertEqual(burger.make_version_tuple(burger), tuple())
+
+########################################
+
 
 if __name__ == '__main__':
     unittest.main()

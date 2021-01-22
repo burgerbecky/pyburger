@@ -7,105 +7,46 @@ Package that contains windows only functions
 
 ## \package burger.windowsutils
 
-from __future__ import absolute_import, print_function, unicode_literals
+from ._find_win_sdks import find_windows5_sdks, find_windows6_7_sdks, \
+    find_windows8_sdks, find_windows10_sdks
 
-from ctypes import c_wchar_p, create_string_buffer, c_uint, \
-    string_at, wstring_at, byref, c_void_p
-import array
+from ._find_visual_studio import find_vs2003_2015, find_vs2017_higher
 
-try:
-    from wslwinreg import convert_to_windows_path
-except ImportError:
-    pass
-
-from .strutils import get_windows_host_type, \
-    IS_CYGWIN, IS_MSYS, IS_WSL
+## find_visual_studios() cache
+_FIND_VISUAL_STUDIOS = []
 
 ########################################
 
 
-def get_file_info(path_name, string_name):
-    r"""
-    Extract information from a windows exe file version resource.
+def find_visual_studios(refresh=False):
+    """
+    Find every Windows SDK from 5.0 and higher.
 
-    Given a windows exe file, extract the 'StringFileInfo' resource and
-    parse out the data chunk named by string_name.
+    This function may take some time if multiple copies of Visual
+    Studio are installed on the machine. For speed, the results are
+    cached and the cache is used on subsequent calls.
 
-    Full list of resource names:
-        https://docs.microsoft.com/en-us/windows/desktop/menurc/stringfileinfo-block
-
-    Examples:
-        file_version = burger.get_file_info('devenv.exe', 'FileVersion')
-        product_version =  burger.get_file_info('devenv.exe', 'ProductVersion')
-
-    Note:
-        This function will always return None on non-windows platforms.
+    More info is here @ref md_find_visual_studio
 
     Args:
-        path_name: Name of the windows file.
-        string_name: Name of the data chunk to retrieve
-
-    Return:
-        None if no record found or an error, or a valid string
+        refresh: Force the cache to be reset if True.
+    Returns:
+        list of WindowsSDKInstance for every SDK found.
     """
 
-    # Test if running on a windows or cygwin hosts
-    if get_windows_host_type(True):
+    # pylint: disable=global-statement
+    global _FIND_VISUAL_STUDIOS
 
-        # pylint: disable=import-outside-toplevel
-        # Handle import for Cygwin
-        if IS_CYGWIN or IS_MSYS or IS_WSL:
-            from ctypes import CDLL
-            versiondll = CDLL('version.dll')
-            path_name = convert_to_windows_path(path_name)
-        else:
-            # Handle import for Windows
-            from ctypes import windll
-            versiondll = windll.version
+    result_list = _FIND_VISUAL_STUDIOS
+    if not result_list or refresh:
+        # Self explanitory. :)
+        result_list = find_vs2003_2015()
+        result_list.extend(find_vs2017_higher())
+        result_list.extend(find_windows5_sdks())
+        result_list.extend(find_windows6_7_sdks())
+        result_list.extend(find_windows8_sdks())
+        result_list.extend(find_windows10_sdks())
 
-        # Ensure it's unicode
-        wchar_filename = c_wchar_p(path_name)
-
-        # Call windows to get the data size
-        size = versiondll.GetFileVersionInfoSizeW(wchar_filename, None)
-
-        # Was there no data to return?
-        if size:
-
-            # Create buffer for resource data
-            res_data = create_string_buffer(size)
-
-            # Extract the file data
-            versiondll.GetFileVersionInfoW(
-                wchar_filename, None, size, res_data)
-
-            # Find the default codepage (Not everything is in English)
-            record = c_void_p()
-            length = c_uint()
-            versiondll.VerQueryValueW(
-                res_data,
-                '\\VarFileInfo\\Translation',
-                byref(record),
-                byref(length))
-            # Was a codepage found?
-            if length.value:
-
-                # Parse out the first found codepage (It's the default
-                # language) it's in the form of two 16 bit shorts
-                codepages = array.array(
-                    'H', string_at(
-                        record.value, length.value))
-
-                # Extract information from the version using unicode and
-                # the proper codepage
-                if versiondll.VerQueryValueW(
-                        res_data,
-                        '\\StringFileInfo\\{0:04x}{1:04x}\\{2}'.format(
-                            codepages[0],
-                            codepages[1],
-                            string_name),
-                        byref(record),
-                        byref(length)):
-                    # Return the final result removing the terminating zero
-                    return wstring_at(record.value, length.value - 1)
-    return None
+        # Update the cache
+        _FIND_VISUAL_STUDIOS = result_list
+    return result_list

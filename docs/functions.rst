@@ -92,6 +92,10 @@ strutils.packed_paths
 ^^^^^^^^^^^^^^^^^^^^^
 .. doxygenfunction:: burger::strutils::packed_paths
 
+strutils.make_version_tuple
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. doxygenfunction:: burger::strutils::make_version_tuple
+
 File Locators
 -------------
 
@@ -293,6 +297,6 @@ cleanutils.clean_setup_py
 Windows Functions
 -----------------
 
-windowsutils.get_file_info
-^^^^^^^^^^^^^^^^^^^^^^^^^^
-.. doxygenfunction:: burger::windowsutils::get_file_info
+windowsutils.find_visual_studios
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. doxygenfunction:: burger::windowsutils::find_visual_studios

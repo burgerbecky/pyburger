@@ -25,6 +25,7 @@ A set of subroutines used by the Burgerlib based scripts written in Python.
 #
 # - \subpage md_truefalse
 # - \subpage md_wsl_cygwin
+# - \subpage md_find_visual_studio
 #
 # Module list
 # ===========
@@ -52,7 +53,8 @@ from .strutils import PY2, unicode_print, is_string, convert_to_array, \
     encapsulate_path_linux, encapsulate_path, encapsulate_hosted_path, \
     split_comma_with_quotes, parse_csv, translate_to_regex_match, \
     host_machine, get_windows_host_type, get_mac_host_type, \
-    escape_xml_cdata, escape_xml_attribute, packed_paths
+    escape_xml_cdata, escape_xml_attribute, packed_paths, \
+    make_version_tuple
 
 from .fileutils import is_write_protected, make_executable, \
     create_folder_if_needed, delete_file, is_source_newer, \
@@ -75,7 +77,7 @@ from .cleanutils import clean_xcode, clean_codeblocks, clean_setup_py
 from .validators import BooleanProperty, StringProperty, IntegerProperty, \
     StringListProperty, EnumProperty, NoneProperty
 
-from .windowsutils import get_file_info
+from .windowsutils import find_visual_studios
 
 # pylint: disable=C0302
 
@@ -138,6 +140,7 @@ __all__ = [
     'escape_xml_cdata',
     'escape_xml_attribute',
     'packed_paths',
+    'make_version_tuple',
     'is_write_protected',
     'make_executable',
     'create_folder_if_needed',
@@ -192,7 +195,7 @@ __all__ = [
     'StringListProperty',
     'EnumProperty',
     'NoneProperty',
-    'get_file_info'
+    'find_visual_studios'
 ]
 
 ########################################

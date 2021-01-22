@@ -11,4 +11,5 @@ Table of Contents
     functions
     truefalse
     wsl_cygwin
+    find_visual_studio
     license
