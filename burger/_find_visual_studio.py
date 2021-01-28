@@ -130,7 +130,7 @@ def _find_vs2017_higher(installed_roots):
     Find all versions of Visual Studio 2017 and higher.
 
     Args:
-        installed_roots: Open registry key 'Software\\Microsoft'    
+        installed_roots: Open registry key 'Software\\Microsoft'
     """
 
     # pylint: disable=too-many-branches
