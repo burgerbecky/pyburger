@@ -39,12 +39,9 @@ A set of subroutines used by the Burgerlib based scripts written in Python.
 # - \ref burger.windowsutils
 #
 
-from __future__ import absolute_import, print_function, unicode_literals
+from __future__ import absolute_import
 
 import sys
-
-from .__pkginfo__ import NUMVERSION, VERSION, AUTHOR, TITLE, SUMMARY, URI, \
-    EMAIL, LICENSE, COPYRIGHT
 
 from .strutils import PY2, unicode_print, is_string, convert_to_array, \
     string_to_bool, \
@@ -90,31 +87,31 @@ else:
 
 
 ## Numeric version
-__numversion__ = NUMVERSION
+__numversion__ = (1, 2, 0)
 
 ## Current version of the library
-__version__ = VERSION
+__version__ = '.'.join([str(num) for num in __numversion__])
 
 ## Author's name
-__author__ = AUTHOR
+__author__ = 'Rebecca Ann Heineman'
 
 ## Name of the module
-__title__ = TITLE
+__title__ = 'burger'
 
 ## Summary of the module's use
-__summary__ = SUMMARY
+__summary__ = 'Burger Becky\'s shared python library.'
 
 ## Home page
-__uri__ = URI
+__uri__ = 'http://pyburger.readthedocs.io'
 
 ## Email address for bug reports
-__email__ = EMAIL
+__email__ = 'becky@burgerbecky.com'
 
 ## Type of license used for distribution
-__license__ = LICENSE
+__license__ = 'MIT License'
 
 ## Copyright owner
-__copyright__ = COPYRIGHT
+__copyright__ = 'Copyright 2013-2021 Rebecca Ann Heineman'
 
 ## Items to import on "from burger import *"
 __all__ = [
@@ -294,7 +291,7 @@ class Node:
             level: Recursion depth (Used internally)
         """
 
-        ret = '\t' * level + repr(self.value) + '\n'
+        ret = u'\t' * level + repr(self.value) + u'\n'
         for child in self.children:
             ret += child.__repr__(level + 1)
         return ret

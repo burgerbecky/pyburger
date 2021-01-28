@@ -14,11 +14,11 @@ import os.path
 from ._vsinstance import WindowsSDKInstance
 
 try:
-    from wslwinreg import get_HKLM_32, convert_from_windows_path
+    from wslwinreg import convert_from_windows_path
 except ImportError:
     pass
 
-from .strutils import make_version_tuple, get_windows_host_type
+from .strutils import make_version_tuple
 
 # pylint: disable=useless-object-inheritance
 # pylint: disable=too-many-arguments
@@ -63,7 +63,7 @@ _WIN10_EXECS = ('rc.exe', 'signtool.exe', 'makecat.exe', 'midl.exe', 'mc.exe')
 ########################################
 
 
-def find_windows5_sdks():
+def _find_windows5_sdks(installed_roots):
     """
     Scan the system for all copies of the Windows 5 SDKs
 
@@ -71,6 +71,9 @@ def find_windows5_sdks():
 
     The SDKs are found by looking at the registry key
     Software\\Microsoft\\Microsoft SDKs\\Windows
+
+    Args:
+        installed_roots: Open registry key 'Software\\Microsoft'
 
     Returns:
         List of WindowsSDKInstance for every version of the Windows 6 and 7
@@ -83,16 +86,9 @@ def find_windows5_sdks():
     # Nothing found
     result_list = []
 
-    # Only works on Windows hosted platforms
-    if not get_windows_host_type(True):
-        return result_list
-
-    # Get the HKEY Local Machine for the registry
-    hklm_32 = get_HKLM_32()
-
     try:
-        installed_roots = hklm_32.open_subkey(
-            'Software\\Microsoft\\VisualStudio\\SxS\\VC7')
+        key_vc7 = installed_roots.open_subkey(
+            'VisualStudio\\SxS\\VC7')
     except OSError:
         return result_list
 
@@ -102,7 +98,7 @@ def find_windows5_sdks():
         # Get the pathname to the Windows 10 kits, if present.
         try:
             windows_5_path = convert_from_windows_path(
-                installed_roots.get_value(key)[0])
+                key_vc7.get_value(key)[0])
         except OSError:
             continue
 
@@ -166,7 +162,7 @@ def find_windows5_sdks():
 ########################################
 
 
-def find_windows6_7_sdks():
+def _find_windows6_7_sdks(installed_roots):
     """
     Scan the system for all copies of the Windows 6 and 7 SDKs
 
@@ -174,6 +170,9 @@ def find_windows6_7_sdks():
 
     The SDKs are found by looking at the registry key
     Software\\Microsoft\\Microsoft SDKs\\Windows
+
+    Args:
+        installed_roots: Open registry key 'Software\\Microsoft'
 
     Returns:
         List of WindowsSDKInstance for every version of the Windows 6 and 7
@@ -185,16 +184,9 @@ def find_windows6_7_sdks():
     # Nothing found
     result_list = []
 
-    # Only works on Windows hosted platforms
-    if not get_windows_host_type(True):
-        return result_list
-
-    # Get the HKEY Local Machine for the registry
-    hklm_32 = get_HKLM_32()
-
     try:
-        installed_roots = hklm_32.open_subkey(
-            'Software\\Microsoft\\Microsoft SDKs\\Windows')
+        key_sdks = installed_roots.open_subkey(
+            'Microsoft SDKs\\Windows')
     except OSError:
         return result_list
 
@@ -203,7 +195,7 @@ def find_windows6_7_sdks():
 
         # Get the pathname to the Windows 10 kits, if present.
         try:
-            sub_key = installed_roots.open_subkey(key)
+            sub_key = key_sdks.open_subkey(key)
             windows_6_7_path = convert_from_windows_path(
                 sub_key.get_value('InstallationFolder')[0])
         except OSError:
@@ -270,13 +262,16 @@ def find_windows6_7_sdks():
 ########################################
 
 
-def find_windows8_sdks():
+def _find_windows8_sdks(installed_roots):
     """
     Scan the system for all copies of the Windows 8 SDKs
 
     The SDKs are found by looking at the registry key
     Software\\Microsoft\\Windows Kits\\Installed Roots\\KitsRoot8
     and KitsRoot81
+
+    Args:
+        installed_roots: Open registry key 'Software\\Microsoft'
 
     Returns:
         List of WindowsSDKInstance for every version of the Windows 8
@@ -288,16 +283,9 @@ def find_windows8_sdks():
     # Nothing found
     result_list = []
 
-    # Only works on Windows hosted platforms
-    if not get_windows_host_type(True):
-        return result_list
-
-    # Get the HKEY Local Machine for the registry
-    hklm_32 = get_HKLM_32()
-
     try:
-        installed_roots = hklm_32.open_subkey(
-            'Software\\Microsoft\\Windows Kits\\Installed Roots')
+        roots_key = installed_roots.open_subkey(
+            'Windows Kits\\Installed Roots')
     except OSError:
         return result_list
 
@@ -307,14 +295,14 @@ def find_windows8_sdks():
         # Get the pathname to the Windows 8 kits, if present.
         try:
             windows_8_path = convert_from_windows_path(
-                installed_roots.get_value(key)[0])
+                roots_key.get_value(key)[0])
         except OSError:
             continue
 
         # Try to get the full version number
         try:
-            hkey = hklm_32.open_subkey(
-                'Software\\Microsoft\\Microsoft SDKs\\Windows')
+            hkey = installed_roots.open_subkey(
+                'Microsoft SDKs\\Windows')
             version_number = hkey.open_subkey(
                 'v{}A'.format(version_number)).get_value('ProductVersion')[0]
         except OSError:
@@ -360,12 +348,15 @@ def find_windows8_sdks():
 ########################################
 
 
-def find_windows10_sdks():
+def _find_windows10_sdks(installed_roots):
     """
     Scan the system for all copies of the Windows 10 SDKs
 
     The SDKs are found by looking at the registry key
     Software\\Microsoft\\Windows Kits\\Installed Roots\\KitsRoot10
+
+    Args:
+        installed_roots: Open registry key 'Software\\Microsoft'
 
     Returns:
         List of WindowsSDKInstance for every version of the Windows 10
@@ -377,24 +368,17 @@ def find_windows10_sdks():
     # Nothing found
     result_list = []
 
-    # Only works on Windows hosted platforms
-    if not get_windows_host_type(True):
-        return result_list
-
-    # Get the HKEY Local Machine for the registry
-    hklm_32 = get_HKLM_32()
-
     # Get the master key, if present
     try:
-        installed_roots = hklm_32.open_subkey(
-            'Software\\Microsoft\\Windows Kits\\Installed Roots')
+        roots_key = installed_roots.open_subkey(
+            'Windows Kits\\Installed Roots')
     except OSError:
         return result_list
 
     # Get the pathname to the Windows 10 kits, if present.
     try:
         windows_10_path = convert_from_windows_path(
-            installed_roots.get_value('KitsRoot10')[0])
+            roots_key.get_value('KitsRoot10')[0])
     except OSError:
         return result_list
 

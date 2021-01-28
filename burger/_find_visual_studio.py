@@ -14,12 +14,9 @@ import os.path
 from ._vsinstance import VisualStudioInstance
 
 try:
-    from wslwinreg import get_HKLM_32, convert_from_windows_path, \
-        get_file_info
+    from wslwinreg import convert_from_windows_path, get_file_info
 except ImportError:
     pass
-
-from .strutils import get_windows_host_type
 
 # pylint: disable=useless-object-inheritance
 # pylint: disable=too-many-arguments
@@ -41,26 +38,16 @@ _SUPPORTED_CPUS = ('x86', 'x64', 'arm', 'arm64')
 ########################################
 
 
-def find_vs2003_2015():
+def _find_vs2003_2015(installed_roots):
     """
     Find all versions of Visual Studio from 2003 to 2015.
+
+    Args:
+        installed_roots: Open registry key 'Software\\Microsoft'
     """
 
     # pylint: disable=too-many-branches
     result_list = []
-
-    # Only works on Windows hosted platforms
-    if not get_windows_host_type(True):
-        return result_list
-
-    # Get the HKEY Local Machine for the registry
-    hklm_32 = get_HKLM_32()
-
-    try:
-        installed_roots = hklm_32.open_subkey(
-            'Software\\Microsoft')
-    except OSError:
-        return result_list
 
     for key in _VSVERSIONS:
 
@@ -138,26 +125,16 @@ def find_vs2003_2015():
 ########################################
 
 
-def find_vs2017_higher():
+def _find_vs2017_higher(installed_roots):
     """
     Find all versions of Visual Studio 2017 and higher.
+
+    Args:
+        installed_roots: Open registry key 'Software\\Microsoft'    
     """
 
     # pylint: disable=too-many-branches
     result_list = []
-
-    # Only works on Windows hosted platforms
-    if not get_windows_host_type(True):
-        return result_list
-
-    # Get the HKEY Local Machine for the registry
-    hklm_32 = get_HKLM_32()
-
-    try:
-        installed_roots = hklm_32.open_subkey(
-            'Software\\Microsoft')
-    except OSError:
-        return result_list
 
     # Scan registery keys for VisualStudio_*
     for key in installed_roots.get_subkeys():

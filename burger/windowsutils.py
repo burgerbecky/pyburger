@@ -10,10 +10,17 @@ Linux. On macOS and pure Linux, they will return no data.
 
 ## \package burger.windowsutils
 
-from ._find_win_sdks import find_windows5_sdks, find_windows6_7_sdks, \
-    find_windows8_sdks, find_windows10_sdks
+from .strutils import get_windows_host_type
 
-from ._find_visual_studio import find_vs2003_2015, find_vs2017_higher
+from ._find_win_sdks import _find_windows5_sdks, _find_windows6_7_sdks, \
+    _find_windows8_sdks, _find_windows10_sdks
+
+from ._find_visual_studio import _find_vs2003_2015, _find_vs2017_higher
+
+try:
+    from wslwinreg import get_HKLM_32
+except ImportError:
+    pass
 
 ## find_visual_studios() cache
 _FIND_VISUAL_STUDIOS = []
@@ -46,13 +53,28 @@ def find_visual_studios(refresh=False):
 
     result_list = _FIND_VISUAL_STUDIOS
     if not result_list or refresh:
-        # Self explanitory. :)
-        result_list = find_vs2003_2015()
-        result_list.extend(find_vs2017_higher())
-        result_list.extend(find_windows5_sdks())
-        result_list.extend(find_windows6_7_sdks())
-        result_list.extend(find_windows8_sdks())
-        result_list.extend(find_windows10_sdks())
+        # Self explanatory. :)
+
+        # Nothing found
+        result_list = []
+
+        # Only works on Windows hosted platforms
+        if get_windows_host_type(True):
+
+            # Get the root registry key
+            try:
+                installed_roots = get_HKLM_32().open_subkey(
+                    'Software\\Microsoft')
+            except OSError:
+                installed_roots = None
+
+            if installed_roots:
+                result_list.extend(_find_vs2003_2015(installed_roots))
+                result_list.extend(_find_vs2017_higher(installed_roots))
+                result_list.extend(_find_windows5_sdks(installed_roots))
+                result_list.extend(_find_windows6_7_sdks(installed_roots))
+                result_list.extend(_find_windows8_sdks(installed_roots))
+                result_list.extend(_find_windows10_sdks(installed_roots))
 
         # Update the cache
         _FIND_VISUAL_STUDIOS = result_list
