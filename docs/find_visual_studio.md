@@ -1,6 +1,6 @@
 # Searching for Visual Studio
 
-The function burger.windowsutils.find_visual_studios() will return a list of WindowsSDKInstance and VisualStudioInstance objects.
+The function `burger.windowsutils.find_visual_studios()` will return a list of `burger._vsinstance.WindowsSDKInstance` and `burger._vsinstance.VisualStudioInstance` objects. This function will work on Windows, Cygwin, MSYS2 and Windows Subsystem for Linux. Other platforms will return an empty list.
 
 ## VisualStudioInstance
 

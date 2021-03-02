@@ -12,4 +12,5 @@ Table of Contents
     truefalse
     wsl_cygwin
     find_visual_studio
+    validators
     license

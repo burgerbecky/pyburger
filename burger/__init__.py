@@ -26,6 +26,7 @@ A set of subroutines used by the Burgerlib based scripts written in Python.
 # - \subpage md_truefalse
 # - \subpage md_wsl_cygwin
 # - \subpage md_find_visual_studio
+# - \subpage md_validators
 #
 # Module list
 # ===========
