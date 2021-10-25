@@ -2,41 +2,23 @@
 # -*- coding: utf-8 -*-
 
 """
-Build rules for the makeprojects suite of build tools.
+Configuration file on how to build and clean projects in a specific folder.
 
 This file is parsed by the cleanme, buildme, rebuildme and makeprojects
 command line tools to clean, build and generate project files.
-
-When any of these tools are invoked, this file is loaded and parsed to
-determine special rules on how to handle building the code and / or data.
 """
-
-# pylint: disable=unused-argument
 
 from __future__ import absolute_import, print_function, unicode_literals
 
 import os
 import sys
 import pypandoc
-from burger import create_folder_if_needed, is_source_newer, \
-    clean_directories, clean_files
-
-# If set to True, ``buildme -r``` will not parse directories in this folder.
-BUILDME_NO_RECURSE = True
-
-# ``buildme``` will build these files and folders first.
-BUILDME_DEPENDENCIES = []
-
-# If set to True, ``cleanme -r``` will not parse directories in this folder.
-CLEANME_NO_RECURSE = True
-
-# ``cleanme`` will clean the listed folders before cleaning this folder.
-CLEANME_DEPENDENCIES = []
+import burger
 
 ########################################
 
 
-def build(working_directory, configuration):
+def build_readme(working_directory):
     """
     Preprocess READEME.rst
 
@@ -47,32 +29,24 @@ def build(working_directory, configuration):
     which will be directly imported into the Doxygen documentation
     so only one copy of the README is needed.
 
-    On exit, return 0 for no error, or a non zero error code if there was an
-    error to report.
-
-    Args:
-        working_directory
-            Directory this script resides in.
-
-        configuration
-            Configuration to build, ``all`` if no configuration was requested.
-
+    Arg:
+        working_directory: Directory for this function to build.
     Returns:
-        None if not implemented, otherwise an integer error code.
+        Zero on no error, non-zero on error.
     """
 
     # Copy README.rst to docs/temp/README.html
     # Doxygen may not create the output folder, ensure it exists.
 
     temp_dir = os.path.join(working_directory, 'temp')
-    create_folder_if_needed(temp_dir)
+    burger.create_folder_if_needed(temp_dir)
 
     # Get the input and output file names
     source = os.path.join(os.path.dirname(working_directory), 'README.rst')
     dest = os.path.join(temp_dir, 'README.html')
 
     # Was the file already created and newer than the source?
-    if is_source_newer(source, dest):
+    if burger.is_source_newer(source, dest):
 
         # Load pandoc if needed to do the conversion
         if hasattr(pypandoc, 'ensure_pandoc_installed'):
@@ -88,29 +62,47 @@ def build(working_directory, configuration):
 
 ########################################
 
+# pylint: disable=W0613
 
-def clean(working_directory):
+
+def rules(command, working_directory, root=True):
     """
-    Delete temporary files.
+    Main entry point for build_rules.py.
 
-    This function is called by ``cleanme`` to remove temporary files.
+    When makeprojects, cleanme, or buildme is executed, they will call this
+    function to perform the actions required for build customization.
 
-    On exit, return 0 for no error, or a non zero error code if there was an
-    error to report.
+    The parameter working_directory is required, and if it has no default
+    parameter, this function will only be called with the folder that this
+    file resides in. If there is a default parameter of None, it will be called
+    with any folder that it is invoked on. If the default parameter is a
+    directory, this function will only be called if that directory is desired.
 
-    Args:
-        working_directory
-            Directory this script resides in.
+    The optional parameter of root alerts the tool if subsequent processing of
+    other build_rules.py files are needed or if set to have a default parameter
+    of True, processing will end once the calls to this rules() function are
+    completed.
 
-    Returns:
-        None if not implemented, otherwise an integer error code.
+    Commands are 'build', 'clean', 'prebuild', 'postbuild', 'project',
+    'configurations'
+
+    Arg:
+        command: Command to execute.
+        working_directory: Directory for this function to clean
+        root: If set to True, exit cleaning upon completion of this function
+    Return:
+        Zero on success, non-zero on failure, and a list for 'configurations'
+
     """
 
-    clean_directories(working_directory, ('temp', '_build'))
-    clean_files(working_directory, '.DS_Store')
+    if command == 'clean':
+        burger.clean_directories(working_directory, ('temp', '_build'))
+        burger.clean_files(working_directory, '.DS_Store')
+    elif command == 'build':
+        return build_readme(working_directory)
     return 0
 
 
 # If called as a command line and not a class, perform the build
 if __name__ == "__main__":
-    sys.exit(build(os.path.dirname(os.path.abspath(__file__)), 'all'))
+    sys.exit(rules('build', os.path.dirname(os.path.abspath(__file__))))

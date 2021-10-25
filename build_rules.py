@@ -2,16 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-Build rules for the makeprojects suite of build tools.
-
-This file is parsed by the cleanme, buildme, rebuildme and makeprojects
-command line tools to clean, build and generate project files.
-
-When any of these tools are invoked, this file is loaded and parsed to
-determine special rules on how to handle building the code and / or data.
+Rules to build burger
 """
-
-# pylint: disable=unused-argument
 
 from __future__ import absolute_import, print_function, unicode_literals
 
@@ -19,37 +11,32 @@ import os
 import sys
 from burger import import_py_script, run_command
 
-# If set to True, ``buildme -r``` will not parse directories in this folder.
-BUILDME_NO_RECURSE = False
+########################################
 
-# ``buildme``` will build these files and folders first.
-BUILDME_DEPENDENCIES = []
 
-# If set to True, ``cleanme -r``` will not parse directories in this folder.
-CLEANME_NO_RECURSE = False
+def do_clean(working_directory):
+    """
+    Delete all of the temporary files.
 
-# ``cleanme`` will clean the listed folders before cleaning this folder.
-CLEANME_DEPENDENCIES = []
+    Args:
+        working_directory: Current directory
+    """
+
+    # The function exists in setup.py.
+    # It can be manually invoked with "setup.py clean"
+    setup = import_py_script(os.path.join(working_directory, 'setup.py'))
+    setup.clean(working_directory)
+    return 0
 
 ########################################
 
 
-def build(working_directory, configuration):
+def do_build(working_directory):
     """
     Build the module so it's ready for upload to Pypi with Twine.
 
-    On exit, return 0 for no error, or a non zero error code if there was an
-    error to report.
-
     Args:
-        working_directory
-            Directory this script resides in.
-
-        configuration
-            Configuration to build, ``all`` if no configuration was requested.
-
-    Returns:
-        None if not implemented, otherwise an integer error code.
+        working_directory: Current directory
     """
 
     # Call setup.py to create the distribution files.
@@ -61,30 +48,44 @@ def build(working_directory, configuration):
 ########################################
 
 
-def clean(working_directory):
+# pylint: disable=unused-argument
+def rules(command, working_directory, root=True):
     """
-    Delete temporary files.
+    Main entry point for build_rules.py.
 
-    This function is called by ``cleanme`` to remove temporary files.
+    When makeprojects, cleanme, or buildme is executed, they will call this
+    function to perform the actions required for build customization.
 
-    On exit, return 0 for no error, or a non zero error code if there was an
-    error to report.
+    The parameter working_directory is required, and if it has no default
+    parameter, this function will only be called with the folder that this
+    file resides in. If there is a default parameter of None, it will be called
+    with any folder that it is invoked on. If the default parameter is a
+    directory, this function will only be called if that directory is desired.
 
-    Args:
-        working_directory
-            Directory this script resides in.
+    The optional parameter of root alerts the tool if subsequent processing of
+    other build_rules.py files are needed or if set to have a default parameter
+    of True, processing will end once the calls to this rules() function are
+    completed.
 
-    Returns:
-        None if not implemented, otherwise an integer error code.
+    Commands are 'build', 'clean', 'prebuild', 'postbuild', 'project',
+    'configurations'
+
+    Arg:
+        command: Command to execute.
+        working_directory: Directory for this function to clean
+        root: If set to True, exit cleaning upon completion of this function
+    Return:
+        Zero on success, non-zero on failure, and a list for 'configurations'
+
     """
 
-    # The function exists in setup.py.
-    # It can be manually invoked with "setup.py clean"
-    setup = import_py_script(os.path.join(working_directory, 'setup.py'))
-    setup.clean(working_directory)
+    if command == 'clean':
+        return do_clean(working_directory)
+    if command == 'build':
+        return do_build(working_directory)
     return 0
 
 
 # If called as a command line and not a class, perform the build
 if __name__ == "__main__":
-    sys.exit(build(os.path.dirname(os.path.abspath(__file__)), 'all'))
+    sys.exit(rules('build', os.path.dirname(os.path.abspath(__file__))))
