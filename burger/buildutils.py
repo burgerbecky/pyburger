@@ -25,11 +25,18 @@ from .strutils import is_string, encapsulate_path, get_windows_host_type, \
     IS_CYGWIN, IS_MSYS, IS_WSL, IS_WINDOWS, IS_WINDOWS_HOST, \
     IS_LINUX
 
+# pylint: disable=consider-using-f-string
+# pylint: disable=no-member
+# pylint: disable=consider-using-with
+
 ## Cached location of the BURGER_SDKS folder
 _BURGER_SDKS_FOLDER = None
 
 ## Cached location of doxygen
 _DOXYGEN_PATH = None
+
+## Cached location of git
+_GIT_PATH = None
 
 ## Cached location of p4 from Perforce
 _PERFORCE_PATH = None
@@ -511,6 +518,139 @@ def where_is_doxygen(verbose=False, refresh=False, path=None):
 
 ########################################
 
+def where_is_git(verbose=False, refresh=False, path=None):
+    """
+    Return the location of the git executable
+
+    Look for an environment variable GIT and
+    determine if the executable resides there, if
+    so, return the string to the path.
+
+    PATH is then searched for git, and if it's not found,
+    None is returned.
+
+    Args:
+        verbose: If True, print a message if git was not found
+        refresh: If True, reset the cache and force a reload.
+        path: Path to git to place in the cache
+    Returns:
+        A path to the git command line executable or None if not found.
+    See Also:
+        where_is_p4, is_under_git_control
+    """
+    # pylint: disable=too-many-branches
+
+    # pylint: disable=global-statement
+    global _GIT_PATH
+
+    # Clear the cache if needed
+    if refresh:
+        _GIT_PATH = None
+
+    # Set the override, if found
+    if path:
+        _GIT_PATH = path
+
+    # Is cached?
+    if _GIT_PATH:
+        return _GIT_PATH
+
+    # Try the environment variable first
+    if os.getenv('GIT', None):
+        if get_windows_host_type(True):
+
+            # Windows points to the base path
+            gitpath = os.path.expandvars('${GIT}\\git.exe')
+            gitpath = convert_from_windows_path(gitpath)
+            if is_exe(gitpath):
+                _GIT_PATH = gitpath
+                return gitpath
+            # Try a second time using the bin folder
+            gitpath = os.path.expandvars('${GIT}\\bin\\git.exe')
+            gitpath = convert_from_windows_path(gitpath)
+        else:
+            # Just append the exec name
+            gitpath = os.path.expandvars('${GIT}/git')
+
+        # Valid?
+        if is_exe(gitpath):
+            _GIT_PATH = gitpath
+            return gitpath
+
+    # Scan the PATH for the exec
+    gitpath = find_in_path('git', executable=True)
+    if gitpath:
+        _GIT_PATH = gitpath
+        return gitpath
+
+    # List of the usual suspects
+    full_paths = []
+
+    # Check if it's installed but not in the path
+    if get_windows_host_type(True):
+
+        # Try the 'ProgramFiles' folders
+        for item in _WINDOWS_ENV_PATHS:
+            if os.getenv(item, None):
+                gitpath = os.path.expandvars(
+                    '${' + item + '}\\git\\bin\\git.exe')
+                gitpath = convert_from_windows_path(gitpath)
+                full_paths.append(gitpath)
+
+    elif get_mac_host_type():
+
+        # Installed here via brew
+        full_paths.append('/opt/local/bin/git')
+
+    if IS_LINUX:
+        # Posix / Linux
+        full_paths.append('/usr/bin/git')
+
+    # Scan the list of known locations
+    for gitpath in full_paths:
+        if is_exe(gitpath):
+            # Finally found it!
+            _GIT_PATH = gitpath
+            return gitpath
+
+    # Oh, dear.
+    if verbose:
+        print('git not found!')
+        if get_mac_host_type():
+            print('Use brew or macports for the command line version')
+
+    # Can't find it
+    return None
+
+########################################
+
+
+def is_under_git_control(working_directory):
+    """
+    Test if the directory is under git source control.
+
+    First test if git is installed by calling where_is_git(). Then
+    use the git tool to query if the working directory is under git source
+    source control.
+
+    Args:
+        working_directory: Directory to test.
+    Returns:
+        True if the directory is under git control, False if not.
+    See Also:
+        where_is_git
+    """
+
+    gitpath = where_is_git()
+    if gitpath:
+        if not run_command(
+            (gitpath, 'rev-parse'),
+                working_directory, True, True, True)[0]:
+            return True
+    return False
+
+########################################
+
 
 def where_is_p4(verbose=False, refresh=False, path=None):
     """
@@ -530,11 +670,13 @@ def where_is_p4(verbose=False, refresh=False, path=None):
     Returns:
         A path to the Perforce command line executable or None if not found.
     See Also:
-        perforce_edit, perforce_add
+        perforce_edit, perforce_add, where_is_git
     """
 
-    # pylint: disable=R0912
-    global _PERFORCE_PATH                # pylint: disable=W0603
+    # pylint: disable=too-many-branches
+
+    # pylint: disable=global-statement
+    global _PERFORCE_PATH
 
     # Clear the cache if needed
     if refresh:
@@ -986,7 +1128,7 @@ def make_version_header(working_dir, outputfilename, verbose=False):
         return error
 
     # Parse out the P4CLIENT query
-    p4clients = tempdata.strip().split(' ')[0].split('=')
+    p4clients = tempdata.strip().split(' ', 1)[0].split('=')
 
     # Get the p4 user
     # Parse "P4USER=burgerbecky (config)"
@@ -999,7 +1141,7 @@ def make_version_header(working_dir, outputfilename, verbose=False):
         return error
 
     # Parse out the P4USER query
-    p4users = tempdata.strip().split(' ')[0].split('=')
+    p4users = tempdata.strip().split(' ', 1)[0].split('=')
 
     # Write out the header
 
@@ -1146,7 +1288,7 @@ def import_py_script(file_name, module_name=None):
 
                 else:
                     # Use the imp library for Python 2.x to 3.2
-                    import imp
+                    import imp # pylint: disable=deprecated-module
                     result = imp.load_source(module_name, file_name)
 
             # Wrap up by restoring the cache the way it was found

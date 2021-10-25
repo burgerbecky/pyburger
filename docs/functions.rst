@@ -111,6 +111,14 @@ buildutils.where_is_doxygen
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. doxygenfunction:: burger::buildutils::where_is_doxygen
 
+buildutils.where_is_git
+^^^^^^^^^^^^^^^^^^^^^^^
+.. doxygenfunction:: burger::buildutils::where_is_git
+
+buildutils.is_under_git_control
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. doxygenfunction:: burger::buildutils::is_under_git_control
+
 buildutils.where_is_p4
 ^^^^^^^^^^^^^^^^^^^^^^
 .. doxygenfunction:: burger::buildutils::where_is_p4

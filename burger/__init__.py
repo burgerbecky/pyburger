@@ -5,8 +5,6 @@
 A set of subroutines used by the Burgerlib based scripts written in Python.
 """
 
-# pylint: disable=C0302
-
 #
 ## \package burger
 #
@@ -64,11 +62,11 @@ from .fileutils import is_write_protected, make_executable, \
 
 from .buildutils import get_sdks_folder, fix_csharp, is_exe, get_path_ext, \
     make_exe_path, find_in_path, where_is_doxygen, \
-    where_is_p4, expand_and_verify, perforce_command, perforce_edit, \
-    perforce_add, perforce_opened, where_is_watcom, run_command, \
-    make_version_header, is_codewarrior_mac_allowed, import_py_script, \
-    run_py_script, where_is_visual_studio, where_is_codeblocks, \
-    where_is_xcode
+    where_is_git, is_under_git_control, where_is_p4, expand_and_verify, \
+    perforce_command, perforce_edit, perforce_add, perforce_opened, \
+    where_is_watcom, run_command, make_version_header, \
+    is_codewarrior_mac_allowed, import_py_script, run_py_script, \
+    where_is_visual_studio, where_is_codeblocks, where_is_xcode
 
 from .cleanutils import clean_xcode, clean_codeblocks, clean_setup_py
 
@@ -77,10 +75,13 @@ from .validators import BooleanProperty, StringProperty, IntegerProperty, \
 
 from .windowsutils import find_visual_studios
 
-# pylint: disable=C0302
+# pylint: disable=redundant-u-string-prefix
+# pylint: disable=super-with-arguments
+# pylint: disable=import-error
+# pyright: reportMissingImports=false
 
 if PY2:
-    from cStringIO import StringIO  # pylint: disable=F0401
+    from cStringIO import StringIO
 else:
     from io import StringIO
 
@@ -88,7 +89,7 @@ else:
 
 
 ## Numeric version
-__numversion__ = (1, 2, 0)
+__numversion__ = (1, 2, 1)
 
 ## Current version of the library
 __version__ = '.'.join([str(num) for num in __numversion__])
@@ -168,6 +169,8 @@ __all__ = [
     'find_in_path',
     'where_is_doxygen',
     'expand_and_verify',
+    'where_is_git',
+    'is_under_git_control',
     'where_is_p4',
     'perforce_command',
     'perforce_edit',

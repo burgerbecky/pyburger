@@ -19,10 +19,13 @@ from .strutils import is_string, convert_to_array, encapsulate_path, \
     get_windows_host_type, translate_to_regex_match, \
     IS_MACOSX, IS_WINDOWS_HOST, IS_LINUX
 
-# Redefining built-in W0622 (Ignore redefinition of zip)
+# pylint: disable=consider-using-f-string
+# pylint: disable=redefined-builtin
+# pyright: reportMissingImports=false
 
+# Redefining built-in (Ignore redefinition of zip)
 try:
-    import itertools.izip as zip        # pylint: disable=W0622
+    import itertools.izip as zip
 except ImportError:
     pass
 
