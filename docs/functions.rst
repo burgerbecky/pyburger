@@ -123,6 +123,10 @@ buildutils.where_is_p4
 ^^^^^^^^^^^^^^^^^^^^^^
 .. doxygenfunction:: burger::buildutils::where_is_p4
 
+buildutils.is_under_p4_control
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. doxygenfunction:: burger::buildutils::is_under_p4_control
+
 buildutils.where_is_watcom
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. doxygenfunction:: burger::buildutils::where_is_watcom

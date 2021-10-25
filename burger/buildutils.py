@@ -630,7 +630,7 @@ def is_under_git_control(working_directory):
     Test if the directory is under git source control.
 
     First test if git is installed by calling where_is_git(). Then
-    use the git tool to query if the working directory is under git source
+    use the git tool to query if the working directory is under git
     source control.
 
     Args:
@@ -670,7 +670,7 @@ def where_is_p4(verbose=False, refresh=False, path=None):
     Returns:
         A path to the Perforce command line executable or None if not found.
     See Also:
-        perforce_edit, perforce_add, where_is_git
+        perforce_edit, perforce_add, where_is_git, is_under_p4_control
     """
 
     # pylint: disable=too-many-branches
@@ -750,6 +750,41 @@ def where_is_p4(verbose=False, refresh=False, path=None):
 
     # Can't find it
     return None
+
+########################################
+
+
+def is_under_p4_control(working_directory):
+    """
+    Test if the directory is under Perforce source control.
+
+    First test if p4 is installed by calling where_is_p4(). Then
+    use the p4 tool to query if the working directory is under Perforce
+    source control.
+
+    Note:
+        On folders that are not under Perforce control, p4 may take as
+        much as 15 seconds to return a result, so use this call with caution.
+    Args:
+        working_directory: Directory to test.
+    Returns:
+        True if the directory is under Perforce control, False if not.
+    See Also:
+        where_is_p4
+    """
+
+    p4path = where_is_p4()
+    if p4path:
+        results = run_command(
+            (p4path, '-s', 'where', '...'),
+            working_directory, True, True, True)
+        p4output = results[1].splitlines()
+        for item in p4output:
+            if item.startswith('exit: '):
+                i = int(item[6:])
+                if not i:
+                    return True
+    return False
 
 ########################################
 
