@@ -253,6 +253,10 @@ buildutils.expand_and_verify
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. doxygenfunction:: burger::buildutils::expand_and_verify
 
+buildutils.make_git_version_header
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. doxygenfunction:: burger::buildutils::make_git_version_header
+
 buildutils.perforce_command
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. doxygenfunction:: burger::buildutils::perforce_command

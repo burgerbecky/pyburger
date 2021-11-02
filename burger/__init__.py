@@ -62,11 +62,12 @@ from .fileutils import is_write_protected, make_executable, \
 
 from .buildutils import get_sdks_folder, fix_csharp, is_exe, get_path_ext, \
     make_exe_path, find_in_path, where_is_doxygen, \
-    where_is_git, is_under_git_control, where_is_p4, is_under_p4_control, \
-    expand_and_verify, perforce_command, perforce_edit, perforce_add, \
-    perforce_opened, where_is_watcom, run_command, make_version_header, \
-    is_codewarrior_mac_allowed, import_py_script, run_py_script, \
-    where_is_visual_studio, where_is_codeblocks, where_is_xcode
+    where_is_git, is_under_git_control, make_git_version_header, \
+    where_is_p4, is_under_p4_control, expand_and_verify, perforce_command, \
+    perforce_edit, perforce_add, perforce_opened, where_is_watcom, \
+    run_command, make_version_header, is_codewarrior_mac_allowed, \
+    import_py_script, run_py_script, where_is_visual_studio, \
+    where_is_codeblocks, where_is_xcode
 
 from .cleanutils import clean_xcode, clean_codeblocks, clean_setup_py
 
@@ -171,6 +172,7 @@ __all__ = [
     'expand_and_verify',
     'where_is_git',
     'is_under_git_control',
+    'make_git_version_header',
     'where_is_p4',
     'is_under_p4_control',
     'perforce_command',
