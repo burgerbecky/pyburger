@@ -1,6 +1,8 @@
-name: Python Package
+# Name of this workflow
+name: Burger for Python
 
-on: [push]
+# Only process when a new version is pushed.
+on: push
 
 jobs:
   build:
@@ -8,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.6, 3.7, 3.8, 3.9]
+        python-version: [2.7, 3.4, 3.5, 3.6, 3.7, 3.8, 3.9, 3.10]
 
     steps:
       - uses: actions/checkout@v2
