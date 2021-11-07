@@ -8,7 +8,7 @@ on:
       - "master"
 
 jobs:
-  linux:
+  "Run Pytest":
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
