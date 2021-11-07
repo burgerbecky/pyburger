@@ -539,6 +539,7 @@ def where_is_doxygen(verbose=False, refresh=False, path=None):
 
 ########################################
 
+
 def where_is_git(verbose=False, refresh=False, path=None):
     """
     Return the location of the git executable
@@ -1481,7 +1482,7 @@ def import_py_script(file_name, module_name=None):
 
                 else:
                     # Use the imp library for Python 2.x to 3.2
-                    import imp # pylint: disable=deprecated-module
+                    import imp  # pylint: disable=deprecated-module
                     result = imp.load_source(module_name, file_name)
 
             # Wrap up by restoring the cache the way it was found
