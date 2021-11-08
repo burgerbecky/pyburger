@@ -15,8 +15,8 @@ jobs:
       # Here are all the operating systems and python versions to test on.
       matrix:
         name:
-          - "ubuntu-20-py27" 
-          - "ubuntu-20-py35"                 
+          - "ubuntu-20-py27"
+          - "ubuntu-20-py35"
           - "ubuntu-20-py36"
           - "ubuntu-20-py37"
           - "ubuntu-20-py38"
@@ -29,44 +29,44 @@ jobs:
         include:
           - name: "ubuntu-20-py27"
             python: "2.7"
-            os: ubuntu-20.04
+            os: "ubuntu-20.04"
             tox_env: "py27"
           - name: "ubuntu-20-py35"
             python: "3.5"
-            os: ubuntu-20.04
+            os: "ubuntu-20.04"
             tox_env: "py35"
           - name: "ubuntu-20-py36"
             python: "3.6"
-            os: ubuntu-20.04
+            os: "ubuntu-20.04"
             tox_env: "py36"
           - name: "ubuntu-py37"
             python: "3.7"
-            os: ubuntu-20.04
+            os: "ubuntu-20.04"
             tox_env: "py37"
           - name: "ubuntu-py38"
             python: "3.8"
-            os: ubuntu-20.04
+            os: "ubuntu-20.04"
             tox_env: "py38"
           - name: "ubuntu-py39"
             python: "3.9"
-            os: ubuntu-20.04
+            os: "ubuntu-20.04"
             tox_env: "py39"
           - name: "ubuntu-py310"
             python: "3.10"
-            os: ubuntu-20.04
+            os: "ubuntu-20.04"
             tox_env: "3.10"
           - name: "ubuntu-pypy2"
             python: "pypy2"
-            os: ubuntu-20.04
+            os: "ubuntu-20.04"
             tox_env: "pypy2"
           - name: "ubuntu-pypy3"
             python: "pypy3"
-            os: ubuntu-20.04
+            os: "ubuntu-20.04"
             tox_env: "pypy3"
 
-#        python-version:
-#          ["2.7", "3.5", "3.6", "3.7", "3.8", "3.9", "3.10", "pypy2", "pypy3"]
-#       os: [ubuntu-18.04, ubuntu-20.04, windows-2019, macos-11, macos-10.15]
+    #        python-version:
+    #          ["2.7", "3.5", "3.6", "3.7", "3.8", "3.9", "3.10", "pypy2", "pypy3"]
+    #       os: [ubuntu-18.04, ubuntu-20.04, windows-2019, macos-11, macos-10.15]
 
     steps:
       - uses: actions/checkout@v2
