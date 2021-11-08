@@ -54,7 +54,7 @@ jobs:
           - name: "ubuntu-20-py310"
             python: "3.10"
             os: "ubuntu-20.04"
-            tox_env: "python3.10"
+            tox_env: "py310"
           - name: "ubuntu-20-pypy2"
             python: "pypy2"
             os: "ubuntu-20.04"
