@@ -2,7 +2,7 @@
 Burger for Python
 =================
 
-|PyPi| |License| |Travis| |Docs| |Versions|
+|PyPi| |License| |GithubActions| |Docs| |Versions|
 
 The ``burger`` module is a set of simple subroutines used by the ``Burgerlib``
 build system.
@@ -40,9 +40,9 @@ size (32 bit or 64 bit) and what platform was used (Windows / Mac OSX / Linux).
 .. |License| image:: https://img.shields.io/pypi/l/burger.svg
     :target: https://github.com/burgerbecky/pyburger/blob/master/LICENSE.txt
     :alt: License
-.. |Travis| image:: https://img.shields.io/travis/burgerbecky/pyburger.svg
-    :target: https://travis-ci.com/burgerbecky/pyburger
-    :alt: Travis Status
+.. |GithubActions| image:: https://img.shields.io/endpoint.svg?url=https://actions-badge.atrox.dev/burgerbecky/pyburger/badge?ref=master&style=flat
+    :target: https://github.com/burgerbecky/pyburger/actions
+    :alt: Github Actions Status
 .. |Docs| image:: https://img.shields.io/readthedocs/pyburger.svg
     :target: http://pyburger.readthedocs.io
     :alt: Documentation Status
