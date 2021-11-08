@@ -50,7 +50,7 @@ jobs:
           - "macos11-py39"
           - "macos11-py310"
           - "macos11-pypy2"
-          - "macos11-pypy3"
+          # - "macos11-pypy3" PyPy 3.6 not found
           - "windows-2019-py27"
           - "windows-2019-py35"
           - "windows-2019-py36"
