@@ -78,8 +78,8 @@ jobs:
         run: |
           python -V
           python -m pip install --upgrade pip
-          pip install tox virtualenv wslwinreg
+          pip install pytest wslwinreg
       - name: Test with tox
         run: |
           python -V
-          tox -e ${{ matrix.tox_env }}
+          pytest
