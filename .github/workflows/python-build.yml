@@ -15,6 +15,15 @@ jobs:
       # Here are all the operating systems and python versions to test on.
       matrix:
         name:
+          - "ubuntu-18-py27"
+          - "ubuntu-18-py35"
+          - "ubuntu-18-py36"
+          - "ubuntu-18-py37"
+          - "ubuntu-18-py38"
+          - "ubuntu-18-py39"
+          - "ubuntu-18-py310"
+          - "ubuntu-18-pypy2"
+          - "ubuntu-18-pypy3"
           - "ubuntu-20-py27"
           - "ubuntu-20-py35"
           - "ubuntu-20-py36"
@@ -27,6 +36,42 @@ jobs:
 
         # Specific data for each version being built
         include:
+          - name: "ubuntu-18-py27"
+            python: "2.7"
+            os: "ubuntu-18.04"
+            tox_env: "py27"
+          - name: "ubuntu-18-py35"
+            python: "3.5"
+            os: "ubuntu-18.04"
+            tox_env: "py35"
+          - name: "ubuntu-18-py36"
+            python: "3.6"
+            os: "ubuntu-18.04"
+            tox_env: "py36"
+          - name: "ubuntu-18-py37"
+            python: "3.7"
+            os: "ubuntu-18.04"
+            tox_env: "py37"
+          - name: "ubuntu-18-py38"
+            python: "3.8"
+            os: "ubuntu-18.04"
+            tox_env: "py38"
+          - name: "ubuntu-18-py39"
+            python: "3.9"
+            os: "ubuntu-18.04"
+            tox_env: "py39"
+          - name: "ubuntu-18-py310"
+            python: "3.10"
+            os: "ubuntu-18.04"
+            tox_env: "py310"
+          - name: "ubuntu-18-pypy2"
+            python: "pypy2"
+            os: "ubuntu-18.04"
+            tox_env: "pypy2"
+          - name: "ubuntu-18-pypy3"
+            python: "pypy3"
+            os: "ubuntu-18.04"
+            tox_env: "pypy3"
           - name: "ubuntu-20-py27"
             python: "2.7"
             os: "ubuntu-20.04"
@@ -79,7 +124,7 @@ jobs:
           python -V
           python -m pip install --upgrade pip
           pip install pytest wslwinreg
-      - name: Test with tox
+      - name: Test with pytest
         run: |
           python -V
           pytest
