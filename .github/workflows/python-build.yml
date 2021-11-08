@@ -51,6 +51,15 @@ jobs:
           - "macos11-py310"
           - "macos11-pypy2"
           - "macos11-pypy3"
+          - "windows-2019-py27"
+          - "windows-2019-py35"
+          - "windows-2019-py36"
+          - "windows-2019-py37"
+          - "windows-2019-py38"
+          - "windows-2019-py39"
+          - "windows-2019-py310"
+          - "windows-2019-pypy2"
+          - "windows-2019-pypy3"
         # Specific data for each version being built
         include:
           # Ubuntu 18
@@ -201,9 +210,43 @@ jobs:
             python: "pypy3"
             os: "macos-11"
             tox_env: "pypy3"
-    #        python-version:
-    #          ["2.7", "3.5", "3.6", "3.7", "3.8", "3.9", "3.10", "pypy2", "pypy3"]
-    #       os: [ubuntu-18.04, ubuntu-20.04, windows-2019, macos-11, macos-10.15]
+          # Windows 2019 Server
+          - name: "windows-2019-py27"
+            python: "2.7"
+            os: "windows-2019"
+            tox_env: "py27"
+          - name: "windows-2019-py35"
+            python: "3.5"
+            os: "windows-2019"
+            tox_env: "py35"
+          - name: "windows-2019-py36"
+            python: "3.6"
+            os: "windows-2019"
+            tox_env: "py36"
+          - name: "windows-2019-py37"
+            python: "3.7"
+            os: "windows-2019"
+            tox_env: "py37"
+          - name: "windows-2019-py38"
+            python: "3.8"
+            os: "windows-2019"
+            tox_env: "py38"
+          - name: "windows-2019-py39"
+            python: "3.9"
+            os: "windows-2019"
+            tox_env: "py39"
+          - name: "windows-2019-py310"
+            python: "3.10"
+            os: "windows-2019"
+            tox_env: "py310"
+          - name: "windows-2019-pypy2"
+            python: "pypy2"
+            os: "windows-2019"
+            tox_env: "pypy2"
+          - name: "windows-2019-pypy3"
+            python: "pypy3"
+            os: "windows-2019"
+            tox_env: "pypy3"
 
     steps:
       - uses: actions/checkout@v2
