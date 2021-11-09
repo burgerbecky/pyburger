@@ -54,7 +54,7 @@ extensions = [
     'sphinx.ext.ifconfig',
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages',
-    'sphinx.ext.imgconverter',
+    # 'sphinx.ext.imgconverter',
     # rst2pdf has a conflict with sphinx.ext.mathjax
     # 'rst2pdf.pdfbuilder',
     'breathe',
