@@ -798,7 +798,7 @@ def compare_file_to_string(file_name, text_lines):
 ########################################
 
 
-def read_zero_terminated_string(filep, encoding='utf-8'):
+def read_zero_terminated_string(filep, encoding="utf-8"):
     """
     Read a zero terminated string from an open binary file
 

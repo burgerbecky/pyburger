@@ -7,39 +7,39 @@ Setup strings
 These strings are used for version control and setup.py for distribution.
 
 \__numversion__
-^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^
 .. doxygenvariable:: burger::__numversion__
 
 \__version__
-^^^^^^^^^^^
+^^^^^^^^^^^^
 .. doxygenvariable:: burger::__version__
 
 \__author__
-^^^^^^^^^^
+^^^^^^^^^^^
 .. doxygenvariable:: burger::__author__
 
 \__title__
-^^^^^^^^^
+^^^^^^^^^^
 .. doxygenvariable:: burger::__title__
 
 \__summary__
-^^^^^^^^^^^
+^^^^^^^^^^^^
 .. doxygenvariable:: burger::__summary__
 
 \__uri__
-^^^^^^^
+^^^^^^^^
 .. doxygenvariable:: burger::__uri__
 
 \__email__
-^^^^^^^^^
+^^^^^^^^^^
 .. doxygenvariable:: burger::__email__
 
 \__license__
-^^^^^^^^^^^
+^^^^^^^^^^^^
 .. doxygenvariable:: burger::__license__
 
 \__copyright__
-^^^^^^^^^^^^^
+^^^^^^^^^^^^^^
 .. doxygenvariable:: burger::__copyright__
 
 Configurations

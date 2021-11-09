@@ -251,7 +251,10 @@ def generate_doxygen_xml(app):
     sys.path.append(CWD)
     build_rules = __import__('build_rules')
     sys.path.pop()
-    build_rules.build_readme(CWD)
+    try:
+        build_rules.build_readme(CWD)
+    except AttributeError:
+        build_rules.build(CWD, None)
 
     # Call Doxygen to build the documentation
     try:
