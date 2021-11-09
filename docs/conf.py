@@ -56,7 +56,7 @@ extensions = [
     'sphinx.ext.githubpages',
     'sphinx.ext.imgconverter',
     # rst2pdf has a conflict with sphinx.ext.mathjax
-    #'rst2pdf.pdfbuilder',
+    # 'rst2pdf.pdfbuilder',
     'breathe',
     'recommonmark'
 ]
@@ -202,12 +202,12 @@ epub_exclude_files = ['search.html']
 
 # -- Options for PDF output -------------------------------------------------
 
-#pdf_documents = \
-#[
+# pdf_documents = \
+# [
 #    ('index', u'rst2pdf', project + ' doc', author)
-#]
+# ]
 
-#rst2pdf has a bug where indexes can't build, this is a workaround
+# rst2pdf has a bug where indexes can't build, this is a workaround
 #pdf_use_index = False
 
 # -- Extension configuration -------------------------------------------------
@@ -248,9 +248,8 @@ def generate_doxygen_xml(app):
 
     # Invoke the prebuild python script to create the README.html
     # file if needed using pandoc
-    sys.path.append(CWD)
-    build_rules = __import__('build_rules')
-    sys.path.pop()
+    build_rules = tempmodule.import_py_script(
+        os.path.join(CWD, 'build_rules.py'))
     try:
         build_rules.build_readme(CWD)
     except AttributeError:
