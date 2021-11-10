@@ -40,7 +40,7 @@ size (32 bit or 64 bit) and what platform was used (Windows / Mac OSX / Linux).
 .. |License| image:: https://img.shields.io/pypi/l/burger.svg
     :target: https://github.com/burgerbecky/pyburger/blob/master/LICENSE.txt
     :alt: License
-.. |GithubActions| image:: https://img.shields.io/endpoint.svg?url=https://actions-badge.atrox.dev/burgerbecky/pyburger/badge?ref=master&style=flat
+.. |GithubActions| image:: https://github.com/burgerbecky/pyburger/actions/workflows/python-build.yml/badge.svg
     :target: https://github.com/burgerbecky/pyburger/actions
     :alt: Github Actions Status
 .. |Docs| image:: https://img.shields.io/readthedocs/pyburger.svg
