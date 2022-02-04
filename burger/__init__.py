@@ -114,7 +114,7 @@ __email__ = 'becky@burgerbecky.com'
 __license__ = 'MIT License'
 
 ## Copyright owner
-__copyright__ = 'Copyright 2013-2021 Rebecca Ann Heineman'
+__copyright__ = 'Copyright 2013-2022 Rebecca Ann Heineman'
 
 ## Items to import on "from burger import *"
 __all__ = [

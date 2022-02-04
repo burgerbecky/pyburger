@@ -15,6 +15,7 @@ The function `burger.windowsutils.find_visual_studios()` will return a list of `
 - Microsoft Visual Studio 2015
 - Microsoft Visual Studio 2017
 - Microsoft Visual Studio 2019
+- Microsoft Visual Studio 2022
 
 ``version`` will be a string in the form of "16.8.30907.101"
 

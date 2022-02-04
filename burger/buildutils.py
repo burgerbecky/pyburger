@@ -1588,7 +1588,8 @@ def where_is_visual_studio(vs_version):
         2013: ('VS120COMNTOOLS', 'Microsoft Visual Studio 12.0'),
         2015: ('VS140COMNTOOLS', 'Microsoft Visual Studio 14.0'),
         2017: ('VS150COMNTOOLS', 'Microsoft Visual Studio\\2017\\Community'),
-        2019: ('VS160COMNTOOLS', 'Microsoft Visual Studio\\2019\\Community')
+        2019: ('VS160COMNTOOLS', 'Microsoft Visual Studio\\2019\\Community'),
+        2022: ('VS170COMNTOOLS', 'Microsoft Visual Studio\\2022\\Community')
     }
 
     table_item = vs_table.get(vs_version, None)
@@ -1596,25 +1597,32 @@ def where_is_visual_studio(vs_version):
         return None
 
     # Try the environment variable first
+    vstudio_paths = []
     vstudiopath = os.getenv(table_item[0], default=None)
-    if not vstudiopath:
-        # Try the pathname next
-        program_files = _WINDOWS_ENV_PATHS[0 if host_type == 'x86' else 1]
+    if vstudiopath:
+        vstudio_paths.append(vstudiopath)
+
+    # Try the pathname next
+    for program_files in _WINDOWS_ENV_PATHS:
 
         # Generate the proper path to test
         vstudiopath = os.getenv(program_files, None)
-        if not vstudiopath:
-            return None
-        vstudiopath = vstudiopath + '\\' + table_item[1] + '\\Common7\\Tools\\'
+        if vstudiopath:
+            vstudio_paths.append(
+                vstudiopath +
+                '\\' +
+                table_item[1] +
+                '\\Common7\\Tools\\')
 
-    vstudiopath = convert_from_windows_path(vstudiopath)
+    for item in vstudio_paths:
+        vstudiopath = convert_from_windows_path(item)
 
-    # Locate the launcher
-    vstudiopath = os.path.dirname(os.path.abspath(vstudiopath))
-    vstudiopath = os.path.join(vstudiopath, 'ide', 'devenv.com')
-    if os.path.isfile(vstudiopath):
-        # Return the path if the file was found
-        return vstudiopath
+        # Locate the launcher
+        vstudiopath = os.path.dirname(os.path.abspath(vstudiopath))
+        vstudiopath = os.path.join(vstudiopath, 'ide', 'devenv.com')
+        if os.path.isfile(vstudiopath):
+            # Return the path if the file was found
+            return vstudiopath
     return None
 
 

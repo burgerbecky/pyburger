@@ -153,6 +153,8 @@ def _find_vs2017_higher(installed_roots):
             continue
 
         # Get rid of extra characters
+        # Example: @C:\Program Files (x86)\Microsoft Visual Studio\
+        #          2017\Community\Common7\IDE\devenvdesc.dll,-1004
         vs_path = convert_from_windows_path(
             vs_path.lstrip('@').rsplit(',', 1)[0])
         vs_path = os.path.dirname(
