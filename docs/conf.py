@@ -4,7 +4,9 @@
 Configuration file for the Sphinx documentation builder.
 """
 
-#pylint: disable=C0103,W0622
+# pylint: disable=consider-using-f-string
+# pylint: disable=redefined-builtin
+# pylint: disable=invalid-name
 
 from __future__ import absolute_import, unicode_literals
 
@@ -16,7 +18,7 @@ import sphinx_rtd_theme
 
 # Determine if running on "ReadTheDocs.org"
 
-on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
+_ON_RTD = os.environ.get('READTHEDOCS', None) == 'True'
 CWD = os.path.dirname(os.path.abspath(__file__))
 
 # Add this folder to python so it can find the new file
@@ -235,7 +237,8 @@ def generate_doxygen_xml(app):
     """
     Run the doxygen make commands if we're on the ReadTheDocs server
     """
-    #pylint: disable=W0613
+
+    # pylint: disable=unused-argument
 
     # Doxygen can't create a nested folder. Help it by
     # creating the first folder
@@ -255,18 +258,34 @@ def generate_doxygen_xml(app):
     except AttributeError:
         build_rules.build(CWD, None)
 
+    # Read the docs has an old version of doxygen, upgrade it.
+    if _ON_RTD:
+        try:
+            subprocess.call(("curl "
+                "https://www.doxygen.nl/files/doxygen-1.9.4.linux.bin.tar.gz "
+                "--output doxygen-1.9.4.linux.bin.tar.gz"),
+                cwd=CWD,
+                shell=True)
+            subprocess.call("tar -xf doxygen-1.9.4.linux.bin.tar.gz", cwd=CWD,
+                shell=True)
+        except OSError as error:
+            sys.stderr.write("doxygen download error: %s" % error)
+        doxygen = os.path.join(CWD, 'doxygen-1.9.4', 'bin', 'doxygen')
+    else:
+        doxygen = 'doxygen'
+
     # Call Doxygen to build the documentation
     try:
         # Log the Doxygen version number
-        subprocess.call('doxygen -v', cwd=CWD, shell=True)
-        retcode = subprocess.call('doxygen', cwd=CWD, shell=True)
+        subprocess.call(doxygen + ' -v', cwd=CWD, shell=True)
+        retcode = subprocess.call(doxygen, cwd=CWD, shell=True)
         if retcode < 0:
             sys.stderr.write("doxygen terminated by signal %s" % (-retcode))
     except OSError as error:
         sys.stderr.write("doxygen execution failed: %s" % error)
 
     # If on ReadTheDocs.org, copy to public folder
-    if on_rtd:
+    if _ON_RTD:
         try:
             retcode = subprocess.call(
                 "cp -r temp/html _build/html/doxygen", cwd='.', shell=True)
