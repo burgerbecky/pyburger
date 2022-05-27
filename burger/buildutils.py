@@ -3,9 +3,37 @@
 
 """
 Package that contains build helper functions
+
+@package burger.buildutils
+
+@var burger.buildutils._BURGER_SDKS_FOLDER
+Cached location of the BURGER_SDKS folder
+
+@var burger.buildutils._DOXYGEN_PATH
+Cached location of doxygen
+
+@var burger.buildutils._GIT_PATH
+Cached location of git
+
+@var burger.buildutils._PERFORCE_PATH
+Cached location of p4 from Perforce
+
+@var burger.buildutils._WATCOM_PATH
+Cached location of Watcom
+
+@var burger.buildutils._CODEBLOCKS_PATH
+Cached location of CodeBlocks
+
+@var burger.buildutils._WINDOWS_ENV_PATHS
+Environment variable locations of window applications
+
+@var burger.buildutils._VS_VARIANTS
+Visual Studio variants in the order of search
 """
 
-## \package burger.buildutils
+# pylint: disable=consider-using-f-string
+# pylint: disable=no-member
+# pylint: disable=consider-using-with
 
 from __future__ import absolute_import, print_function, unicode_literals
 
@@ -25,33 +53,36 @@ from .strutils import is_string, encapsulate_path, get_windows_host_type, \
     IS_CYGWIN, IS_MSYS, IS_WSL, IS_WINDOWS, IS_WINDOWS_HOST, \
     IS_LINUX
 
-# pylint: disable=consider-using-f-string
-# pylint: disable=no-member
-# pylint: disable=consider-using-with
-
-## Cached location of the BURGER_SDKS folder
+# Cached location of the BURGER_SDKS folder
 _BURGER_SDKS_FOLDER = None
 
-## Cached location of doxygen
+# Cached location of doxygen
 _DOXYGEN_PATH = None
 
-## Cached location of git
+# Cached location of git
 _GIT_PATH = None
 
-## Cached location of p4 from Perforce
+# Cached location of p4 from Perforce
 _PERFORCE_PATH = None
 
-## Cached location of Watcom
+# Cached location of Watcom
 _WATCOM_PATH = None
 
-## Cached location of CodeBlocks
+# Cached location of CodeBlocks
 _CODEBLOCKS_PATH = None
 
-## Environment variable locations of window applications
+# Environment variable locations of window applications
 _WINDOWS_ENV_PATHS = [
-    'ProgramFiles',
-    'ProgramFiles(x86)'
+    "ProgramFiles",
+    "ProgramFiles(x86)"
 ]
+
+# Visual Studio variants in the order of search
+_VS_VARIANTS = (
+    "Enterprise",
+    "Professional",
+    "Community"
+)
 
 # For some goofy reason, Cygwin converts ProgramFiles
 # into uppercase and preforms case sensitive comparisons
@@ -1587,11 +1618,12 @@ def where_is_visual_studio(vs_version):
         2012: ('VS110COMNTOOLS', 'Microsoft Visual Studio 11.0'),
         2013: ('VS120COMNTOOLS', 'Microsoft Visual Studio 12.0'),
         2015: ('VS140COMNTOOLS', 'Microsoft Visual Studio 14.0'),
-        2017: ('VS150COMNTOOLS', 'Microsoft Visual Studio\\2017\\Community'),
-        2019: ('VS160COMNTOOLS', 'Microsoft Visual Studio\\2019\\Community'),
-        2022: ('VS170COMNTOOLS', 'Microsoft Visual Studio\\2022\\Community')
+        2017: ('VS150COMNTOOLS', 'Microsoft Visual Studio\\2017\\xxx'),
+        2019: ('VS160COMNTOOLS', 'Microsoft Visual Studio\\2019\\xxx'),
+        2022: ('VS170COMNTOOLS', 'Microsoft Visual Studio\\2022\\xxx')
     }
 
+    # Check if it's even in the table
     table_item = vs_table.get(vs_version, None)
     if not table_item:
         return None
@@ -1602,17 +1634,30 @@ def where_is_visual_studio(vs_version):
     if vstudiopath:
         vstudio_paths.append(vstudiopath)
 
+    # Test if this is VS 2017 or higher
+    xxx = "xxx" in table_item[1]
+
     # Try the pathname next
     for program_files in _WINDOWS_ENV_PATHS:
 
         # Generate the proper path to test
         vstudiopath = os.getenv(program_files, None)
         if vstudiopath:
-            vstudio_paths.append(
-                vstudiopath +
-                '\\' +
-                table_item[1] +
-                '\\Common7\\Tools\\')
+
+            # Has variants? Call the TVA.
+            if xxx:
+                for item in _VS_VARIANTS:
+                    vstudio_paths.append(
+                        vstudiopath +
+                        '\\' +
+                        table_item[1].replace("xxx", item) +
+                        '\\Common7\\Tools\\')
+            else:
+                vstudio_paths.append(
+                    vstudiopath +
+                    '\\' +
+                    table_item[1] +
+                    '\\Common7\\Tools\\')
 
     for item in vstudio_paths:
         vstudiopath = convert_from_windows_path(item)

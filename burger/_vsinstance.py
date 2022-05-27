@@ -4,23 +4,33 @@
 """
 Package containing shared classes for Windows SDK and Visual Studio
 instance searches.
+
+@package burger._vsinstance
 """
 
-## \package burger._vsinstance
+# pylint: disable=useless-object-inheritance
+# pylint: disable=consider-using-f-string
 
 from .strutils import make_version_tuple
 
 ########################################
 
 
-# pylint: disable=useless-object-inheritance
 class VisualStudioInstance(object):
     """
     Instance of the location of Visual Studio.
 
     More info is here @ref md_find_visual_studio
 
-    @sa WindowsSDKInstance
+    Attributes:
+        name: Name of the Visual Studio instance or SDK
+        version_string: String of the version of this SDK
+        version_info: Integer tuple of self.version
+        path: Root pathname of the object
+        known_paths: dict of pathnames for specific items
+
+    See Also:
+        WindowsSDKInstance
     """
 
     # pylint: disable=too-many-arguments
@@ -37,19 +47,10 @@ class VisualStudioInstance(object):
             known_paths: dir of paths for specific executables and folders.
         """
 
-        ## Name of the Visual Studio instance or SDK
         self.name = name
-
-        ## String of the version of this SDK
-        self.version = ver
-
-        ## Integer tuple of self.version
+        self.version_string = ver
         self.version_info = make_version_tuple(ver)
-
-        ## Root pathname of the object
         self.path = path.rstrip('\\/')
-
-        ## dict of pathnames for specific executables, headers and libraries.
         self.known_paths = known_paths
 
     def __repr__(self):
@@ -57,7 +58,7 @@ class VisualStudioInstance(object):
         Print the name of the class instance.
         """
         return "<{} {} at {}>".format(
-            type(self).__name__, self.version, self.path)
+            type(self).__name__, self.version_string, self.path)
 
     def __str__(self):
         """
@@ -74,7 +75,8 @@ class WindowsSDKInstance(VisualStudioInstance):
 
     More info is here @ref md_find_visual_studio
 
-    @sa VisualStudioInstance
+    See Also:
+        VisualStudioInstance
     """
 
     # pylint: disable=unnecessary-pass

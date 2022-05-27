@@ -3,9 +3,76 @@
 
 """
 Package that contains string manipulation functions
+
+@package burger.strutils
+
+@var burger.strutils.PY2
+True if the interpreter is Python 2.x
+
+@var burger.strutils.PY3_OR_HIGHER
+True if the interpreter is Python 3.x or higher
+
+@var burger.strutils.PY3_3_OR_HIGHER
+True if the interpreter is Python 3.3 or higher
+
+@var burger.strutils.PY3_4_OR_HIGHER
+True if the interpreter is Python 3.4 or higher
+
+@var burger.strutils.PY3_5_OR_HIGHER
+True if the interpreter is Python 3.5 or higher
+
+@var burger.strutils.PYPY
+True if the interpreter is PyPy
+
+@var burger.strutils._WINDOWSSAFESET
+Valid characters for windows filenames without quoting
+
+@var burger.strutils._LINUXSAFESET
+Valid characters for macOS and Linux files without quoting
+
+@var burger.strutils._RE_COMMA_QUOTES
+Regex to match comma and quotes
+
+@var burger.strutils._MAC_HOST_TYPE
+Cached result for get_mac_host_type()
+
+@var burger.strutils.IS_LINUX
+Running on linux?
+
+@var burger.strutils.IS_MACOSX
+Running on macOS X
+
+@var burger.strutils.IS_WINDOWS
+Running on Windows
+
+@var burger.strutils.IS_CYGWIN
+Running on Cygwin
+
+@var burger.strutils.IS_MSYS
+Running on MSYS
+
+@var burger.strutils.IS_WSL
+Running on Windows Subsystem for Linux
+
+@var burger.strutils.IS_WINDOWS_HOST
+Running on Windows (Including Linux shells on windows)
+
+@var burger.strutils._WINDOWS_HOST_PREFIX
+Prefix string for conversion of Windows paths to Linux.
+
+@var burger.strutils._IS_STRING_TEST
+Internal type to pass to isinstance() for is_string()
+
+@var burger.strutils.UNICODE
+Class for declaring unicode strings
+
+@var burger.strutils.LONG
+Class for declaring 64 bit integers
 """
 
-## \package burger.strutils
+# pylint: disable=consider-using-f-string
+# pylint: disable=bad-option-value
+# pyright: reportUndefinedVariable=false
 
 from __future__ import absolute_import, print_function, unicode_literals
 
@@ -22,59 +89,59 @@ try:
 except ImportError:
     pass
 
-## True if the interpreter is Python 2.x
+# True if the interpreter is Python 2.x
 PY2 = sys.version_info[0] == 2
 
-## True if the interpreter is Python 3.x or higher
+# True if the interpreter is Python 3.x or higher
 PY3_OR_HIGHER = sys.version_info[0] >= 3
 
-## True if the interpreter is Python 3.3 or higher
+# True if the interpreter is Python 3.3 or higher
 PY3_3_OR_HIGHER = sys.version_info >= (3, 3, 0)
 
-## True if the interpreter is Python 3.4 or higher
+# True if the interpreter is Python 3.4 or higher
 PY3_4_OR_HIGHER = sys.version_info >= (3, 4, 0)
 
-## True if the interpreter is Python 3.5 or higher
+# True if the interpreter is Python 3.5 or higher
 PY3_5_OR_HIGHER = sys.version_info >= (3, 5, 0)
 
-## True if the interpreter is PyPy
+# True if the interpreter is PyPy
 PYPY = platform.python_implementation() == 'PyPy'
 
-## Valid characters for windows filenames without quoting
+# Valid characters for windows filenames without quoting
 _WINDOWSSAFESET = frozenset(string.ascii_letters + string.digits + '_-.:\\')
 
-## Valid characters for macOS and Linux files without quoting
+# Valid characters for macOS and Linux files without quoting
 _LINUXSAFESET = frozenset(string.ascii_letters + string.digits + '@%_-+=:,./')
 
-## Regex to match comma and quotes
+# Regex to match comma and quotes
 _RE_COMMA_QUOTES = re.compile(r"\\.|[\"',]", re.DOTALL)
 
-## Cached result for get_mac_host_type()
+# Cached result for get_mac_host_type()
 _MAC_HOST_TYPE = None
 
-## Running on linux?
+# Running on linux?
 IS_LINUX = sys.platform.startswith('linux')
 
-## Running on macOS X
+# Running on macOS X
 IS_MACOSX = sys.platform.startswith('darwin')
 
-## Running on Windows
+# Running on Windows
 IS_WINDOWS = sys.platform.startswith('win')
 
-## Running on Cygwin
+# Running on Cygwin
 IS_CYGWIN = sys.platform.startswith('cygwin')
 
-## Running on MSYS
+# Running on MSYS
 IS_MSYS = sys.platform.startswith('msys')
 
-## Running on Windows Subsystem for Linux
+# Running on Windows Subsystem for Linux
 IS_WSL = IS_LINUX and 'icrosoft' in platform.platform()
 
-## Running on Windows (Including Linux shells on windows)
+# Running on Windows (Including Linux shells on windows)
 IS_WINDOWS_HOST = IS_WINDOWS or IS_CYGWIN or IS_MSYS or IS_WSL
 
 if IS_CYGWIN:
-    ## Prefix string for conversion of Windows paths to Linux.
+    # Prefix string for conversion of Windows paths to Linux.
     _WINDOWS_HOST_PREFIX = '/cygdrive/'
 elif IS_MSYS:
     _WINDOWS_HOST_PREFIX = '/'
@@ -120,17 +187,16 @@ def unicode_print(input_string):
 
 try:
     # Test if basestring exists (Only in Python 2.x)
-    # pylint: disable=W0104,basestring-builtin
+    # pylint: disable=pointless-statement
     basestring
 
-    # pylint: disable=C0103,basestring-builtin
-    ## Internal type to pass to isinstance() for is_string()
+    # Internal type to pass to isinstance() for is_string()
     _IS_STRING_TEST = basestring
 
-    ## Class for declaring unicode strings
+    # Class for declaring unicode strings
     UNICODE = unicode
 
-    ## Class for declaring 64 bit integers
+    # Class for declaring 64 bit integers
     LONG = long
 
 except NameError:

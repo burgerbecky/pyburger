@@ -17,7 +17,7 @@ The function `burger.windowsutils.find_visual_studios()` will return a list of `
 - Microsoft Visual Studio 2019
 - Microsoft Visual Studio 2022
 
-``version`` will be a string in the form of "16.8.30907.101"
+``version_string`` will be a string in the form of "16.8.30907.101"
 
 ``version_info`` is a tuple in the form of (16, 8, 30907, 101). This is most useful in doing a numeric version comparison.
 
@@ -46,7 +46,7 @@ Note: If the key is missing, the binary, such as ``msbuild.exe`` may not be avai
 - Windows 8 SDK
 - Windows 10 SDK
 
-``version`` will be a string in the form of "10.0.10150.0"
+``version_string`` will be a string in the form of "10.0.10150.0"
 
 ``version_info`` is a tuple in the form of (10, 0, 10150, 0). This is most useful in doing a numeric version comparison. The first number will match the actual SDK version such as 5, 6, 7, 8 or 10.
 

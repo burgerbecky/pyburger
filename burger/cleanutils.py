@@ -3,9 +3,12 @@
 
 """
 Package that contains clean helper functions
-"""
 
-## \package burger.cleanutils
+@package burger.cleanutils
+
+@var burger.cleanutils._CODEBLOCKS_MATCH
+Match *.cbp
+"""
 
 from __future__ import absolute_import, print_function, unicode_literals
 
@@ -14,7 +17,7 @@ import re
 
 from .fileutils import delete_file, clean_files, clean_directories
 
-## Match *.cbp
+# Match *.cbp
 _CODEBLOCKS_MATCH = re.compile('(?ims).*\\.cbp\\Z')
 
 ########################################

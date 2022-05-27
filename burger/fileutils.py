@@ -3,9 +3,13 @@
 
 """
 Package that contains file manipulation functions
+
+@package burger.fileutils
 """
 
-## \package burger.fileutils
+# pylint: disable=consider-using-f-string
+# pylint: disable=redefined-builtin
+# pyright: reportMissingImports=false
 
 from __future__ import absolute_import, print_function, unicode_literals
 
@@ -18,10 +22,6 @@ import codecs
 from .strutils import is_string, convert_to_array, encapsulate_path, \
     get_windows_host_type, translate_to_regex_match, \
     IS_MACOSX, IS_WINDOWS_HOST, IS_LINUX
-
-# pylint: disable=consider-using-f-string
-# pylint: disable=redefined-builtin
-# pyright: reportMissingImports=false
 
 # Redefining built-in (Ignore redefinition of zip)
 try:

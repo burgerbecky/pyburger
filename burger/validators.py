@@ -3,12 +3,13 @@
 
 """
 Package that contains class member validators
-"""
 
-## \package burger.validators
+@package burger.validators
+"""
 
 # pylint: disable=no-name-in-module,too-few-public-methods
 # pylint: disable=consider-using-f-string
+# pylint: disable=deprecated-class
 
 from numbers import Number
 
@@ -27,7 +28,12 @@ from .strutils import string_to_bool, is_string, UNICODE as unicode, \
 
 
 class Property(object):
-    """Base Class to create enforced types """
+    """
+    Base Class to create enforced types
+
+    Attributes:
+        _name: The real name of the class instance
+    """
 
     def __init__(self, name):
         """Initialize to default
@@ -35,7 +41,6 @@ class Property(object):
             name: Name of the instance storage index
         """
 
-        ## Set the real name of the class instance
         self._name = name
 
     def __get__(self, instance, owner=None):
@@ -118,7 +123,8 @@ ValueError: Not boolean value
         if value is not None:
             # Convert to bool
             value = string_to_bool(value)
-        ## Boolean value
+
+        # Boolean value
         instance.__dict__[self._name] = value
 
 ########################################
@@ -201,7 +207,7 @@ ValueError: Not integer value
                 # Ensure it's an int()
                 value = long(value)
 
-        ## Integer value
+        # Integer value
         instance.__dict__[self._name] = value
 
 ########################################
@@ -244,7 +250,7 @@ print(f.x)
             if not is_string(value):
                 value = unicode(value)
 
-        ## String value
+        # String value
         instance.__dict__[self._name] = value
 
 
@@ -314,7 +320,7 @@ print(f.x)
             else:
                 value = [unicode(i) for i in value]
 
-        ## String list value
+        # String list value
         instance.__dict__[self._name] = value
 
 
@@ -322,7 +328,11 @@ print(f.x)
 
 
 class EnumProperty(Property):
-    """Class to enforce string list in member variable
+    """
+    Class to enforce string list in member variable
+
+Attributes:
+    _enums: Enumeration dictionary
 
 Example:
 j = (('a', 'b', 'c'), 'd', 'e', ['f', 'g', 'h'], 'i')
@@ -357,7 +367,6 @@ print(f.x)
             enums: list of enumeration strings
         """
 
-        ## Enumeration dictionary
         self._enums = enums
 
         if not isinstance(enums, Iterable):
@@ -407,14 +416,18 @@ print(f.x)
                         'Value "{}" is not found in the list "{}"'.format(
                             value, enums))
 
-        ## String list value
+        # String list value
         instance.__dict__[self._name] = value
 
 ########################################
 
 
 class NoneProperty(object):
-    """Class to enforce None in member variable
+    """
+    Class to enforce None in member variable
+
+Attributes:
+    _name: The real name of the class instance
 
 Example:
 'Inherit from (object) for Python 2.7'
@@ -441,7 +454,6 @@ ValueError: Not None value
             name: Name of the instance storage index
         """
 
-        ## Set the real name of the class instance
         self._name = name
 
     def __get__(self, instance, owner=None):

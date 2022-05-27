@@ -3,9 +3,49 @@
 
 """
 Package that locates all Windows SDKs.
+
+@package burger._find_win_sdks
+
+@var burger._find_win_sdks._WIN5_KEYS
+List of Windows 5 SDK registry keys
+
+@var burger._find_win_sdks._WIN6_7_KEYS
+List of Windows 6-7 SDK registry keys
+
+@var burger._find_win_sdks._WIN6_7SDK_CPUS
+List of supported CPUs for Windows 6-7 SDKs
+
+@var burger._find_win_sdks._WIN8_KEYS
+List of Windows 8 SDK registry keys
+
+@var burger._find_win_sdks._WIN8SDK_CPUS
+List of supported CPUs for Windows 8 SDKs
+
+@var burger._find_win_sdks._WIN8SDK_HEADER_FOLDERS
+List of header folders
+
+@var burger._find_win_sdks._WIN8SDK_LIB_FOLDERS
+List of library folders
+
+@var burger._find_win_sdks._WIN10SDK_CPUS
+List of supported CPUs for Windows 10 SDKs
+
+@var burger._find_win_sdks._WIN10SDK_HEADER_FOLDERS
+List of header folders
+
+@var burger._find_win_sdks._WIN10SDK_LIB_FOLDERS
+List of library folders
+
+@var burger._find_win_sdks._WIN10_EXECS
+List of executables
+
 """
 
-## \package burger._find_win_sdks
+# pylint: disable=useless-object-inheritance
+# pylint: disable=too-many-arguments
+# pylint: disable=unnecessary-pass
+# pylint: disable=too-few-public-methods
+# pylint: disable=consider-using-f-string
 
 from __future__ import absolute_import, print_function, unicode_literals
 
@@ -20,44 +60,39 @@ except ImportError:
 
 from .strutils import make_version_tuple
 
-# pylint: disable=useless-object-inheritance
-# pylint: disable=too-many-arguments
-# pylint: disable=unnecessary-pass
-# pylint: disable=too-few-public-methods
-
 ########################################
 
-## List of Windows 5 SDK registry keys
+# List of Windows 5 SDK registry keys
 _WIN5_KEYS = (('7.1', '5.0'), ('8.0', '5.1'))
 
-## List of Windows 6-7 SDK registry keys
+# List of Windows 6-7 SDK registry keys
 _WIN6_7_KEYS = ('v6.0A', 'v7.0A', 'v7.1A')
 
-## List of supported CPUs for Windows 6-7 SDKs
+# List of supported CPUs for Windows 6-7 SDKs
 _WIN6_7SDK_CPUS = ('x86', 'x64')
 
-## List of Windows 8 SDK registry keys
+# List of Windows 8 SDK registry keys
 _WIN8_KEYS = (('KitsRoot', '8.0'), ('KitsRoot81', '8.1'))
 
-## List of supported CPUs for Windows 8 SDKs
+# List of supported CPUs for Windows 8 SDKs
 _WIN8SDK_CPUS = ('x86', 'x64', 'arm')
 
-## List of header folders
+# List of header folders
 _WIN8SDK_HEADER_FOLDERS = ('um', 'shared', 'winrt')
 
-## List of library folders
+# List of library folders
 _WIN8SDK_LIB_FOLDERS = (('win8', 'um'), ('winv6.3', 'um'))
 
-## List of supported CPUs for Windows 10 SDKs
+# List of supported CPUs for Windows 10 SDKs
 _WIN10SDK_CPUS = ('x86', 'x64', 'arm', 'arm64')
 
-## List of header folders
+# List of header folders
 _WIN10SDK_HEADER_FOLDERS = ('ucrt', 'um', 'shared', 'winrt', 'cppwinrt')
 
-## List of library folders
+# List of library folders
 _WIN10SDK_LIB_FOLDERS = ('ucrt', 'um')
 
-## List of executables
+# List of executables
 _WIN10_EXECS = ('rc.exe', 'signtool.exe', 'makecat.exe', 'midl.exe', 'mc.exe')
 
 ########################################

@@ -6,9 +6,12 @@ Package that contains windows only functions
 
 They will operate on Windows, Cygwin, MSYS2 and Windows Subsystem for
 Linux. On macOS and pure Linux, they will return no data.
-"""
 
-## \package burger.windowsutils
+@package burger.windowsutils
+
+@var burger.windowsutils._FIND_VISUAL_STUDIOS
+find_visual_studios() cache
+"""
 
 from .strutils import get_windows_host_type
 
@@ -22,7 +25,7 @@ try:
 except ImportError:
     pass
 
-## find_visual_studios() cache
+# find_visual_studios() cache
 _FIND_VISUAL_STUDIOS = []
 
 ########################################

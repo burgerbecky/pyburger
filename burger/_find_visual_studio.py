@@ -3,9 +3,26 @@
 
 """
 Package that contains windows only functions
+
+@package burger._find_visual_studio
+
+@var burger._find_visual_studio._VSTOOLS
+List of Visual Studio tools
+
+@var burger._find_visual_studio._IDETOOLS
+List of IDE tools
+
+@var burger._find_visual_studio._VSVERSIONS
+Versions of Visual Studio from 2003 to 2015
+
+@var burger._find_visual_studio._SUPPORTED_CPUS
+List of supported CPUs for Visual Studio  tools
 """
 
-## \package burger._find_visual_studio
+# pylint: disable=useless-object-inheritance
+# pylint: disable=too-many-arguments
+# pylint: disable=unnecessary-pass
+# pylint: disable=too-few-public-methods
 
 from __future__ import absolute_import, print_function, unicode_literals
 
@@ -18,21 +35,17 @@ try:
 except ImportError:
     pass
 
-# pylint: disable=useless-object-inheritance
-# pylint: disable=too-many-arguments
-# pylint: disable=unnecessary-pass
-# pylint: disable=too-few-public-methods
 
-## List of Visual Studio tools
+# List of Visual Studio tools
 _VSTOOLS = ('cl.exe', 'link.exe', 'lib.exe')
 
-## List of IDE tools
+# List of IDE tools
 _IDETOOLS = ('devenv.exe', )
 
-## Versions of Visual Studio from 2003 to 2015
+# Versions of Visual Studio from 2003 to 2015
 _VSVERSIONS = ('7.1', '8.0', '9.0', '10.0', '11.0', '12.0', '14.0')
 
-## List of supported CPUs for Visual Studio  tools
+# List of supported CPUs for Visual Studio  tools
 _SUPPORTED_CPUS = ('x86', 'x64', 'arm', 'arm64')
 
 ########################################
