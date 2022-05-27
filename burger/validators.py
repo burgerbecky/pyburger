@@ -8,6 +8,7 @@ Package that contains class member validators
 ## \package burger.validators
 
 # pylint: disable=no-name-in-module,too-few-public-methods
+# pylint: disable=consider-using-f-string
 
 from numbers import Number
 

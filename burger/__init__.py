@@ -3,40 +3,71 @@
 
 """
 A set of subroutines used by the Burgerlib based scripts written in Python.
+
+@package burger
+
+For higher level tools like makeprojects, cleanme and
+buildme, common subroutines were collected and
+placed in this module for reuse.
+
+@mainpage
+
+@htmlinclude README.html
+
+Chapter list
+============
+
+- @subpage md_truefalse
+- @subpage md_wsl_cygwin
+- @subpage md_find_visual_studio
+- @subpage md_validators
+
+Module list
+============
+
+- @ref burger
+- @ref burger.buildutils
+- @ref burger.cleanutils
+- @ref burger.fileutils
+- @ref burger.strutils
+- @ref burger.validators
+- @ref burger.windowsutils
+
+@var burger.__numversion__
+Numeric version
+
+@var burger.__version__
+Current version of the library
+
+@var burger.__author__
+Author's name
+
+@var burger.__title__
+Name of the module
+
+@var burger.__summary__
+Summary of the module's use
+
+@var burger.__uri__
+Home page
+
+@var burger.__email__
+Email address for bug reports
+
+@var burger.__license__
+Type of license used for distribution
+
+@var burger.__copyright__
+Copyright owner
+
+@var burger.__all__
+Items to import on "from burger import *"
+
 """
 
-#
-## \package burger
-#
-# For higher level tools like makeprojects, cleanme and
-# buildme, common subroutines were collected and
-# placed in this module for reuse.
-#
-
-#
-## \mainpage
-#
-# \htmlinclude README.html
-#
-# Chapter list
-# ============
-#
-# - \subpage md_truefalse
-# - \subpage md_wsl_cygwin
-# - \subpage md_find_visual_studio
-# - \subpage md_validators
-#
-# Module list
-# ===========
-#
-# - \ref burger
-# - \ref burger.buildutils
-# - \ref burger.cleanutils
-# - \ref burger.fileutils
-# - \ref burger.strutils
-# - \ref burger.validators
-# - \ref burger.windowsutils
-#
+# pylint: disable=redundant-u-string-prefix
+# pylint: disable=import-error
+# pyright: reportMissingImports=false
 
 from __future__ import absolute_import
 
@@ -76,11 +107,6 @@ from .validators import BooleanProperty, StringProperty, IntegerProperty, \
 
 from .windowsutils import find_visual_studios
 
-# pylint: disable=redundant-u-string-prefix
-# pylint: disable=super-with-arguments
-# pylint: disable=import-error
-# pyright: reportMissingImports=false
-
 if PY2:
     from cStringIO import StringIO
 else:
@@ -89,34 +115,34 @@ else:
 ########################################
 
 
-## Numeric version
+# Numeric version
 __numversion__ = (1, 2, 2)
 
-## Current version of the library
+# Current version of the library
 __version__ = '.'.join([str(num) for num in __numversion__])
 
-## Author's name
+# Author's name
 __author__ = 'Rebecca Ann Heineman'
 
-## Name of the module
+# Name of the module
 __title__ = 'burger'
 
-## Summary of the module's use
+# Summary of the module's use
 __summary__ = 'Burger Becky\'s shared python library.'
 
-## Home page
+# Home page
 __uri__ = 'http://pyburger.readthedocs.io'
 
-## Email address for bug reports
+# Email address for bug reports
 __email__ = 'becky@burgerbecky.com'
 
-## Type of license used for distribution
+# Type of license used for distribution
 __license__ = 'MIT License'
 
-## Copyright owner
+# Copyright owner
 __copyright__ = 'Copyright 2013-2022 Rebecca Ann Heineman'
 
-## Items to import on "from burger import *"
+# Items to import on "from burger import *"
 __all__ = [
     'unicode_print',
     'is_string',
@@ -209,6 +235,10 @@ class Interceptstdout(list):
     """
     Handy class for capturing stdout from tools and python itself.
 
+    Attributes:
+        _stdout: Saved copy of sys.stdout
+        _stringio: StringIO to redirect output to
+
     Examples:
         # Import the class
         from burger import Interceptstdout
@@ -229,12 +259,9 @@ class Interceptstdout(list):
         Declares the internal variables
         """
 
-        ## Saved copy of sys.stdout
+        super().__init__()
         self._stdout = None
-
-        ## StringIO to redirect output to
         self._stringio = None
-        super(Interceptstdout, self).__init__()
 
     def __enter__(self):
         """
@@ -268,10 +295,11 @@ class Node:
 
     Needed for some projects that have to store
     file entries in nested trees
-    """
 
-    # Too few public methods R0903
-    # #pylint: disable=R0903
+    Attributes:
+        value: Value contained in this node
+        children: Array of children nodes to this node
+    """
 
     def __init__(self, value, children=None):
         """
@@ -285,9 +313,7 @@ class Node:
         if children is None:
             children = []
 
-        ## Value contained in this node
         self.value = value
-        ## Array of children nodes to this node
         self.children = children
 
     def __repr__(self, level=0):
@@ -303,7 +329,12 @@ class Node:
             ret += child.__repr__(level + 1)
         return ret
 
-    ## Display this node as a string
-    # See Also:
-    # __repr__()
-    __str__ = __repr__
+    def __str__(self, level=0):
+        """
+        Display this node as a string
+
+        Args:
+            level: Recursion depth (Used internally)
+        """
+
+        return self.__repr__(level=0)
