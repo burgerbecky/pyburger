@@ -67,6 +67,7 @@ Items to import on "from burger import *"
 
 # pylint: disable=redundant-u-string-prefix
 # pylint: disable=import-error
+# pylint: disable=super-with-arguments
 # pyright: reportMissingImports=false
 
 from __future__ import absolute_import
@@ -259,7 +260,7 @@ class Interceptstdout(list):
         Declares the internal variables
         """
 
-        super().__init__()
+        super(Interceptstdout, self).__init__()
         self._stdout = None
         self._stringio = None
 
