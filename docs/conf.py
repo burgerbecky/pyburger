@@ -261,9 +261,8 @@ def generate_doxygen_xml(app):
     # Read the docs has an old version of doxygen, upgrade it.
     if _ON_RTD:
         try:
-            subprocess.call(("curl "
-                "https://logiware.com/downloads/linux/doxygen-1.9.4.tgz "
-                "--output doxygen-1.9.4.tgz"),
+            subprocess.call(("curl -O "
+                "http://logicware.com/downloads/linux/doxygen-1.9.4.tgz"),
                 cwd=CWD,
                 shell=True)
             subprocess.call("tar -xvf doxygen-1.9.4.tgz", cwd=CWD,
