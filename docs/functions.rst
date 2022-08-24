@@ -16,6 +16,10 @@ strutils.convert_to_array
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 .. doxygenfunction:: burger::strutils::convert_to_array
 
+strutils.norm_paths
+^^^^^^^^^^^^^^^^^^^
+.. doxygenfunction:: burger::strutils::norm_paths
+
 strutils.string_to_bool
 ^^^^^^^^^^^^^^^^^^^^^^^
 .. doxygenfunction:: burger::strutils::string_to_bool

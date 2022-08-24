@@ -77,6 +77,7 @@ Class for declaring 64 bit integers
 from __future__ import absolute_import, print_function, unicode_literals
 
 import sys
+import os
 import string
 import re
 import csv
@@ -247,6 +248,27 @@ def convert_to_array(input_array):
         # Convert a single entry into an array
         input_array = [input_array]
     return input_array
+
+########################################
+
+
+def norm_paths(working_directory, items):
+    """
+    Convert an iterable list of pathnames and convert them all into a
+    list of normalized absolute pathnames.
+
+    Args:
+        working_directory: Base directory for incomplete paths
+        items: Iterable list of pathnames
+    Returns:
+        A list of absolute pathnames
+    """
+
+    result = []
+    for item in items:
+        result.append(os.path.normpath(os.path.join(working_directory, item)))
+    return result
+
 
 ########################################
 

@@ -75,7 +75,7 @@ from __future__ import absolute_import
 import sys
 
 from .strutils import PY2, unicode_print, is_string, convert_to_array, \
-    string_to_bool, \
+    norm_paths, string_to_bool, \
     TrueFalse, truefalse, TRUEFALSE, convert_to_windows_slashes, \
     convert_to_linux_slashes, encapsulate_path_windows, \
     encapsulate_path_linux, encapsulate_path, encapsulate_hosted_path, \
@@ -148,6 +148,7 @@ __all__ = [
     'unicode_print',
     'is_string',
     'convert_to_array',
+    'norm_paths',
     'string_to_bool',
     'TrueFalse',
     'truefalse',

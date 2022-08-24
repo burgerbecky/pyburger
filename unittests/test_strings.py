@@ -14,6 +14,7 @@ Please? It's not like I'm asking you for money!
 """
 
 # pylint: disable=wrong-import-position
+# pylint: disable=redundant-u-string-prefix
 
 import sys
 import unittest
