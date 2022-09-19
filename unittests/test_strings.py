@@ -45,6 +45,7 @@ class TestStrings(unittest.TestCase):
 
         # unicode not defines
         # flake8: noqa=F821
+        # pyright: reportUndefinedVariable=false
 
         # Must return False
         self.assertFalse(burger.is_string(0))
@@ -109,6 +110,7 @@ class TestStrings(unittest.TestCase):
 
 
 ########################################
+
 
     def test_convert_to_array(self):
         """
@@ -478,7 +480,6 @@ class TestStrings(unittest.TestCase):
 
 ########################################
 
-
     def test_parse_csv(self):
         """
         Test burger.parse_csv()
@@ -538,7 +539,6 @@ class TestStrings(unittest.TestCase):
 
 ########################################
 
-
     def test_escape_xml_cdata(self):
         """
         Test burger.escape_xml_cdata()
@@ -556,7 +556,6 @@ class TestStrings(unittest.TestCase):
 
 
 ########################################
-
 
     def test_escape_xml_attribute(self):
         """

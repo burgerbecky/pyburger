@@ -117,7 +117,7 @@ else:
 
 
 # Numeric version
-__numversion__ = (1, 2, 4)
+__numversion__ = (1, 2, 5)
 
 # Current version of the library
 __version__ = '.'.join([str(num) for num in __numversion__])

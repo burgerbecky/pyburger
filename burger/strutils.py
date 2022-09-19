@@ -264,10 +264,7 @@ def norm_paths(working_directory, items):
         A list of absolute pathnames
     """
 
-    result = []
-    for item in items:
-        result.append(os.path.normpath(os.path.join(working_directory, item)))
-    return result
+    return [os.path.normpath(os.path.join(working_directory, x)) for x in items]
 
 
 ########################################
@@ -727,12 +724,9 @@ def translate_to_regex_match(file_list):
         List of re.compile().match entries
     """
 
-    # Start with an empty folder
-    result = []
-    for item in convert_to_array(file_list):
-        # Translate and then return the match function
-        result.append(re.compile(fnmatch.translate(item)).match)
-    return result
+    # Translate and then return the match function
+    return [re.compile(fnmatch.translate(
+        x)).match for x in convert_to_array(file_list)]
 
 ########################################
 
@@ -965,12 +959,10 @@ def packed_paths(entries, slashes=None, seperator=None,
             function = convert_to_linux_slashes
 
         # Don't modify the original list
-        temp_entries = []
-        for item in entries:
-            temp_entries.append(
-                function(
-                    item,
-                    force_ending_slash=force_ending_slash))
+        temp_entries = [
+            function(
+                x,
+                force_ending_slash=force_ending_slash) for x in entries]
     else:
         temp_entries = entries
     return seperator.join(temp_entries)
