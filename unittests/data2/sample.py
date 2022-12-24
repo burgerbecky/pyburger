@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Sample.py in the 'a' directory
+Sample.py in the "a" directory
 
 Copyright 2013-2022 by Rebecca Ann Heineman becky@burgerbecky.com
 
@@ -16,22 +16,22 @@ Please? It's not like I'm asking you for money!
 
 def test():
     """
-    Returns 'sample_b'
+    Returns "sample_b"
     """
 
-    return 'sample_b'
+    return "sample_b"
 
 
 def testb():
     """
-    Returns 'testb'
+    Returns "testb"
     """
 
-    return 'testb'
+    return "testb"
 
 
 def main(arg):
     """
     Returns argument
     """
-    return arg + 'test'
+    return arg + "test"
