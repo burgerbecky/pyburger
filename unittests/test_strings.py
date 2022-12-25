@@ -599,16 +599,16 @@ class TestStrings(unittest.TestCase):
         for test in tests:
             self.assertEqual(burger.packed_paths(test[0]), test[1])
 
-        # Test seperator replacement
-        seperators = (
+        # Test separator replacement
+        separators = (
             ("a", ";", ":", "\n")
         )
 
-        for sep in seperators:
+        for sep in separators:
             for test in tests:
                 self.assertEqual(burger.packed_paths(
                     test[0],
-                    seperator=sep), test[1].replace(
+                    separator=sep), test[1].replace(
                         ";", sep))
 
         # Test slashes and forced ending

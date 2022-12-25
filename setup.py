@@ -119,16 +119,16 @@ CLEAN_DIR_LIST = [
     ".vscode"
 ]
 
-CLEAN_DIR_RECURSE_LIST = [
+CLEAN_DIR_RECURSE_LIST = (
     "temp",
     "__pycache__",
     "_build"
-]
+)
 
-CLEAN_EXTENSION_LIST = [
+CLEAN_EXTENSION_LIST = (
     "*.pyc",
     "*.pyo"
-]
+)
 
 
 def clean(working_dir):

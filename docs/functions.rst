@@ -143,9 +143,12 @@ buildutils.where_is_codeblocks
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. doxygenfunction:: burger::buildutils::where_is_codeblocks
 
-buildutils.where_is_xcode
-^^^^^^^^^^^^^^^^^^^^^^^^^
-.. doxygenfunction:: burger::buildutils::where_is_xcode
+Locator Functions
+-----------------
+
+locators.where_is_xcode
+^^^^^^^^^^^^^^^^^^^^^^^
+.. doxygenfunction:: burger::locators::where_is_xcode
 
 File Functions
 --------------

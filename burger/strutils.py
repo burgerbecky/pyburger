@@ -72,6 +72,7 @@ Class for declaring 64 bit integers
 
 # pylint: disable=consider-using-f-string
 # pylint: disable=bad-option-value
+# pylint: disable=too-many-lines
 # pyright: reportUndefinedVariable=false
 
 from __future__ import absolute_import, print_function, unicode_literals
@@ -927,25 +928,25 @@ def escape_xml_attribute(xml_string):
 ########################################
 
 
-def packed_paths(entries, slashes=None, seperator=None,
+def packed_paths(entries, slashes=None, separator=None,
                  force_ending_slash=False):
     """
     Convert a list of paths and convert to a PATH string.
 
-    Convert ["a","b","c"] to a;b;c
+    Convert ["a","b","c"] to "a;b;c"
 
     Args:
         entries: list of strings to concatenate
-        slashes: None for no conversion, "/" or "\\" path seperator
-        seperator: Character to use to seperate entries, ";" is used for None
+        separator: Character to use to seperate entries, ";" is used for None
         force_ending_slash: Enforce a trailing slash if True
+        slashes: None for no conversion "/" or "\\" path separator
     Return:
-        String of all entries seperated by ";" or ``seperator``
+        String of all entries seperated by ";" or ``separator``
     """
 
-    # Verify the seperator
-    if not seperator:
-        seperator = ";"
+    # Verify the separator
+    if not separator:
+        separator = ";"
 
     entries = convert_to_array(entries)
 
@@ -965,7 +966,7 @@ def packed_paths(entries, slashes=None, seperator=None,
                 force_ending_slash=force_ending_slash) for x in entries]
     else:
         temp_entries = entries
-    return seperator.join(temp_entries)
+    return separator.join(temp_entries)
 
 ########################################
 

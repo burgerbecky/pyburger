@@ -82,7 +82,7 @@ master_doc = "index"
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = None
+language = "en"
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -284,7 +284,7 @@ def generate_doxygen_xml(app):
     except OSError as error:
         sys.stderr.write("doxygen execution failed: %s" % error)
 
-    # If on ReadTheDocs.org, copy to public folder
+    # If on ReadTheDocs.org, copy doxygen to public folder
     if _ON_RTD:
         try:
             retcode = subprocess.call(
