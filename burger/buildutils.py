@@ -108,8 +108,8 @@ def _create_header_guard(filename):
     """
 
     headerguard = os.path.basename(filename).upper()
-    headerguard = headerguard.replace(' ', '_')
-    return '__{}__'.format(headerguard.replace('.', '_'))
+    headerguard = headerguard.replace(" ", "_")
+    return "__{}__".format(headerguard.replace(".", "_"))
 
 ########################################
 
@@ -121,21 +121,21 @@ def get_sdks_folder(verbose=False, refresh=False, folder=None):
     If the environment variable BURGER_SDKS is set,
     return the pathname it contains. Otherwise,
     print a warning if verbose is True and then attempt to find
-    the 'sdks' folder by traversing the current working directory
-    for a folder named 'sdks'. If one isn't found, return None.
+    the "sdks" folder by traversing the current working directory
+    for a folder named "sdks". If one isn't found, return None.
 
     Examples:
         # Normal use
         sdksfolder = burger.buildutils.get_sdks_folder()
         if not sdksfolder:
-            print('failure')
+            print("failure")
             raise NameError("sdks not found, set BURGER_SDKS")
 
         # Alert the user if BURGER_SDKS isn't set
         burger.buildutils.get_sdks_folder(verbose=True)
 
         # Force the use of a supplied folder for sdks
-        burger.buildutils.get_sdks_folder(refresh=True, folder='./foo/sdks/')
+        burger.buildutils.get_sdks_folder(refresh=True, folder="./foo/sdks/")
 
     Args:
         verbose: If True, print a message if BURGER_SDKS was not present
@@ -161,7 +161,7 @@ def get_sdks_folder(verbose=False, refresh=False, folder=None):
     if _BURGER_SDKS_FOLDER is None:
 
         # Load from the system
-        _BURGER_SDKS_FOLDER = os.getenv('BURGER_SDKS', default=None)
+        _BURGER_SDKS_FOLDER = os.getenv("BURGER_SDKS", default=None)
 
         # Test for None or empty string
         if _BURGER_SDKS_FOLDER:
@@ -170,18 +170,18 @@ def get_sdks_folder(verbose=False, refresh=False, folder=None):
         else:
             # Warn about missing environment variable
             if verbose:
-                print('The environment variable "BURGER_SDKS" is not set')
+                print("The environment variable \"BURGER_SDKS\" is not set")
 
             # pylint: disable=import-outside-toplevel
             # Try to find the directory in the current path
             from .fileutils import traverse_directory
-            sdks = traverse_directory(os.getcwd(), 'sdks',
+            sdks = traverse_directory(os.getcwd(), "sdks",
                                       find_directory=True, terminate=True)
             if sdks:
                 _BURGER_SDKS_FOLDER = sdks[0]
                 if verbose:
                     print(
-                        'Assuming {} is the BURGER_SDKS folder'.format(
+                        "Assuming {} is the BURGER_SDKS folder".format(
                             sdks[0]))
 
     return _BURGER_SDKS_FOLDER
@@ -196,7 +196,7 @@ def fix_csharp(csharp_application_path):
     @details C# applications can launch as is on Windows platforms,
     however, on Mac OSX and Linux, it must be launched
     from mono. Determine the host machine and if not
-    windows, automatically prepend 'mono' to
+    windows, automatically prepend "mono" to
     the application's name to properly launch it
 
     This will also encase the name in quotes in case there are
@@ -211,7 +211,7 @@ def fix_csharp(csharp_application_path):
 
     # Prepend mono on non-windows systems
     if not get_windows_host_type(True):
-        return ['mono', encapsulate_path(csharp_application_path)]
+        return ["mono", encapsulate_path(csharp_application_path)]
     return [csharp_application_path]
 
 ########################################
@@ -222,7 +222,7 @@ def is_exe(exe_path):
     Return True if the file is executable
 
     Note:
-        Windows platforms don't support the 'x' bit so all
+        Windows platforms don't support the "x" bit so all
         files are executable if they exist.
 
     Args:
@@ -259,19 +259,19 @@ def get_path_ext(pathext=None):
 
     # Read the environment variable?
     if pathext is None:
-        pathext = os.getenv('PATHEXT', None)
+        pathext = os.getenv("PATHEXT", None)
         if pathext is None:
             if IS_WSL:
                 # Special case for WSL targets, allow .exe files
-                return ['.EXE']
+                return [".EXE"]
             return []
 
     # If a string, or environment variable?
     if is_string(pathext):
         # Special case for Cygwin, since os.pathsep
-        # is ':' but the environment variable uses
-        # ';' from Windows
-        seperator = ';' if IS_CYGWIN or IS_MSYS else os.pathsep
+        # is ":" but the environment variable uses
+        # ";" from Windows
+        seperator = ";" if IS_CYGWIN or IS_MSYS else os.pathsep
         # Parse the string
         pathext = pathext.split(seperator)
 
@@ -287,9 +287,9 @@ def make_exe_path(exe_path, pathext=None):
 
     Examples:
         # exe could be returned as exe, exe.exe, exe.cmd, etc...
-        path = make_exe_path('C:\\code\\exe')
+        path = make_exe_path("C:\\code\\exe")
         if path is None:
-            print('No file named exe at C:\\code')
+            print("No file named exe at C:\\code")
 
     Note:
         On macOS and Linux, PATHEXT is not set, this is for supporting
@@ -343,12 +343,12 @@ def find_in_path(filename, search_path=None, executable=False):
     to search. If it is None, the PATH environment variable will be used.
 
     Examples:
-        # Can return 'doxygen', 'doxygen.exe' or 'doxygen.com' depending
+        # Can return "doxygen", "doxygen.exe" or "doxygen.com" depending
         # on what was found
-        burger.find_in_path('doxygen', executable=True)
+        burger.find_in_path("doxygen", executable=True)
 
-        # Will only find 'foo.txt'
-        burger.find_in_path('foo.txt')
+        # Will only find "foo.txt"
+        burger.find_in_path("foo.txt")
 
     Args:
         filename: File to locate
@@ -380,14 +380,14 @@ def find_in_path(filename, search_path=None, executable=False):
                 # Create a list of possible file names with extensions
                 test_list = [filename + item for item in pathext]
 
-                # If Linux, allow '' as an extension
+                # If Linux, allow "" as an extension
                 if not IS_WINDOWS and IS_WINDOWS_HOST:
                     test_list.append(filename)
 
     # Is there a search path override?
     if not search_path:
         # Use the environment variable
-        paths = os.getenv('PATH', '')
+        paths = os.getenv("PATH", "")
         if not paths:
             paths = os.defpath
     else:
@@ -440,7 +440,7 @@ def expand_and_verify(file_string):
     and return the expanded path if True. Otherwise, return None
 
     Examples:
-        perforcepath = burger.expand_and_verify('${PERFORCE}\\p4.exe')
+        perforcepath = burger.expand_and_verify("${PERFORCE}\\p4.exe")
         if perforcepath is None:
             return
 
@@ -504,15 +504,15 @@ def where_is_doxygen(verbose=False, refresh=False, path=None):
         return _DOXYGEN_PATH
 
     # Try the environment variable first
-    if os.getenv('DOXYGEN', None):
+    if os.getenv("DOXYGEN", None):
         if get_windows_host_type(True):
 
             # Windows points to the base path
-            doxygenpath = os.path.expandvars('${DOXYGEN}\\bin\\doxygen.exe')
+            doxygenpath = os.path.expandvars("${DOXYGEN}\\bin\\doxygen.exe")
             doxygenpath = convert_from_windows_path(doxygenpath)
         else:
             # Just append the exec name
-            doxygenpath = os.path.expandvars('${DOXYGEN}/doxygen')
+            doxygenpath = os.path.expandvars("${DOXYGEN}/doxygen")
 
         # Valid?
         if is_exe(doxygenpath):
@@ -520,7 +520,7 @@ def where_is_doxygen(verbose=False, refresh=False, path=None):
             return doxygenpath
 
     # Scan the PATH for the exec
-    doxygenpath = find_in_path('doxygen', executable=True)
+    doxygenpath = find_in_path("doxygen", executable=True)
     if doxygenpath:
         _DOXYGEN_PATH = doxygenpath
         return doxygenpath
@@ -531,11 +531,11 @@ def where_is_doxygen(verbose=False, refresh=False, path=None):
     # Check if it's installed but not in the path
     if get_windows_host_type(True):
 
-        # Try the 'ProgramFiles' folders
+        # Try the "ProgramFiles" folders
         for item in _WINDOWS_ENV_PATHS:
             if os.getenv(item, None):
                 doxygenpath = os.path.expandvars(
-                    '${' + item + '}\\doxygen\\bin\\doxygen.exe')
+                    "${" + item + "}\\doxygen\\bin\\doxygen.exe")
                 doxygenpath = convert_from_windows_path(doxygenpath)
                 full_paths.append(doxygenpath)
 
@@ -543,12 +543,12 @@ def where_is_doxygen(verbose=False, refresh=False, path=None):
 
         # MacOSX has it hidden in the application
         full_paths.append(
-            '/Applications/Doxygen.app/Contents/Resources/doxygen')
-        full_paths.append('/opt/local/bin/doxygen')
+            "/Applications/Doxygen.app/Contents/Resources/doxygen")
+        full_paths.append("/opt/local/bin/doxygen")
 
     if IS_LINUX:
         # Posix / Linux
-        full_paths.append('/usr/bin/doxygen')
+        full_paths.append("/usr/bin/doxygen")
 
     # Scan the list of known locations
     for doxygenpath in full_paths:
@@ -559,11 +559,11 @@ def where_is_doxygen(verbose=False, refresh=False, path=None):
 
     # Oh, dear.
     if verbose:
-        print('Doxygen not found!')
+        print("Doxygen not found!")
         if get_mac_host_type():
             print(
-                'Install the desktop application in the Applications folder '
-                'or use brew or macports for the command line version')
+                "Install the desktop application in the Applications folder "
+                "or use brew or macports for the command line version")
 
     # Can't find it
     return None
@@ -609,21 +609,21 @@ def where_is_git(verbose=False, refresh=False, path=None):
         return _GIT_PATH
 
     # Try the environment variable first
-    if os.getenv('GIT', None):
+    if os.getenv("GIT", None):
         if get_windows_host_type(True):
 
             # Windows points to the base path
-            gitpath = os.path.expandvars('${GIT}\\git.exe')
+            gitpath = os.path.expandvars("${GIT}\\git.exe")
             gitpath = convert_from_windows_path(gitpath)
             if is_exe(gitpath):
                 _GIT_PATH = gitpath
                 return gitpath
             # Try a second time using the bin folder
-            gitpath = os.path.expandvars('${GIT}\\bin\\git.exe')
+            gitpath = os.path.expandvars("${GIT}\\bin\\git.exe")
             gitpath = convert_from_windows_path(gitpath)
         else:
             # Just append the exec name
-            gitpath = os.path.expandvars('${GIT}/git')
+            gitpath = os.path.expandvars("${GIT}/git")
 
         # Valid?
         if is_exe(gitpath):
@@ -631,7 +631,7 @@ def where_is_git(verbose=False, refresh=False, path=None):
             return gitpath
 
     # Scan the PATH for the exec
-    gitpath = find_in_path('git', executable=True)
+    gitpath = find_in_path("git", executable=True)
     if gitpath:
         _GIT_PATH = gitpath
         return gitpath
@@ -642,22 +642,22 @@ def where_is_git(verbose=False, refresh=False, path=None):
     # Check if it's installed but not in the path
     if get_windows_host_type(True):
 
-        # Try the 'ProgramFiles' folders
+        # Try the "ProgramFiles" folders
         for item in _WINDOWS_ENV_PATHS:
             if os.getenv(item, None):
                 gitpath = os.path.expandvars(
-                    '${' + item + '}\\git\\bin\\git.exe')
+                    "${" + item + "}\\git\\bin\\git.exe")
                 gitpath = convert_from_windows_path(gitpath)
                 full_paths.append(gitpath)
 
     elif get_mac_host_type():
 
         # Installed here via brew
-        full_paths.append('/opt/local/bin/git')
+        full_paths.append("/opt/local/bin/git")
 
     if IS_LINUX:
         # Posix / Linux
-        full_paths.append('/usr/bin/git')
+        full_paths.append("/usr/bin/git")
 
     # Scan the list of known locations
     for gitpath in full_paths:
@@ -668,9 +668,9 @@ def where_is_git(verbose=False, refresh=False, path=None):
 
     # Oh, dear.
     if verbose:
-        print('git not found!')
+        print("git not found!")
         if get_mac_host_type():
-            print('Use brew or macports for the command line version')
+            print("Use brew or macports for the command line version")
 
     # Can't find it
     return None
@@ -697,7 +697,7 @@ def is_under_git_control(working_directory):
     gitpath = where_is_git()
     if gitpath:
         if not run_command(
-            (gitpath, 'rev-parse'),
+            (gitpath, "rev-parse"),
                 working_directory, True, True, True)[0]:
             return True
     return False
@@ -721,7 +721,7 @@ def _call_git(cmd, working_dir, verbose):
 
     # Output the command line if requested
     if verbose:
-        print(' '.join(cmd))
+        print(" ".join(cmd))
 
     # Perform the command
     # If verbose output is enabled, allow git to print the error
@@ -775,7 +775,7 @@ def make_git_version_header(working_dir, outputfilename, verbose=False):
 
     # Get the last hash
     error, git_hash = _call_git(
-        (gitexe, 'rev-parse', 'HEAD'),
+        (gitexe, "rev-parse", "HEAD"),
         working_dir, verbose)
 
     # The only way there is an error, is if this directory is not controlled
@@ -785,47 +785,47 @@ def make_git_version_header(working_dir, outputfilename, verbose=False):
 
     # Get the current branch
     error, git_branch = _call_git(
-        (gitexe, 'rev-parse', '--abbrev-ref', 'HEAD'),
+        (gitexe, "rev-parse", "--abbrev-ref", "HEAD"),
         working_dir, verbose)
 
     # Get the git tag
     error, git_tag = _call_git(
-        (gitexe, 'describe', '--tags', '--abbrev=0'),
+        (gitexe, "describe", "--tags", "--abbrev=0"),
         working_dir, verbose)
 
     # Get the full git tag
     error, git_full_tag = _call_git(
-        (gitexe, 'describe', '--tags', '--long'),
+        (gitexe, "describe", "--tags", "--long"),
         working_dir, verbose)
 
     # Write out the header
 
     output = [
-        '/***************************************',
-        '',
-        '\tThis file was generated by a call to',
-        '\tburger.buildutils.make_git_version_header() from',
-        '\tthe burger python package',
-        '',
-        '***************************************/',
-        '',
-        '#ifndef ' + headerguard,
-        '#define ' + headerguard,
-        '']
+        "/***************************************",
+        "",
+        "\tThis file was generated by a call to",
+        "\tburger.buildutils.make_git_version_header() from",
+        "\tthe burger python package",
+        "",
+        "***************************************/",
+        "",
+        "#ifndef " + headerguard,
+        "#define " + headerguard,
+        ""]
 
     if git_hash:
-        output.append('#define GIT_HASH "' + git_hash + '"')
+        output.append("#define GIT_HASH \"" + git_hash + "\"")
 
     if git_branch:
-        output.append('#define GIT_BRANCH "' + git_branch + '"')
+        output.append("#define GIT_BRANCH \"" + git_branch + "\"")
 
     if git_full_tag:
-        output.append('#define GIT_FULL_TAG "' + git_full_tag + '"')
+        output.append("#define GIT_FULL_TAG \"" + git_full_tag + "\"")
 
     if git_tag:
-        output.append('#define GIT_TAG "' + git_tag + '"')
+        output.append("#define GIT_TAG \"" + git_tag + "\"")
 
-    output.extend(['', '#endif'])
+    output.extend(["", "#endif"])
 
     # Check if the data is different than what's already stored on
     # the drive
@@ -833,7 +833,7 @@ def make_git_version_header(working_dir, outputfilename, verbose=False):
     from .fileutils import compare_file_to_string, save_text_file
     if compare_file_to_string(outputfilename, output) is False:
         if verbose:
-            print('Writing ' + outputfilename)
+            print("Writing " + outputfilename)
         try:
             save_text_file(outputfilename, output)
         except IOError as error:
@@ -883,15 +883,15 @@ def where_is_p4(verbose=False, refresh=False, path=None):
         return _PERFORCE_PATH
 
     # Try the environment variable first
-    if os.getenv('PERFORCE', None):
+    if os.getenv("PERFORCE", None):
         if get_windows_host_type(True):
 
             # Windows points to the base path
-            p4path = os.path.expandvars('${PERFORCE}\\p4.exe')
+            p4path = os.path.expandvars("${PERFORCE}\\p4.exe")
             p4path = convert_from_windows_path(p4path)
         else:
             # Just append the exec name
-            p4path = os.path.expandvars('${PERFORCE}/p4')
+            p4path = os.path.expandvars("${PERFORCE}/p4")
 
         # Valid?
         if is_exe(p4path):
@@ -899,7 +899,7 @@ def where_is_p4(verbose=False, refresh=False, path=None):
             return p4path
 
     # Scan the PATH for the exec
-    p4path = find_in_path('p4', executable=True)
+    p4path = find_in_path("p4", executable=True)
     if p4path:
         _PERFORCE_PATH = p4path
         return p4path
@@ -910,22 +910,22 @@ def where_is_p4(verbose=False, refresh=False, path=None):
     # Check if it's installed but not in the path
     if get_windows_host_type(True):
 
-        # Try the 'ProgramFiles' folders
+        # Try the "ProgramFiles" folders
         for item in _WINDOWS_ENV_PATHS:
             if os.getenv(item, None):
                 p4path = os.path.expandvars(
-                    '${' + item + '}\\perforce\\p4.exe')
+                    "${" + item + "}\\perforce\\p4.exe")
                 p4path = convert_from_windows_path(p4path)
                 full_paths.append(p4path)
 
     elif get_mac_host_type():
 
         # Installed here via brew
-        full_paths.append('/opt/local/bin/p4')
+        full_paths.append("/opt/local/bin/p4")
 
     if IS_LINUX:
         # Posix / Linux
-        full_paths.append('/usr/bin/p4')
+        full_paths.append("/usr/bin/p4")
 
     # Scan the list of known locations
     for p4path in full_paths:
@@ -936,9 +936,9 @@ def where_is_p4(verbose=False, refresh=False, path=None):
 
     # Oh, dear.
     if verbose:
-        print('Perforce "p4" not found!')
+        print("Perforce \"p4\" not found!")
         if get_mac_host_type():
-            print('Use brew or macports for the command line version')
+            print("Use brew or macports for the command line version")
 
     # Can't find it
     return None
@@ -968,11 +968,11 @@ def is_under_p4_control(working_directory):
     p4path = where_is_p4()
     if p4path:
         results = run_command(
-            (p4path, '-s', 'where', '...'),
+            (p4path, "-s", "where", "..."),
             working_directory, True, True, True)
         p4output = results[1].splitlines()
         for item in p4output:
-            if item.startswith('exit: '):
+            if item.startswith("exit: "):
                 i = int(item[6:])
                 if not i:
                     return True
@@ -986,12 +986,12 @@ def perforce_command(files, command, verbose=False):
     Given a list of files, send a command to execute on them in perforce
 
     Pass either a single string or a string list of pathnames
-    of files to checkout in perforce using the 'p4' command with
+    of files to checkout in perforce using the "p4" command with
     the command name
 
     Args:
         files: list or string object of file(s) to checkout
-        command: string to pass to p4 such as 'edit' or 'add'
+        command: string to pass to p4 such as "edit" or "add"
         verbose: If True, print the command line and warnings
 
     Returns:
@@ -1018,12 +1018,12 @@ def perforce_command(files, command, verbose=False):
     for item in file_list:
         item = os.path.abspath(item)
         # If p4.exe, it's windows. Use a windows pathname
-        if not perforce_path.endswith('p4'):
+        if not perforce_path.endswith("p4"):
             item = convert_to_windows_path(item)
 
         cmd = [perforce_path, command, item]
         if verbose:
-            print(' '.join(cmd))
+            print(" ".join(cmd))
         error = subprocess.call(cmd)
         if error:
             break
@@ -1037,7 +1037,7 @@ def perforce_edit(files, verbose=False):
     Given a list of files, checkout (Edit) them in perforce
 
     Pass either a single string or a string list of pathnames
-    of files to checkout in perforce using the 'p4 edit' command
+    of files to checkout in perforce using the "p4 edit" command
 
     Args:
         files: list or string object of file(s) to checkout
@@ -1050,7 +1050,7 @@ def perforce_edit(files, verbose=False):
     """
 
     # Perform the edit command
-    return perforce_command(files, 'edit', verbose=verbose)
+    return perforce_command(files, "edit", verbose=verbose)
 
 ########################################
 
@@ -1060,7 +1060,7 @@ def perforce_add(files, verbose=False):
     Given a list of files, add them in perforce
 
     Pass either a single string or a string list of pathnames
-    of files to checkout in perforce using the 'p4 add' command
+    of files to checkout in perforce using the "p4 add" command
 
     Args:
         files: list or string object of file(s) to add
@@ -1073,7 +1073,7 @@ def perforce_add(files, verbose=False):
     """
 
     # Perform the edit command
-    return perforce_command(files, 'add', verbose=verbose)
+    return perforce_command(files, "add", verbose=verbose)
 
 ########################################
 
@@ -1120,14 +1120,14 @@ def perforce_opened(files=None, verbose=False):
         quiet=not verbose)
 
     # Was there an error?
-    if result[2] != '':
+    if result[2] != "":
         # Print the error on verbose output
         if verbose:
             print(result[2])
         return []
-    # Perforce uses '#' as a delimiter from the filename
+    # Perforce uses "#" as a delimiter from the filename
     # to the file version.
-    return [x.split('#')[0] for x in result[1].splitlines()]
+    return [x.split("#")[0] for x in result[1].splitlines()]
 
 ########################################
 
@@ -1171,8 +1171,8 @@ def where_is_watcom(command=None, verbose=False, refresh=False, path=None):
 
     # Windows .exe
     if get_windows_host_type(True):
-        exe_folder = 'binnt'
-        suffix = '.exe'
+        exe_folder = "binnt"
+        suffix = ".exe"
 
     # Watcom is not available on macOS yet
     elif get_mac_host_type():
@@ -1180,14 +1180,14 @@ def where_is_watcom(command=None, verbose=False, refresh=False, path=None):
 
     # Linux
     else:
-        exe_folder = 'binl'
-        suffix = ''
+        exe_folder = "binl"
+        suffix = ""
 
     # Append the system specific suffix
     if command:
         fake_command = command + suffix
     else:
-        fake_command = 'wcc386' + suffix
+        fake_command = "wcc386" + suffix
 
     # Is cached?
     if _WATCOM_PATH:
@@ -1196,7 +1196,7 @@ def where_is_watcom(command=None, verbose=False, refresh=False, path=None):
         return _WATCOM_PATH
 
     # Try the environment variable first
-    watcom_path = os.getenv('WATCOM', None)
+    watcom_path = os.getenv("WATCOM", None)
     if watcom_path:
         # Valid?
         watcom_path = convert_from_windows_path(watcom_path)
@@ -1211,20 +1211,20 @@ def where_is_watcom(command=None, verbose=False, refresh=False, path=None):
     full_paths = []
     if get_windows_host_type(True):
         # Watcom defaults to the root folder
-        home_drive = os.getenv('HOMEDRIVE', 'C:')
-        watcom_path = convert_from_windows_path(home_drive + '\\WATCOM')
+        home_drive = os.getenv("HOMEDRIVE", "C:")
+        watcom_path = convert_from_windows_path(home_drive + "\\WATCOM")
         full_paths.append(watcom_path)
 
-        # Try the 'ProgramFiles' folders
+        # Try the "ProgramFiles" folders
         for item in _WINDOWS_ENV_PATHS:
             if os.getenv(item, None):
-                watcom_path = os.path.expandvars('${' + item + '}\\watcom')
+                watcom_path = os.path.expandvars("${" + item + "}\\watcom")
                 watcom_path = convert_from_windows_path(watcom_path)
                 full_paths.append(watcom_path)
 
     if IS_LINUX:
         # Posix / Linux
-        full_paths.append('/usr/bin/watcom')
+        full_paths.append("/usr/bin/watcom")
 
     # Scan the list of known locations
     for watcom_path in full_paths:
@@ -1239,7 +1239,7 @@ def where_is_watcom(command=None, verbose=False, refresh=False, path=None):
 
     # Oh, dear.
     if verbose:
-        print('Watcom was not found!')
+        print("Watcom was not found!")
 
     # Can't find it
     return None
@@ -1281,9 +1281,9 @@ def run_command(args, working_dir=None, quiet=False, capture_stdout=False,
             if is_string(args):
                 msg = args
             else:
-                msg = ' '.join(args)
-            print('Command line "{}" generated error {}'.format(msg, error))
-        return (error.errno, '', '')
+                msg = " ".join(args)
+            print("Command line \"{}\" generated error {}".format(msg, error))
+        return (error.errno, "", "")
 
     stdoutstr, stderrstr = tempfp.communicate()
     return (tempfp.returncode, stdoutstr, stderrstr)
@@ -1332,69 +1332,69 @@ def make_version_header(working_dir, outputfilename, verbose=False):
     # -t / Display the time
     # -l / Print out the entire changelist description
 
-    cmd = (p4exe, 'changes', '-m', '1', '-t', '-l', '...#have')
+    cmd = (p4exe, "changes", "-m", "1", "-t", "-l", "...#have")
     if verbose:
-        print(' '.join(cmd))
+        print(" ".join(cmd))
     error, tempdata = run_command(cmd, working_dir, capture_stdout=True)[:2]
     if error != 0:
         return error
 
     # Parse out the output of the p4 changes command
-    p4changes = tempdata.strip().split(' ')
+    p4changes = tempdata.strip().split(" ")
 
     # Get the p4 client
     # Parse "P4CLIENT=burgeroctocore (config)"
 
-    cmd = (p4exe, 'set', 'P4CLIENT')
+    cmd = (p4exe, "set", "P4CLIENT")
     if verbose:
-        print(' '.join(cmd))
+        print(" ".join(cmd))
     error, tempdata = run_command(cmd, working_dir, capture_stdout=True)[:2]
     if error != 0:
         return error
 
     # Parse out the P4CLIENT query
-    p4clients = tempdata.strip().split(' ', 1)[0].split('=')
+    p4clients = tempdata.strip().split(" ", 1)[0].split("=")
 
     # Get the p4 user
     # Parse "P4USER=burgerbecky (config)"
 
-    cmd = (p4exe, 'set', 'P4USER')
+    cmd = (p4exe, "set", "P4USER")
     if verbose:
-        print(' '.join(cmd))
+        print(" ".join(cmd))
     error, tempdata = run_command(cmd, working_dir, capture_stdout=True)[:2]
     if error != 0:
         return error
 
     # Parse out the P4USER query
-    p4users = tempdata.strip().split(' ', 1)[0].split('=')
+    p4users = tempdata.strip().split(" ", 1)[0].split("=")
 
     # Write out the header
 
     output = [
-        '/***************************************',
-        '',
-        '\tThis file was generated by a call to',
-        '\tburger.buildutils.make_version_header() from',
-        '\tthe burger python package',
-        '',
-        '***************************************/',
-        '',
-        '#ifndef ' + headerguard,
-        '#define ' + headerguard,
-        '']
+        "/***************************************",
+        "",
+        "\tThis file was generated by a call to",
+        "\tburger.buildutils.make_version_header() from",
+        "\tthe burger python package",
+        "",
+        "***************************************/",
+        "",
+        "#ifndef " + headerguard,
+        "#define " + headerguard,
+        ""]
 
     if len(p4changes) > 4:
-        output.append('#define P4_CHANGELIST ' + p4changes[1])
-        output.append('#define P4_CHANGEDATE "' + p4changes[3] + '"')
-        output.append('#define P4_CHANGETIME "' + p4changes[4] + '"')
+        output.append("#define P4_CHANGELIST " + p4changes[1])
+        output.append("#define P4_CHANGEDATE \"" + p4changes[3] + "\"")
+        output.append("#define P4_CHANGETIME \"" + p4changes[4] + "\"")
 
     if len(p4clients) > 1:
-        output.append('#define P4_CLIENT "' + p4clients[1] + '"')
+        output.append("#define P4_CLIENT \"" + p4clients[1] + "\"")
 
     if len(p4users) > 1:
-        output.append('#define P4_USER "' + p4users[1] + '"')
+        output.append("#define P4_USER \"" + p4users[1] + "\"")
 
-    output.extend(['', '#endif'])
+    output.extend(["", "#endif"])
 
     # Check if the data is different than what's already stored on
     # the drive
@@ -1402,7 +1402,7 @@ def make_version_header(working_dir, outputfilename, verbose=False):
     from .fileutils import compare_file_to_string, save_text_file
     if compare_file_to_string(outputfilename, output) is False:
         if verbose:
-            print('Writing ' + outputfilename)
+            print("Writing " + outputfilename)
         try:
             save_text_file(outputfilename, output)
         except IOError as error:
@@ -1436,7 +1436,7 @@ def is_codewarrior_mac_allowed():
 
         # Convert 10.5.8 to 10.5
 
-        digits = release.split('.')
+        digits = release.split(".")
 
         # Snow Leopard (10.6) supports Rosetta
         # Lion (10.7) and Mountain Lion (10.8) do not
@@ -1565,7 +1565,7 @@ def run_py_script(file_name, function_name=None, arg=None):
 
     # If a function name wasn't passed, assume it's ``main``
     if not function_name:
-        function_name = 'main'
+        function_name = "main"
 
     # Load in the script
     module = import_py_script(file_name)
@@ -1593,7 +1593,7 @@ def where_is_visual_studio(vs_version):
         # Normal use
         vs_path = burger.buildutils.where_is_visual_studio(2010)
         if not vs_path:
-            print('Visual Studio 2010 not found')
+            print("Visual Studio 2010 not found")
             raise NameError("Visual Studio 2010 not found")
 
     Args:
@@ -1611,16 +1611,16 @@ def where_is_visual_studio(vs_version):
     # and path that the specific version of Visual Studio resides
 
     vs_table = {
-        2003: ('VS71COMNTOOLS', 'Microsoft Visual Studio .NET 2003'),
-        2005: ('VS80COMNTOOLS', 'Microsoft Visual Studio 8'),
-        2008: ('VS90COMNTOOLS', 'Microsoft Visual Studio 9.0'),
-        2010: ('VS100COMNTOOLS', 'Microsoft Visual Studio 10.0'),
-        2012: ('VS110COMNTOOLS', 'Microsoft Visual Studio 11.0'),
-        2013: ('VS120COMNTOOLS', 'Microsoft Visual Studio 12.0'),
-        2015: ('VS140COMNTOOLS', 'Microsoft Visual Studio 14.0'),
-        2017: ('VS150COMNTOOLS', 'Microsoft Visual Studio\\2017\\xxx'),
-        2019: ('VS160COMNTOOLS', 'Microsoft Visual Studio\\2019\\xxx'),
-        2022: ('VS170COMNTOOLS', 'Microsoft Visual Studio\\2022\\xxx')
+        2003: ("VS71COMNTOOLS", "Microsoft Visual Studio .NET 2003"),
+        2005: ("VS80COMNTOOLS", "Microsoft Visual Studio 8"),
+        2008: ("VS90COMNTOOLS", "Microsoft Visual Studio 9.0"),
+        2010: ("VS100COMNTOOLS", "Microsoft Visual Studio 10.0"),
+        2012: ("VS110COMNTOOLS", "Microsoft Visual Studio 11.0"),
+        2013: ("VS120COMNTOOLS", "Microsoft Visual Studio 12.0"),
+        2015: ("VS140COMNTOOLS", "Microsoft Visual Studio 14.0"),
+        2017: ("VS150COMNTOOLS", "Microsoft Visual Studio\\2017\\xxx"),
+        2019: ("VS160COMNTOOLS", "Microsoft Visual Studio\\2019\\xxx"),
+        2022: ("VS170COMNTOOLS", "Microsoft Visual Studio\\2022\\xxx")
     }
 
     # Check if it's even in the table
@@ -1649,22 +1649,22 @@ def where_is_visual_studio(vs_version):
                 for item in _VS_VARIANTS:
                     vstudio_paths.append(
                         vstudiopath +
-                        '\\' +
+                        "\\" +
                         table_item[1].replace("xxx", item) +
-                        '\\Common7\\Tools\\')
+                        "\\Common7\\Tools\\")
             else:
                 vstudio_paths.append(
                     vstudiopath +
-                    '\\' +
+                    "\\" +
                     table_item[1] +
-                    '\\Common7\\Tools\\')
+                    "\\Common7\\Tools\\")
 
     for item in vstudio_paths:
         vstudiopath = convert_from_windows_path(item)
 
         # Locate the launcher
         vstudiopath = os.path.dirname(os.path.abspath(vstudiopath))
-        vstudiopath = os.path.join(vstudiopath, 'ide', 'devenv.com')
+        vstudiopath = os.path.join(vstudiopath, "ide", "devenv.com")
         if os.path.isfile(vstudiopath):
             # Return the path if the file was found
             return vstudiopath
@@ -1715,16 +1715,16 @@ def where_is_codeblocks(verbose=False, refresh=False, path=None):
         return _CODEBLOCKS_PATH
 
     # Try the environment variable first
-    codeblocks_env = os.getenv('CODEBLOCKS', None)
+    codeblocks_env = os.getenv("CODEBLOCKS", None)
     if codeblocks_env:
         if get_windows_host_type(True):
 
             # Windows points to the base path
             codeblocks_path = convert_from_windows_path(
-                codeblocks_env + '\\codeblocks.exe')
+                codeblocks_env + "\\codeblocks.exe")
         else:
             # Just append the exec name
-            codeblocks_path = os.path.expandvars('${CODEBLOCKS}/CodeBlocks')
+            codeblocks_path = os.path.expandvars("${CODEBLOCKS}/CodeBlocks")
 
         # Valid?
         if is_exe(codeblocks_path):
@@ -1732,7 +1732,7 @@ def where_is_codeblocks(verbose=False, refresh=False, path=None):
             return codeblocks_path
 
     # Scan the PATH for the exec
-    codeblocks_path = find_in_path('CodeBlocks', executable=True)
+    codeblocks_path = find_in_path("CodeBlocks", executable=True)
     if codeblocks_path:
         _CODEBLOCKS_PATH = codeblocks_path
         return codeblocks_path
@@ -1743,10 +1743,10 @@ def where_is_codeblocks(verbose=False, refresh=False, path=None):
     # Check if it's installed but not in the path
     if get_windows_host_type(True):
 
-        # Try the 'ProgramFiles' folders
+        # Try the "ProgramFiles" folders
         for item in _WINDOWS_ENV_PATHS:
             if os.getenv(item, None):
-                codeblocks_path = item + '\\CodeBlocks\\codeblocks.exe'
+                codeblocks_path = item + "\\CodeBlocks\\codeblocks.exe"
                 codeblocks_path = convert_from_windows_path(codeblocks_path)
                 full_paths.append(codeblocks_path)
 
@@ -1754,13 +1754,13 @@ def where_is_codeblocks(verbose=False, refresh=False, path=None):
 
         # MacOSX has it hidden in the application
         full_paths.append(
-            '/Applications/CodeBlocks.app/Contents/MacOS/CodeBlocks')
-        full_paths.append('/opt/local/bin/CodeBlocks')
+            "/Applications/CodeBlocks.app/Contents/MacOS/CodeBlocks")
+        full_paths.append("/opt/local/bin/CodeBlocks")
 
     if IS_LINUX:
         # Posix / Linux
-        full_paths.append('/usr/bin/codeblocks')
-        full_paths.append('/usr/bin/CodeBlocks')
+        full_paths.append("/usr/bin/codeblocks")
+        full_paths.append("/usr/bin/CodeBlocks")
 
     # Scan the list of known locations
     for codeblocks_path in full_paths:
@@ -1771,9 +1771,9 @@ def where_is_codeblocks(verbose=False, refresh=False, path=None):
 
     # Oh, dear.
     if verbose:
-        print('CodeBlocks not found!')
+        print("CodeBlocks not found!")
         if get_mac_host_type():
-            print('Install the desktop application in the Applications folder')
+            print("Install the desktop application in the Applications folder")
 
     # Can't find it
     return None
@@ -1796,7 +1796,7 @@ def where_is_xcode(xcode_version=None):
         # Normal use
         xcode_path = burger.buildutils.where_is_xcode(10)
         if not xcode_path:
-            print('XCode 10 not found')
+            print("XCode 10 not found")
             raise NameError("XCode 10 not found")
 
     Args:
@@ -1824,9 +1824,9 @@ def where_is_xcode(xcode_version=None):
 
     dir_list = []
     if xcode_version is None or xcode_version < 5:
-        dir_list.append('/Developer/Applications')
+        dir_list.append("/Developer/Applications")
     if xcode_version is None or xcode_version > 3:
-        dir_list.append('/Applications')
+        dir_list.append("/Applications")
 
     for base_dir in dir_list:
         # Check if the directory exists first
@@ -1836,13 +1836,13 @@ def where_is_xcode(xcode_version=None):
             for item in os.listdir(base_dir):
 
                 # Scan only apps whose name starts with xcode
-                if not item.lower().startswith('xcode'):
+                if not item.lower().startswith("xcode"):
                     continue
 
-                temp_path = base_dir + '/' + item + '/Contents/version.plist'
+                temp_path = base_dir + "/" + item + "/Contents/version.plist"
                 try:
                     if PY3_4_OR_HIGHER:
-                        with open(temp_path, 'rb') as filefp:
+                        with open(temp_path, "rb") as filefp:
                             version_dict = plistlib.load(filefp)
                     else:
                         version_dict = plistlib.readPlist(
@@ -1852,20 +1852,20 @@ def where_is_xcode(xcode_version=None):
                 except IOError:
                     continue
 
-                version = version_dict.get('CFBundleShortVersionString', None)
+                version = version_dict.get("CFBundleShortVersionString", None)
                 if not version:
                     continue
 
                 # Check the version for a match
-                version = int(version.split('.')[0])
+                version = int(version.split(".")[0])
 
                 # XCode 3 is hard coded to Developer
                 if version == 3:
-                    temp_path = '/Developer/usr/bin/xcodebuild'
+                    temp_path = "/Developer/usr/bin/xcodebuild"
                 else:
                     temp_path = (
-                        '{}/{}/Contents/Developer'
-                        '/usr/bin/xcodebuild').format(base_dir, item)
+                        "{}/{}/Contents/Developer"
+                        "/usr/bin/xcodebuild").format(base_dir, item)
 
                 if not os.path.isfile(temp_path):
                     continue
@@ -1884,7 +1884,7 @@ def where_is_xcode(xcode_version=None):
     # XCode 3 is hard coded to a specific location
     if (not xcode_version and not highest_version) or xcode_version == 3:
         # On OSX Lion and higher, XCode 3.1.4 is a separate folder
-        for item in ('/Xcode3.1.4/usr/bin/xcodebuild',):
+        for item in ("/Xcode3.1.4/usr/bin/xcodebuild",):
             if os.path.isfile(item):
                 xcodebuild = (item, 3)
                 break

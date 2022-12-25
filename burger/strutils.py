@@ -106,13 +106,13 @@ PY3_4_OR_HIGHER = sys.version_info >= (3, 4, 0)
 PY3_5_OR_HIGHER = sys.version_info >= (3, 5, 0)
 
 # True if the interpreter is PyPy
-PYPY = platform.python_implementation() == 'PyPy'
+PYPY = platform.python_implementation() == "PyPy"
 
 # Valid characters for windows filenames without quoting
-_WINDOWSSAFESET = frozenset(string.ascii_letters + string.digits + '_-.:\\')
+_WINDOWSSAFESET = frozenset(string.ascii_letters + string.digits + "_-.:\\")
 
 # Valid characters for macOS and Linux files without quoting
-_LINUXSAFESET = frozenset(string.ascii_letters + string.digits + '@%_-+=:,./')
+_LINUXSAFESET = frozenset(string.ascii_letters + string.digits + "@%_-+=:,./")
 
 # Regex to match comma and quotes
 _RE_COMMA_QUOTES = re.compile(r"\\.|[\"',]", re.DOTALL)
@@ -121,33 +121,33 @@ _RE_COMMA_QUOTES = re.compile(r"\\.|[\"',]", re.DOTALL)
 _MAC_HOST_TYPE = None
 
 # Running on linux?
-IS_LINUX = sys.platform.startswith('linux')
+IS_LINUX = sys.platform.startswith("linux")
 
 # Running on macOS X
-IS_MACOSX = sys.platform.startswith('darwin')
+IS_MACOSX = sys.platform.startswith("darwin")
 
 # Running on Windows
-IS_WINDOWS = sys.platform.startswith('win')
+IS_WINDOWS = sys.platform.startswith("win")
 
 # Running on Cygwin
-IS_CYGWIN = sys.platform.startswith('cygwin')
+IS_CYGWIN = sys.platform.startswith("cygwin")
 
 # Running on MSYS
-IS_MSYS = sys.platform.startswith('msys')
+IS_MSYS = sys.platform.startswith("msys")
 
 # Running on Windows Subsystem for Linux
-IS_WSL = IS_LINUX and 'icrosoft' in platform.platform()
+IS_WSL = IS_LINUX and "icrosoft" in platform.platform()
 
 # Running on Windows (Including Linux shells on windows)
 IS_WINDOWS_HOST = IS_WINDOWS or IS_CYGWIN or IS_MSYS or IS_WSL
 
 if IS_CYGWIN:
     # Prefix string for conversion of Windows paths to Linux.
-    _WINDOWS_HOST_PREFIX = '/cygdrive/'
+    _WINDOWS_HOST_PREFIX = "/cygdrive/"
 elif IS_MSYS:
-    _WINDOWS_HOST_PREFIX = '/'
+    _WINDOWS_HOST_PREFIX = "/"
 elif IS_WSL:
-    _WINDOWS_HOST_PREFIX = '/mnt/'
+    _WINDOWS_HOST_PREFIX = "/mnt/"
 else:
     _WINDOWS_HOST_PREFIX = None
 
@@ -172,7 +172,7 @@ def unicode_print(input_string):
         print(input_string)
     except UnicodeEncodeError:
         # Ensure it's encoded to utf-8
-        encoded = input_string.encode('utf-8')
+        encoded = input_string.encode("utf-8")
         if PY2:
 
             # Python 2.x only accepts this as input
@@ -273,11 +273,11 @@ def norm_paths(working_directory, items):
 def string_to_bool(item):
     """Convert an item to a boolean.
 
-    Strings 'true', 't', ' on', 'yes', and, 'y' return True
-    'false', 'f', 'off', 'no', and 'n' return False
+    Strings "true", "t", "on", "yes", and, "y" return True
+    "false", "f", "off", "no", and "n" return False
 
     Non zero numbers or strings that are numbers become True
-    Zero and '0' become False.
+    Zero and "0" become False.
 
     Args:
         item: String or integer to convert.
@@ -304,9 +304,9 @@ def string_to_bool(item):
 
     if is_string(item):
         item_lower = item.lower()
-        if item_lower in ('true', 't', 'on', 'yes', 'y'):
+        if item_lower in ("true", "t", "on", "yes", "y"):
             return True
-        if item_lower in ('false', 'f', 'off', 'no', 'n'):
+        if item_lower in ("false", "f", "off", "no", "n"):
             return False
         try:
             return bool(int(item))
@@ -323,81 +323,81 @@ def string_to_bool(item):
 
 def TrueFalse(item):            # pylint: disable=C0103
     """
-    Convert the input into a boolean and return the string 'True' or 'False'
+    Convert the input into a boolean and return the string "True" or "False"
 
-    If the input was a string of '0' or 'False' (Case insensitive comparision),
-    this function will return 'False'. Empty dictionary, string or list
-    objects, or the number zero will also return 'False'
+    If the input was a string of "0" or "False" (Case insensitive comparision),
+    this function will return "False". Empty dictionary, string or list
+    objects, or the number zero will also return "False"
 
     Args:
         item: Object to convert to a bool before converting into a string
     Returns:
-        The string 'True' or 'False'
+        The string "True" or "False"
     See Also:
         truefalse, TRUEFALSE
     """
 
-    # Test if it's the string 'False'
+    # Test if it's the string "False"
     if is_string(item):
-        if item == '0' or item.upper() == 'FALSE':
-            return 'False'
+        if item == "0" or item.upper() == "FALSE":
+            return "False"
     if bool(item):
-        return 'True'
-    return 'False'
+        return "True"
+    return "False"
 
 ########################################
 
 
 def truefalse(item):
     """
-    Convert the input into a boolean and return the string 'true' or 'false'
+    Convert the input into a boolean and return the string "true" or "false"
 
-    If the input was a string of '0' or 'False' (Case insensitive comparision),
-    this function will return 'false'. Empty dictionary, string or list
-    objects, or the number zero will also return 'false'
+    If the input was a string of "0" or "False" (Case insensitive comparision),
+    this function will return "false". Empty dictionary, string or list
+    objects, or the number zero will also return "false"
 
     Args:
         item: Object to convert to a bool before converting into a string
     Returns:
-        The string 'true' or 'false'
+        The string "true" or "false"
     See Also:
         TRUEFALSE, TrueFalse
     """
 
-    # Test if it's the string 'False'
+    # Test if it's the string "False"
     if is_string(item):
-        if item == '0' or item.upper() == 'FALSE':
-            return 'false'
+        if item == "0" or item.upper() == "FALSE":
+            return "false"
     if bool(item):
-        return 'true'
-    return 'false'
+        return "true"
+    return "false"
 
 ########################################
 
 
 def TRUEFALSE(item):            # pylint: disable=C0103
     """
-    Convert the input into a boolean and return the string 'TRUE' or 'FALSE'
+    Convert the input into a boolean and return the string "TRUE" or "FALSE"
 
-    If the input was a string of '0' or 'False' (Case insensitive comparision),
-    this function will return 'FALSE'. Empty dictionary, string or list
-    objects, or the number zero will also return 'FALSE'
+    If the input was a string of "0" or "False" (Case insensitive comparision),
+    this function will return "FALSE". Empty dictionary, string or list
+    objects, or the number zero will also return "FALSE"
 
     Args:
         item: Object to convert to a bool before converting into a string
     Returns:
-        The string 'TRUE' or 'FALSE'
+        The string "TRUE" or "FALSE"
     See Also:
         truefalse, TrueFalse
     """
 
-    # Test if it's the string 'False'
+    # Test if it's the string "False"
     if is_string(item):
-        if item == '0' or item.upper() == 'FALSE':
-            return 'FALSE'
+        if item == "0" or item.upper() == "FALSE":
+            return "FALSE"
     if bool(item):
-        return 'TRUE'
-    return 'FALSE'
+        return "TRUE"
+    return "FALSE"
 
 ########################################
 
@@ -406,27 +406,27 @@ def convert_to_windows_slashes(path_name, force_ending_slash=False):
     """
     Convert a filename from Linux/macOS to Windows format
 
-    Convert all '/' characters into '\' characters
+    Convert all "/" characters into "\" characters
 
-    If force_ending_slash is True, append a '\' if one is not
+    If force_ending_slash is True, append a "\" if one is not
     present in the final string
 
     Args:
         path_name: A pathname to be converted to Windows slashes
-        force_ending_slash: True if a '\\' character is to be forced at the end
+        force_ending_slash: True if a "\\" character is to be forced at the end
             of the output
 
     Returns:
-        A pathname using Windows type slashes '\\'
+        A pathname using Windows type slashes "\\"
 
     See Also:
         convert_to_linux_slashes
 
     """
 
-    result = path_name.replace('/', '\\')
-    if force_ending_slash and not result.endswith('\\'):
-        result = result + '\\'
+    result = path_name.replace("/", "\\")
+    if force_ending_slash and not result.endswith("\\"):
+        result = result + "\\"
     return result
 
 ########################################
@@ -436,23 +436,23 @@ def convert_to_linux_slashes(path_name, force_ending_slash=False):
     """
     Convert a filename from Windows to Linux/macOS format
 
-    Convert all '\' characters into '/' characters
+    Convert all "\" characters into "/" characters
 
     Args:
         path_name: A string object that text substitution will occur
-        force_ending_slash: True if a '/' character is to be forced at the end
+        force_ending_slash: True if a "/" character is to be forced at the end
             of the output
 
     Returns:
-        A pathname using Linux/BSD type slashes '/'
+        A pathname using Linux/BSD type slashes "/"
 
     See Also:
         convert_to_windows_slashes
     """
 
-    result = path_name.replace('\\', '/')
-    if force_ending_slash and not result.endswith('/'):
-        result = result + '/'
+    result = path_name.replace("\\", "/")
+    if force_ending_slash and not result.endswith("/"):
+        result = result + "/"
     return result
 
 ########################################
@@ -486,11 +486,11 @@ def encapsulate_path_windows(input_path):
     else:
         # No illegal characters in the string
         if not temp:
-            return '""'
+            return "\"\""
         return temp
 
     # Since the test failed, quote the string
-    return '"{}"'.format(temp.replace('"', '\\"'))
+    return "\"{}\"".format(temp.replace("\"", "\\\""))
 
 ########################################
 
@@ -539,7 +539,7 @@ def encapsulate_path(input_path):
     character that could confuse COMMAND.COM, the string
     will be quoted, and for other platforms, it will
     be quoted using rules that work best for BASH.
-    This will also quote if the path has a ';' which
+    This will also quote if the path has a ";" which
     could be used to confuse bash.
 
     Args:
@@ -589,17 +589,17 @@ def split_comma_with_quotes(comma_string):
     """
     Split comma seperated string while handling quotes
 
-    str.split(',') will split a string into a list but it doesn't
+    str.split(",") will split a string into a list but it doesn't
     handle entries that are encased in quotes. This function will
     scan for quote characters and skip over any comma that's encased
     in quotes.
 
     Examples:
-        # Result is ['"foo,bar"','foo','bar']
-        lines = burger.strutils.split_comma_with_quotes('"foo,bar",foo,bar')
+        # Result is ["\"foo,bar\"","foo","bar"]
+        lines = burger.strutils.split_comma_with_quotes("\"foo,bar\",foo,bar")
 
         # Will raise an error due to missing end quote
-        willraise = burger.strutils.split_comma_with_quote('"foo,bar')
+        willraise = burger.strutils.split_comma_with_quote("\"foo,bar")
 
     Args:
         comma_string: String of comma seperated strings
@@ -616,7 +616,7 @@ def split_comma_with_quotes(comma_string):
     marker = 0
 
     # No delimiter found yet
-    delimiter = ''
+    delimiter = ""
     result = []
 
     # Get list of matches
@@ -626,10 +626,10 @@ def split_comma_with_quotes(comma_string):
         temp = match.group(0)
 
         # Looking for a comma?
-        if delimiter == '':
+        if delimiter == "":
 
             # This is a comma that will trigger a split
-            if temp == ',':
+            if temp == ",":
 
                 # Add in the string that was found
                 result.append(comma_string[marker:match.start()])
@@ -644,7 +644,7 @@ def split_comma_with_quotes(comma_string):
         # A delimiter is being tracker, has it been hit?
         elif temp == delimiter:
             # Enable splitting on commas
-            delimiter = ''
+            delimiter = ""
 
     # If the quote was not matched, throw an exception
     if delimiter:
@@ -669,15 +669,15 @@ def parse_csv(csv_string):
     Given a string of comma seperated entries and handle quotes properly.
 
     Examples:
-        # Result is ['foo,bar','foo','bar']
-        lines = burger.strutils.split_comma_with_quotes('"foo,bar",foo,bar')
+        # Result is ["foo,bar","foo","bar"]
+        lines = burger.strutils.split_comma_with_quotes("\"foo,bar\",foo,bar")
 
-        # Result is ['foo"bar',"'boo'boo'"]
+        # Result is ["foo\"bar","'boo'boo'"]
         lines = burger.strutils.split_comma_with_quotes(
-            '"foo""bar","'boo,boo'")
+            "\"foo\"\"bar\"","'boo,boo'")
 
         # Will raise an error due to missing end quote
-        willraise = burger.strutils.split_comma_with_quote('"foo,bar')
+        willraise = burger.strutils.split_comma_with_quote("\"foo,bar")
 
     Args:
         csv_string: String of comma seperated entries
@@ -692,7 +692,7 @@ def parse_csv(csv_string):
     for item in split_comma_with_quotes(csv_string):
 
         # Strip the whitespace
-        temp = item.strip('\n\r \t')
+        temp = item.strip("\n\r \t")
 
         # Is there anything to parse?
         if temp:
@@ -735,11 +735,11 @@ def host_machine():
     """
     Return the high level operating system's name
 
-    Return the machine this script is running on, 'windows', 'macosx',
-    'linux' or 'unknown'
+    Return the machine this script is running on, "windows", "macosx",
+    "linux" or "unknown"
 
     Returns:
-        The string 'windows', 'macosx', 'linux', or 'unknown'
+        The string "windows", "macosx", "linux", or "unknown"
 
     See Also:
         get_mac_host_type, get_windows_host_type
@@ -747,18 +747,18 @@ def host_machine():
 
     # Is it ONLY windows, not hosted on windows?
     if IS_WINDOWS:
-        return 'windows'
+        return "windows"
 
     # Is it macOS X?
     if IS_MACOSX:
-        return 'macosx'
+        return "macosx"
 
     if IS_LINUX or IS_CYGWIN or IS_MSYS or IS_WSL:
         # Assume linux or linux clones
-        return 'linux'
+        return "linux"
 
     # Surrender Dorothy
-    return 'unknown'
+    return "unknown"
 
 ########################################
 
@@ -767,14 +767,14 @@ def get_windows_host_type(wsl_allowed=False):
     """
     Return windows host type (32 or 64 bit)
 
-    Return False if the host is not Windows, 'x86' if it's a 32 bit host
-    and 'x64' if it's a 64 bit host, and possibly 'arm' if an arm host
+    Return False if the host is not Windows, "x86" if it's a 32 bit host
+    and "x64" if it's a 64 bit host, and possibly "arm" if an arm host
 
     Args:
         wsl_allowed: If True, allow returning a host type if cygwin
             is the shell.
     Returns:
-        The string 'x64', 'x86', 'arm', 'arm64', 'ia64' or False
+        The string "x64", "x86", "arm", "arm64", "ia64" or False
     See Also:
         get_mac_host_type, host_machine
 
@@ -793,11 +793,11 @@ def get_windows_host_type(wsl_allowed=False):
     # Test the CPU for the type
 
     machine = platform.machine().lower()
-    if machine in ('amd64', 'x86_64', 'em64t'):
-        return 'x64'
-    if machine in ('arm64', 'arm', 'ia64'):
+    if machine in ("amd64", "x86_64", "em64t"):
+        return "x64"
+    if machine in ("arm64", "arm", "ia64"):
         return machine
-    return 'x86'
+    return "x86"
 
 ########################################
 
@@ -806,11 +806,11 @@ def get_mac_host_type():
     """
     Return Mac OSX host type (PowerPC/Intel)
 
-    Return False if the host is not Mac OSX. 'ppc' or 'ppc64' if it's a Power
-    PC based system, 'x86' or 'x64' for Intel (Both 32 and 64 bit)
+    Return False if the host is not Mac OSX. "ppc" or "ppc64" if it's a Power
+    PC based system, "x86" or "x64" for Intel (Both 32 and 64 bit)
 
     Returns:
-        The string 'x86', 'x64', 'ppc', 'ppc64' or False.
+        The string "x86", "x64", "ppc", "ppc64" or False.
 
     See Also:
         get_windows_host_type, host_machine
@@ -829,22 +829,22 @@ def get_mac_host_type():
             cpu = platform.machine()
 
             # Intel 64 bit
-            if cpu == 'x86_64':
-                cpu = 'x64'
+            if cpu == "x86_64":
+                cpu = "x64"
 
             # Special case for Power Macs
-            elif cpu in ('PowerPC', 'ppc', 'Power Macintosh'):
+            elif cpu in ("PowerPC", "ppc", "Power Macintosh"):
 
                 # Issue the command `machine` and capture the output.
-                # If it contains 'ppc970' then you're running on a 64 bit
+                # If it contains "ppc970" then you're running on a 64 bit
                 # version of macOS, despite what platform.machine() says
 
                 # pylint: disable=import-outside-toplevel
                 from .buildutils import run_command
-                if 'ppc970' in run_command('machine', capture_stdout=True)[1]:
-                    cpu = 'ppc64'
+                if "ppc970" in run_command("machine", capture_stdout=True)[1]:
+                    cpu = "ppc64"
                 else:
-                    cpu = 'ppc'
+                    cpu = "ppc"
         _MAC_HOST_TYPE = cpu
     # Return the resolved global
     return _MAC_HOST_TYPE
@@ -870,13 +870,13 @@ def escape_xml_cdata(xml_string):
 
     # IMPORTANT! Convert & first, since it will be inserted in
     # operations that follow.
-    if '&' in xml_string:
-        xml_string = xml_string.replace('&', '&amp;')
+    if "&" in xml_string:
+        xml_string = xml_string.replace("&", "&amp;")
 
-    if '<' in xml_string:
-        xml_string = xml_string.replace('<', '&lt;')
-    if '>' in xml_string:
-        xml_string = xml_string.replace('>', '&gt;')
+    if "<" in xml_string:
+        xml_string = xml_string.replace("<", "&lt;")
+    if ">" in xml_string:
+        xml_string = xml_string.replace(">", "&gt;")
     return xml_string
 
 ########################################
@@ -887,7 +887,7 @@ def escape_xml_attribute(xml_string):
     Convert escape codes for XML element attribute records.
 
     According to the XML docs, ", &, < and > cannot exist in a string
-    so they must be replaced with "&quot'", &amp;", "&lt;" and "&gt;"
+    so they must be replaced with "&quot;", &amp;", "&lt;" and "&gt;"
     respectively.
 
     Tabs and line feeds will be converted to "&#10;" and "&#09;".
@@ -907,21 +907,21 @@ def escape_xml_attribute(xml_string):
     xml_string = escape_xml_cdata(xml_string)
 
     # Attributes are encased in quotes, escape the quote
-    if '"' in xml_string:
-        xml_string = xml_string.replace('"', '&quot;')
+    if "\"" in xml_string:
+        xml_string = xml_string.replace("\"", "&quot;")
 
     # Line feeds need to be handled carefully because no one
     # can agree on \r, \n, \r\n, see note URL above
-    if '\r\n' in xml_string:
-        xml_string = xml_string.replace('\r\n', '&#10;')
-    if '\r' in xml_string:
-        xml_string = xml_string.replace('\r', '&#10;')
-    if '\n' in xml_string:
-        xml_string = xml_string.replace('\n', '&#10;')
+    if "\r\n" in xml_string:
+        xml_string = xml_string.replace("\r\n", "&#10;")
+    if "\r" in xml_string:
+        xml_string = xml_string.replace("\r", "&#10;")
+    if "\n" in xml_string:
+        xml_string = xml_string.replace("\n", "&#10;")
 
     # Let's convert tabs
-    if '\t' in xml_string:
-        xml_string = xml_string.replace('\t', '&#09;')
+    if "\t" in xml_string:
+        xml_string = xml_string.replace("\t", "&#09;")
     return xml_string
 
 ########################################
@@ -932,27 +932,27 @@ def packed_paths(entries, slashes=None, seperator=None,
     """
     Convert a list of paths and convert to a PATH string.
 
-    Convert ['a','b','c'] to a;b;c
+    Convert ["a","b","c"] to a;b;c
 
     Args:
         entries: list of strings to concatenate
-        slashes: None for no conversion, '/' or '\\' path seperator
-        seperator: Character to use to seperate entries, ';' is used for None
+        slashes: None for no conversion, "/" or "\\" path seperator
+        seperator: Character to use to seperate entries, ";" is used for None
         force_ending_slash: Enforce a trailing slash if True
     Return:
-        String of all entries seperated by ';' or ``seperator``
+        String of all entries seperated by ";" or ``seperator``
     """
 
     # Verify the seperator
     if not seperator:
-        seperator = ';'
+        seperator = ";"
 
     entries = convert_to_array(entries)
 
     # Slash functionality?
     if slashes:
         # Windows?
-        if slashes == '\\':
+        if slashes == "\\":
             function = convert_to_windows_slashes
         else:
             # Everyone else use linux slashes
@@ -974,7 +974,7 @@ def make_version_tuple(version_string):
     """
     Convert numeric version string into an int tuple.
 
-    Given a string like '1.0.5rc' and return a tuple of (1, 0, 5).
+    Given a string like "1.0.5rc" and return a tuple of (1, 0, 5).
     The numbers are seperated by periods and members that start with
     a non number are skipped.
 
@@ -988,13 +988,13 @@ def make_version_tuple(version_string):
         return tuple()
 
     result = []
-    for item in version_string.split('.'):
+    for item in version_string.split("."):
         # If a pure number, convert to an int
         try:
             result.append(int(item))
         except ValueError:
             # None numeric, parse out the numbers
-            found = re.findall(r'\d+', item)
+            found = re.findall(r"\d+", item)
             if not found:
                 # Not a number? Abort here.
                 break

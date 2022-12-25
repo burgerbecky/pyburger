@@ -14,6 +14,8 @@ Please? It's not like I'm asking you for money!
 
 # pylint: disable=wrong-import-position
 # pylint: disable=too-many-statements
+# pylint: disable=redundant-u-string-prefix
+# pylint: disable=unspecified-encoding
 
 from __future__ import absolute_import, print_function, unicode_literals
 
@@ -30,14 +32,14 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import burger
 
 CRLF_TESTS = [
-    'testing 1',
-    'testing 2',
-    'testing 3'
+    "testing 1",
+    "testing 2",
+    "testing 3"
 ]
 
 # Bishojou Senshi Sailor Moon
-SENSHI = u'\u7f8e\u5c11\u5973\u6226\u58eb\u30bb\u30fc\u30e9' \
-    '\u30fc\u30e0\u30fc\u30f3'
+SENSHI = u"\u7f8e\u5c11\u5973\u6226\u58eb\u30bb\u30fc\u30e9" \
+    "\u30fc\u30e0\u30fc\u30f3"
 
 ########################################
 
@@ -71,15 +73,15 @@ class TestFile(unittest.TestCase):
         """
 
         # Files to scan for
-        fooey1 = 'foo1.txt'
-        fooey2 = 'foo2.txt'
+        fooey1 = "foo1.txt"
+        fooey2 = "foo2.txt"
 
         # Create the folder a/b/c/d
         dir1 = self.tmpdir
-        dir2 = os.path.join(dir1, 'a')
-        dir3 = os.path.join(dir2, 'b')
-        dir4 = os.path.join(dir3, 'c')
-        dir5 = os.path.join(dir4, 'd')
+        dir2 = os.path.join(dir1, "a")
+        dir3 = os.path.join(dir2, "b")
+        dir4 = os.path.join(dir3, "c")
+        dir5 = os.path.join(dir4, "d")
         os.makedirs(dir5)
 
         # Perform tests that result in empty lists
@@ -159,31 +161,31 @@ class TestFile(unittest.TestCase):
         """
 
         selffile = os.path.join(
-            os.path.dirname(os.path.abspath(__file__)), 'data')
+            os.path.dirname(os.path.abspath(__file__)), "data")
 
         # Using hard coded test files, ensure all load fine
         self.assertEqual(
             burger.load_text_file(
                 os.path.join(
                     selffile,
-                    'lf.txt')),
+                    "lf.txt")),
             CRLF_TESTS)
         self.assertEqual(
             burger.load_text_file(
                 os.path.join(
                     selffile,
-                    'cr.txt')),
+                    "cr.txt")),
             CRLF_TESTS)
         self.assertEqual(burger.load_text_file(
             os.path.join(
                 selffile,
-                'crlf.txt')), CRLF_TESTS)
+                "crlf.txt")), CRLF_TESTS)
 
         # Test reading utf-8 with BOM
         self.assertEqual(burger.load_text_file(
             os.path.join(
                 selffile,
-                'senshi.txt')), [SENSHI])
+                "senshi.txt")), [SENSHI])
 
 ########################################
 
@@ -192,29 +194,29 @@ class TestFile(unittest.TestCase):
         Test burger.save_text_file()
         """
 
-        burger.save_text_file(os.path.join(self.tmpdir, 'lf.txt'),
-                            CRLF_TESTS, '\n')
-        burger.save_text_file(os.path.join(self.tmpdir, 'cr.txt'),
-                            CRLF_TESTS, '\r')
-        burger.save_text_file(os.path.join(self.tmpdir, 'crlf.txt'),
-                            CRLF_TESTS, '\r\n')
-        burger.save_text_file(os.path.join(self.tmpdir, 'senshi.txt'),
+        burger.save_text_file(os.path.join(self.tmpdir, "lf.txt"),
+                            CRLF_TESTS, "\n")
+        burger.save_text_file(os.path.join(self.tmpdir, "cr.txt"),
+                            CRLF_TESTS, "\r")
+        burger.save_text_file(os.path.join(self.tmpdir, "crlf.txt"),
+                            CRLF_TESTS, "\r\n")
+        burger.save_text_file(os.path.join(self.tmpdir, "senshi.txt"),
                             SENSHI, bom=True)
 
         selffile = os.path.join(
-            os.path.dirname(os.path.abspath(__file__)), 'data')
+            os.path.dirname(os.path.abspath(__file__)), "data")
 
         # Test writing all the line feeds
-        self.assertTrue(filecmp.cmp(os.path.join(selffile, 'lf.txt'),
-                        os.path.join(self.tmpdir, 'lf.txt')))
-        self.assertTrue(filecmp.cmp(os.path.join(selffile, 'cr.txt'),
-                        os.path.join(self.tmpdir, 'cr.txt')))
-        self.assertTrue(filecmp.cmp(os.path.join(selffile, 'crlf.txt'),
-                        os.path.join(self.tmpdir, 'crlf.txt')))
+        self.assertTrue(filecmp.cmp(os.path.join(selffile, "lf.txt"),
+                        os.path.join(self.tmpdir, "lf.txt")))
+        self.assertTrue(filecmp.cmp(os.path.join(selffile, "cr.txt"),
+                        os.path.join(self.tmpdir, "cr.txt")))
+        self.assertTrue(filecmp.cmp(os.path.join(selffile, "crlf.txt"),
+                        os.path.join(self.tmpdir, "crlf.txt")))
 
         # Try UTF-8 with BOM
-        self.assertTrue(filecmp.cmp(os.path.join(selffile, 'senshi.txt'),
-                        os.path.join(self.tmpdir, 'senshi.txt')))
+        self.assertTrue(filecmp.cmp(os.path.join(selffile, "senshi.txt"),
+                        os.path.join(self.tmpdir, "senshi.txt")))
 
 ########################################
 
@@ -224,27 +226,27 @@ class TestFile(unittest.TestCase):
         """
 
         selffile = os.path.join(
-            os.path.dirname(os.path.abspath(__file__)), 'data')
+            os.path.dirname(os.path.abspath(__file__)), "data")
 
         # Test writing all the line feeds
-        self.assertTrue(burger.compare_files(os.path.join(selffile, 'lf.txt'),
-                                    os.path.join(selffile, 'cr.txt')))
-        self.assertTrue(burger.compare_files(os.path.join(selffile, 'lf.txt'),
-                                    os.path.join(selffile, 'crlf.txt')))
-        self.assertTrue(burger.compare_files(os.path.join(selffile, 'cr.txt'),
-                                    os.path.join(selffile, 'crlf.txt')))
+        self.assertTrue(burger.compare_files(os.path.join(selffile, "lf.txt"),
+                                    os.path.join(selffile, "cr.txt")))
+        self.assertTrue(burger.compare_files(os.path.join(selffile, "lf.txt"),
+                                    os.path.join(selffile, "crlf.txt")))
+        self.assertTrue(burger.compare_files(os.path.join(selffile, "cr.txt"),
+                                    os.path.join(selffile, "crlf.txt")))
 
         # Intentional mismatch
         self.assertFalse(burger.compare_files(
             os.path.join(
-                selffile, 'lf.txt'), os.path.join(
-                selffile, 'senshi.txt')))
+                selffile, "lf.txt"), os.path.join(
+                selffile, "senshi.txt")))
 
         # Test for missing files
-        self.assertFalse(burger.compare_files(os.path.join(selffile, 'llf.txt'),
-                                    os.path.join(selffile, 'cr.txt')))
-        self.assertFalse(burger.compare_files(os.path.join(selffile, 'lf.txt'),
-                                    os.path.join(selffile, 'lcr.txt')))
+        self.assertFalse(burger.compare_files(os.path.join(selffile, "llf.txt"),
+                                    os.path.join(selffile, "cr.txt")))
+        self.assertFalse(burger.compare_files(os.path.join(selffile, "lf.txt"),
+                                    os.path.join(selffile, "lcr.txt")))
 
 ########################################
 
@@ -254,28 +256,28 @@ class TestFile(unittest.TestCase):
         """
 
         selffile = os.path.join(
-            os.path.dirname(os.path.abspath(__file__)), 'data')
+            os.path.dirname(os.path.abspath(__file__)), "data")
 
         # Test writing all the line feeds
         self.assertTrue(
             burger.compare_file_to_string(
                 os.path.join(
                     selffile,
-                    'lf.txt'),
+                    "lf.txt"),
                 CRLF_TESTS))
 
         self.assertTrue(
             burger.compare_file_to_string(
                 os.path.join(
                     selffile,
-                    'cr.txt'),
+                    "cr.txt"),
                 CRLF_TESTS))
 
         self.assertTrue(
             burger.compare_file_to_string(
                 os.path.join(
                     selffile,
-                    'crlf.txt'),
+                    "crlf.txt"),
                 CRLF_TESTS))
 
         # Test against single string with line feeds
@@ -283,18 +285,18 @@ class TestFile(unittest.TestCase):
             burger.compare_file_to_string(
                 os.path.join(
                     selffile,
-                    'crlf.txt'),
-                '\n'.join(CRLF_TESTS)))
+                    "crlf.txt"),
+                "\n".join(CRLF_TESTS)))
 
         self.assertTrue(burger.compare_file_to_string(
-            os.path.join(selffile, 'senshi.txt'), SENSHI))
+            os.path.join(selffile, "senshi.txt"), SENSHI))
 
         # Intentional mismatch
         self.assertFalse(
             burger.compare_file_to_string(
                 os.path.join(
                     selffile,
-                    'lf.txt'),
+                    "lf.txt"),
                 [SENSHI]))
 
         # Test for missing files
@@ -302,14 +304,14 @@ class TestFile(unittest.TestCase):
             burger.compare_file_to_string(
                 os.path.join(
                     selffile,
-                    'llf.txt'),
+                    "llf.txt"),
                 CRLF_TESTS))
 
         self.assertFalse(
             burger.compare_file_to_string(
                 os.path.join(
                     selffile,
-                    'lf.txt'),
+                    "lf.txt"),
                 None))
 
 ########################################
@@ -320,9 +322,9 @@ class TestFile(unittest.TestCase):
         """
 
         selffile = os.path.join(
-            os.path.dirname(os.path.abspath(__file__)), 'data')
+            os.path.dirname(os.path.abspath(__file__)), "data")
 
-        with open(os.path.join(selffile, 'zeroterminate.bin'), 'rb') as filep:
+        with open(os.path.join(selffile, "zeroterminate.bin"), "rb") as filep:
 
             # Test ascii
             for item in CRLF_TESTS:
@@ -336,25 +338,25 @@ class TestFile(unittest.TestCase):
             self.assertEqual(
                 burger.read_zero_terminated_string(
                     filep,
-                    encoding='cp1252'),
-                u'\u2018\u2019\u00C0\u00C1\u00C2\u00C3\u00C4\u00C5')
+                    encoding="cp1252"),
+                u"\u2018\u2019\u00C0\u00C1\u00C2\u00C3\u00C4\u00C5")
 
             # Test ISO-8859-1
             self.assertEqual(
                 burger.read_zero_terminated_string(
                     filep,
-                    encoding='latin_1'),
-                u'\u0091\u0092\u00C0\u00C1\u00C2\u00C3\u00C4\u00C5')
+                    encoding="latin_1"),
+                u"\u0091\u0092\u00C0\u00C1\u00C2\u00C3\u00C4\u00C5")
 
             # Test MacRoman
             self.assertEqual(
                 burger.read_zero_terminated_string(
                     filep,
-                    encoding='mac_roman'),
-                u'\u00EB\u00ED\u00BF\u00A1\u00AC\u221A\u0192\u2248')
+                    encoding="mac_roman"),
+                u"\u00EB\u00ED\u00BF\u00A1\u00AC\u221A\u0192\u2248")
 
             # Test empty string
-            self.assertEqual(burger.read_zero_terminated_string(filep), '')
+            self.assertEqual(burger.read_zero_terminated_string(filep), "")
 
             # Test EOF
             self.assertIsNone(burger.read_zero_terminated_string(filep))
@@ -363,5 +365,5 @@ class TestFile(unittest.TestCase):
 ########################################
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

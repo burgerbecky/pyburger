@@ -67,7 +67,7 @@ def find_visual_studios(refresh=False):
             # Get the root registry key
             try:
                 installed_roots = get_HKLM_32().open_subkey(
-                    'Software\\Microsoft')
+                    "Software\\Microsoft")
             except OSError:
                 installed_roots = None
 

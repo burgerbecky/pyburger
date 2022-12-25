@@ -76,31 +76,31 @@ See Also:
     strutils.string_to_bool
 
 Example:
-'Inherit from (object) for Python 2.7'
+"Inherit from (object) for Python 2.7"
 >>> class foo(object):
-    'Init to false'
+    "Init to false"
     x = BooleanProperty(False)
-    'Init to true'
+    "Init to true"
     y = BooleanProperty(True)
-    'Init to None'
+    "Init to None"
     z = BooleanProperty()
 
-'Create the class'
+"Create the class"
 f = foo()
 
-'Print True'
+"Print True"
 print(f.x)
 
-'Print False'
+"Print False"
 f.x = False
 print(f.x)
 
-'f.x is set to bool False with string'
-f.x = 'False'
+"f.x is set to bool False with string"
+f.x = "False"
 print(f.x)
 
-'Exception on bad write'
-f.x = 'not boolean'
+"Exception on bad write"
+f.x = "not boolean"
 Traceback (most recent call last):
     ...
 ValueError: Not boolean value
@@ -134,31 +134,31 @@ class IntegerProperty(Property):
     """Class to enforce 64 bit integer in variable
 
 Example:
-'Inherit from (object) for Python 2.7'
+"Inherit from (object) for Python 2.7"
 >>> class foo(object):
-    'Init to 1'
+    "Init to 1"
     x = IntegerProperty(1.0)
-    'Init to 55'
-    y = IntegerProperty('55')
-    'Init to None'
+    "Init to 55"
+    y = IntegerProperty("55")
+    "Init to None"
     z = IntegerProperty()
 
-'Create the class'
+"Create the class"
 f = foo()
 
-'Print 1'
+"Print 1"
 print(f.x)
 
-'Print 0'
+"Print 0"
 f.x = False
 print(f.x)
 
-'f.x is set to 99 with string'
-f.x = '99.00'
+"f.x is set to 99 with string"
+f.x = "99.00"
 print(f.x)
 
-'Exception on bad write'
-f.x = 'not boolean'
+"Exception on bad write"
+f.x = "not boolean"
 Traceback (most recent call last):
     ...
 ValueError: Not integer value
@@ -197,12 +197,12 @@ ValueError: Not integer value
                             value = float(value)
                     else:
                         raise ValueError(
-                            'Value "{}" is not a number'.format(value))
+                            "Value \"{}\" is not a number".format(value))
 
                 # value is a number, bounds check it
                 if value < -0x8000000000000000 or value > 0x7fffffffffffffff:
                     raise ValueError(
-                        'Value "{}" must fit in signed 64 bits'.format(value))
+                        "Value \"{}\" must fit in signed 64 bits".format(value))
 
                 # Ensure it's an int()
                 value = long(value)
@@ -217,24 +217,24 @@ class StringProperty(Property):
     """Class to enforce string in member variable
 
 Example:
-'Inherit from (object) for Python 2.7'
+"Inherit from (object) for Python 2.7"
 >>> class foo(object):
-    'Init to "foo"'
-    x = StringProperty('foo')
-    'Init to None'
+    "Init to \"foo\""
+    x = StringProperty("foo")
+    "Init to None"
     y = StringProperty()
 
-'Create the class'
+"Create the class"
 f = foo()
 
-'Print foo'
+"Print foo"
 print(f.x)
 
-'Print False'
-f.x = 'False'
+"Print False"
+f.x = "False"
 print(f.x)
 
-'Print True'
+"Print True"
 f.x = True
 print(f.x)
     """
@@ -261,26 +261,26 @@ class StringListProperty(Property):
     """Class to enforce string list in member variable
 
 Example:
-'Inherit from (object) for Python 2.7'
+"Inherit from (object) for Python 2.7"
 >>> class foo(object):
-    'Init to ["foo"]'
-    x = StringListProperty('foo')
-    'Init to None'
+    "Init to [\"foo\"]"
+    x = StringListProperty("foo")
+    "Init to None"
     y = StringListProperty()
-    'Init to ["a","b","c"]'
+    "Init to [\"a\",\"b\",\"c\"]"
     z = StringListProperty(["a","b","c"])
 
-'Create the class'
+"Create the class"
 f = foo()
 
-'Print ["foo"]'
+"Print [\"foo\"]"
 print(f.x)
 
-'Print ['False']
-f.x = 'False'
+"Print [\"False\"]"
+f.x = "False"
 print(f.x)
 
-'Print True'
+"Print True"
 f.x = True
 print(f.x)
     """
@@ -335,28 +335,28 @@ Attributes:
     _enums: Enumeration dictionary
 
 Example:
-j = (('a', 'b', 'c'), 'd', 'e', ['f', 'g', 'h'], 'i')
-'Inherit from (object) for Python 2.7'
+j = (("a", "b", "c"), "d", "e", ["f", "g", "h"], "i")
+"Inherit from (object) for Python 2.7"
 >>> class foo(object):
-    'Init to 0'
+    "Init to 0"
     x = EnumProperty(j, "a")
-    'Init to 0'
+    "Init to 0"
     y = EnumProperty(j)
-    'Init to 4'
+    "Init to 4"
     z = EnumProperty(j, "i")
 
-'Create the class'
+"Create the class"
 f = foo()
 
-'Print 0'
+"Print 0"
 print(f.x)
 
-'Print 2
-f.x = 'g'
+"Print 2"
+f.x = "g"
 print(f.x)
 
-'Print 2'
-f.x = 'h'
+"Print 2"
+f.x = "h"
 print(f.x)
     """
 
@@ -371,11 +371,11 @@ print(f.x)
 
         if not isinstance(enums, Iterable):
             raise ValueError(
-                'enums "{}" is not an iterable'.format(enums))
+                "enums \"{}\" is not an iterable".format(enums))
 
         if is_string(enums):
             raise ValueError(
-                'enums "{}" can not be a string'.format(enums))
+                "enums \"{}\" can not be a string".format(enums))
 
         # Set the initial value using the derived class
         Property.__init__(self, name)
@@ -391,16 +391,16 @@ print(f.x)
             if isinstance(value, Number):
                 if value < 0:
                     raise ValueError(
-                        'Value "{}" is less than zero'.format(value))
+                        "Value \"{}\" is less than zero".format(value))
                 if value >= len(self._enums):
                     raise ValueError(
-                        'Value {} is greater than or equal to {}'.format(
+                        "Value {} is greater than or equal to {}".format(
                             value, len(self._enums)))
                 value = int(value)
             else:
                 # Check for an override
                 enums = instance.__dict__.get(
-                    self._name + '_enums', self._enums)
+                    self._name + "_enums", self._enums)
 
                 # Convert to string
                 for i, item in enumerate(enums):
@@ -413,7 +413,7 @@ print(f.x)
                         break
                 else:
                     raise ValueError(
-                        'Value "{}" is not found in the list "{}"'.format(
+                        "Value \"{}\" is not found in the list \"{}\"".format(
                             value, enums))
 
         # String list value
@@ -430,19 +430,19 @@ Attributes:
     _name: The real name of the class instance
 
 Example:
-'Inherit from (object) for Python 2.7'
+"Inherit from (object) for Python 2.7"
 >>> class foo(object):
-    'Init to None'
+    "Init to None"
     x = NoneProperty()
 
-'Create the class'
+"Create the class"
 f = foo()
 
-'Print None'
+"Print None"
 print(f.x)
 
-'Exception on non None data'
-f.x = 'not None'
+"Exception on non None data"
+f.x = "not None"
 Traceback (most recent call last):
     ...
 ValueError: Not None value
@@ -479,6 +479,6 @@ ValueError: Not None value
 
         if value is not None:
             raise ValueError(
-                '"{}" can only be set to None, not "{}"'.format(
+                "\"{}\" can only be set to None, not \"{}\"".format(
                     self._name, value))
         instance.__dict__[self._name] = value

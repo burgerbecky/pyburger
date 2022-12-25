@@ -120,114 +120,114 @@ else:
 __numversion__ = (1, 2, 5)
 
 # Current version of the library
-__version__ = '.'.join([str(num) for num in __numversion__])
+__version__ = ".".join([str(num) for num in __numversion__])
 
 # Author's name
-__author__ = 'Rebecca Ann Heineman'
+__author__ = "Rebecca Ann Heineman"
 
 # Name of the module
-__title__ = 'burger'
+__title__ = "burger"
 
 # Summary of the module's use
-__summary__ = 'Burger Becky\'s shared python library.'
+__summary__ = "Burger Becky's shared python library."
 
 # Home page
-__uri__ = 'http://pyburger.readthedocs.io'
+__uri__ = "http://pyburger.readthedocs.io"
 
 # Email address for bug reports
-__email__ = 'becky@burgerbecky.com'
+__email__ = "becky@burgerbecky.com"
 
 # Type of license used for distribution
-__license__ = 'MIT License'
+__license__ = "MIT License"
 
 # Copyright owner
-__copyright__ = 'Copyright 2013-2022 Rebecca Ann Heineman'
+__copyright__ = "Copyright 2013-2022 Rebecca Ann Heineman"
 
 # Items to import on "from burger import *"
 __all__ = [
-    'unicode_print',
-    'is_string',
-    'convert_to_array',
-    'norm_paths',
-    'string_to_bool',
-    'TrueFalse',
-    'truefalse',
-    'TRUEFALSE',
-    'convert_to_windows_slashes',
-    'convert_to_linux_slashes',
-    'encapsulate_path_windows',
-    'encapsulate_path_linux',
-    'encapsulate_path',
-    'encapsulate_hosted_path',
-    'split_comma_with_quotes',
-    'parse_csv',
-    'translate_to_regex_match',
-    'host_machine',
-    'get_windows_host_type',
-    'get_mac_host_type',
-    'escape_xml_cdata',
-    'escape_xml_attribute',
-    'packed_paths',
-    'make_version_tuple',
-    'is_write_protected',
-    'make_executable',
-    'create_folder_if_needed',
-    'delete_file',
-    'is_source_newer',
-    'copy_file_if_needed',
-    'copy_directory_if_needed',
-    'shutil_readonly_cb',
-    'delete_directory',
-    'clean_directories',
-    'clean_files',
-    'get_tool_path',
-    'traverse_directory',
-    'unlock_files',
-    'lock_files',
-    'load_text_file',
-    'save_text_file',
-    'compare_files',
-    'compare_file_to_string',
-    'read_zero_terminated_string',
-    'save_text_file_if_newer',
-    'get_sdks_folder',
-    'fix_csharp',
-    'is_exe',
-    'get_path_ext',
-    'make_exe_path',
-    'find_in_path',
-    'where_is_doxygen',
-    'expand_and_verify',
-    'where_is_git',
-    'is_under_git_control',
-    'make_git_version_header',
-    'where_is_p4',
-    'is_under_p4_control',
-    'perforce_command',
-    'perforce_edit',
-    'perforce_add',
-    'perforce_opened',
-    'where_is_watcom',
-    'run_command',
-    'make_version_header',
-    'is_codewarrior_mac_allowed',
-    'import_py_script',
-    'run_py_script',
-    'where_is_visual_studio',
-    'where_is_codeblocks',
-    'where_is_xcode',
-    'Interceptstdout',
-    'Node',
-    'clean_xcode',
-    'clean_codeblocks',
-    'clean_setup_py',
-    'BooleanProperty',
-    'IntegerProperty',
-    'StringProperty',
-    'StringListProperty',
-    'EnumProperty',
-    'NoneProperty',
-    'find_visual_studios'
+    "unicode_print",
+    "is_string",
+    "convert_to_array",
+    "norm_paths",
+    "string_to_bool",
+    "TrueFalse",
+    "truefalse",
+    "TRUEFALSE",
+    "convert_to_windows_slashes",
+    "convert_to_linux_slashes",
+    "encapsulate_path_windows",
+    "encapsulate_path_linux",
+    "encapsulate_path",
+    "encapsulate_hosted_path",
+    "split_comma_with_quotes",
+    "parse_csv",
+    "translate_to_regex_match",
+    "host_machine",
+    "get_windows_host_type",
+    "get_mac_host_type",
+    "escape_xml_cdata",
+    "escape_xml_attribute",
+    "packed_paths",
+    "make_version_tuple",
+    "is_write_protected",
+    "make_executable",
+    "create_folder_if_needed",
+    "delete_file",
+    "is_source_newer",
+    "copy_file_if_needed",
+    "copy_directory_if_needed",
+    "shutil_readonly_cb",
+    "delete_directory",
+    "clean_directories",
+    "clean_files",
+    "get_tool_path",
+    "traverse_directory",
+    "unlock_files",
+    "lock_files",
+    "load_text_file",
+    "save_text_file",
+    "compare_files",
+    "compare_file_to_string",
+    "read_zero_terminated_string",
+    "save_text_file_if_newer",
+    "get_sdks_folder",
+    "fix_csharp",
+    "is_exe",
+    "get_path_ext",
+    "make_exe_path",
+    "find_in_path",
+    "where_is_doxygen",
+    "expand_and_verify",
+    "where_is_git",
+    "is_under_git_control",
+    "make_git_version_header",
+    "where_is_p4",
+    "is_under_p4_control",
+    "perforce_command",
+    "perforce_edit",
+    "perforce_add",
+    "perforce_opened",
+    "where_is_watcom",
+    "run_command",
+    "make_version_header",
+    "is_codewarrior_mac_allowed",
+    "import_py_script",
+    "run_py_script",
+    "where_is_visual_studio",
+    "where_is_codeblocks",
+    "where_is_xcode",
+    "Interceptstdout",
+    "Node",
+    "clean_xcode",
+    "clean_codeblocks",
+    "clean_setup_py",
+    "BooleanProperty",
+    "IntegerProperty",
+    "StringProperty",
+    "StringListProperty",
+    "EnumProperty",
+    "NoneProperty",
+    "find_visual_studios"
 ]
 
 ########################################
@@ -248,7 +248,7 @@ class Interceptstdout(list):
         # Instanciate the class, which intercepts stdout
         with Interceptstdout() as output:
             do_somethingthatprints()
-            print('capture me!')
+            print("capture me!")
 
         # Once out of scope, output has a list of strings
         # of the captured stdout output.
@@ -267,7 +267,7 @@ class Interceptstdout(list):
 
     def __enter__(self):
         """
-        Invoked on 'with' which intercepts all future stdout
+        Invoked on "with" which intercepts all future stdout
         """
 
         self._stdout = sys.stdout
@@ -326,7 +326,7 @@ class Node:
             level: Recursion depth (Used internally)
         """
 
-        ret = u'\t' * level + repr(self.value) + u'\n'
+        ret = u"\t" * level + repr(self.value) + u"\n"
         for child in self.children:
             ret += child.__repr__(level + 1)
         return ret

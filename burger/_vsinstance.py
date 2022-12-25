@@ -50,7 +50,7 @@ class VisualStudioInstance(object):
         self.name = name
         self.version_string = ver
         self.version_info = make_version_tuple(ver)
-        self.path = path.rstrip('\\/')
+        self.path = path.rstrip("\\/")
         self.known_paths = known_paths
 
     def __repr__(self):

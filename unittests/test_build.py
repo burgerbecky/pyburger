@@ -39,7 +39,7 @@ class TestBuild(unittest.TestCase):
         Handle temporary directory
         """
         self.saved_cwd = os.getcwd()
-        self.burger_sdks = os.getenv('BURGER_SDKS', default=None)
+        self.burger_sdks = os.getenv("BURGER_SDKS", default=None)
         self.tmpdir = os.path.realpath(tempfile.mkdtemp())
         self.addCleanup(shutil.rmtree, self.tmpdir)
 
@@ -51,7 +51,7 @@ class TestBuild(unittest.TestCase):
         """
         os.chdir(self.saved_cwd)
         if self.burger_sdks:
-            os.putenv('BURGER_SDKS', self.burger_sdks)
+            os.putenv("BURGER_SDKS", self.burger_sdks)
             burger.get_sdks_folder(refresh=True, folder=self.burger_sdks)
 
 ########################################
@@ -69,25 +69,25 @@ class TestBuild(unittest.TestCase):
         self.assertEqual(
             burger.get_sdks_folder(
                 refresh=True,
-                folder='test'),
-            'test')
-        self.assertEqual(burger.get_sdks_folder(), 'test')
+                folder="test"),
+            "test")
+        self.assertEqual(burger.get_sdks_folder(), "test")
 
         # Test reading BURGER_SDKS
-        os.environ['BURGER_SDKS'] = 'newvalue'
-        self.assertEqual(burger.get_sdks_folder(refresh=True), 'newvalue')
-        self.assertEqual(burger.get_sdks_folder(), 'newvalue')
+        os.environ["BURGER_SDKS"] = "newvalue"
+        self.assertEqual(burger.get_sdks_folder(refresh=True), "newvalue")
+        self.assertEqual(burger.get_sdks_folder(), "newvalue")
 
-        # Test with fake 'sdks' folder
-        os.environ.pop('BURGER_SDKS', None)
-        os.makedirs(os.path.join(self.tmpdir, 'a', 'b', 'sdks', 'c', 'd'))
-        os.chdir(os.path.join(self.tmpdir, 'a', 'b', 'sdks', 'c', 'd'))
+        # Test with fake "sdks" folder
+        os.environ.pop("BURGER_SDKS", None)
+        os.makedirs(os.path.join(self.tmpdir, "a", "b", "sdks", "c", "d"))
+        os.chdir(os.path.join(self.tmpdir, "a", "b", "sdks", "c", "d"))
         self.assertEqual(burger.get_sdks_folder(refresh=True),
-            os.path.join(self.tmpdir, 'a', 'b', 'sdks'))
+            os.path.join(self.tmpdir, "a", "b", "sdks"))
 
         # Restore the cache to the correct value
         if self.burger_sdks:
-            os.putenv('BURGER_SDKS', self.burger_sdks)
+            os.putenv("BURGER_SDKS", self.burger_sdks)
             burger.get_sdks_folder(refresh=True, folder=self.burger_sdks)
 
 ########################################
@@ -97,8 +97,8 @@ class TestBuild(unittest.TestCase):
         Test burger.get_path_ext()
         """
 
-        grouptuple = ('a', 'b', 'c', 'd')
-        grouplist = ['a', 'b', 'c', 'd']
+        grouptuple = ("a", "b", "c", "d")
+        grouplist = ["a", "b", "c", "d"]
         teststr = os.pathsep.join(grouptuple)
         self.assertEqual(burger.get_path_ext(teststr), grouplist)
         self.assertEqual(burger.get_path_ext(grouptuple), grouptuple)
@@ -114,16 +114,16 @@ class TestBuild(unittest.TestCase):
         ran_test = False
 
         # Test for a known windows executable
-        if os.getenv('SystemRoot', None):
+        if os.getenv("SystemRoot", None):
             # Case insensitive test
             cmd = os.path.expandvars("${SystemRoot}\\System32\\cmd").lower()
-            cmd_exe = cmd + '.exe'
+            cmd_exe = cmd + ".exe"
             if os.path.isfile(cmd_exe):
                 self.assertEqual(burger.make_exe_path(cmd).lower(), cmd_exe)
                 ran_test = True
 
         # Test with ls which is in the same place on Linux and macOS
-        macls = '/bin/ls'
+        macls = "/bin/ls"
         if os.path.isfile(macls):
             self.assertEqual(burger.make_exe_path(macls), macls)
             ran_test = True
@@ -144,64 +144,64 @@ class TestBuild(unittest.TestCase):
 
         selffile = os.path.dirname(os.path.abspath(__file__))
 
-        # Load in from the 'a' folder
+        # Load in from the "a" folder
         sample = burger.import_py_script(
-            os.path.join(selffile, 'data', 'sample.py'))
-        self.assertEqual(sample.__name__, 'sample')
-        self.assertTrue(hasattr(sample, 'test'))
-        self.assertTrue(hasattr(sample, 'testa'))
-        self.assertFalse(hasattr(sample, 'testb'))
-        self.assertEqual(sample.test(), 'sample_a')
-        self.assertEqual(sample.testa(), 'testa')
+            os.path.join(selffile, "data", "sample.py"))
+        self.assertEqual(sample.__name__, "sample")
+        self.assertTrue(hasattr(sample, "test"))
+        self.assertTrue(hasattr(sample, "testa"))
+        self.assertFalse(hasattr(sample, "testb"))
+        self.assertEqual(sample.test(), "sample_a")
+        self.assertEqual(sample.testa(), "testa")
 
-        # Switch to the file in the 'b' folder
+        # Switch to the file in the "b" folder
         sample = burger.import_py_script(
-            os.path.join(selffile, 'data2', 'sample.py'))
-        self.assertEqual(sample.__name__, 'sample')
-        self.assertTrue(hasattr(sample, 'test'))
-        self.assertFalse(hasattr(sample, 'testa'))
-        self.assertTrue(hasattr(sample, 'testb'))
-        self.assertEqual(sample.test(), 'sample_b')
-        self.assertEqual(sample.testb(), 'testb')
+            os.path.join(selffile, "data2", "sample.py"))
+        self.assertEqual(sample.__name__, "sample")
+        self.assertTrue(hasattr(sample, "test"))
+        self.assertFalse(hasattr(sample, "testa"))
+        self.assertTrue(hasattr(sample, "testb"))
+        self.assertEqual(sample.test(), "sample_b")
+        self.assertEqual(sample.testb(), "testb")
 
         # Test importing a with a unique module name
         sample = burger.import_py_script(
-            os.path.join(selffile, 'data', 'sample.py'), 'hamster')
-        self.assertEqual(sample.__name__, 'hamster')
-        self.assertTrue(hasattr(sample, 'test'))
-        self.assertTrue(hasattr(sample, 'testa'))
-        self.assertFalse(hasattr(sample, 'testb'))
-        self.assertEqual(sample.test(), 'sample_a')
-        self.assertEqual(sample.testa(), 'testa')
+            os.path.join(selffile, "data", "sample.py"), "hamster")
+        self.assertEqual(sample.__name__, "hamster")
+        self.assertTrue(hasattr(sample, "test"))
+        self.assertTrue(hasattr(sample, "testa"))
+        self.assertFalse(hasattr(sample, "testb"))
+        self.assertEqual(sample.test(), "sample_a")
+        self.assertEqual(sample.testa(), "testa")
 
         self.assertFalse(
             os.path.isfile(
                 os.path.join(
                     selffile,
-                    'data',
-                    'sample.pyc')))
+                    "data",
+                    "sample.pyc")))
         self.assertFalse(
             os.path.isdir(
                 os.path.join(
                     selffile,
-                    'data',
-                    '__pycache__')))
+                    "data",
+                    "__pycache__")))
         self.assertFalse(
             os.path.isfile(
                 os.path.join(
                     selffile,
-                    'data2',
-                    'sample.pyc')))
+                    "data2",
+                    "sample.pyc")))
         self.assertFalse(
             os.path.isdir(
                 os.path.join(
                     selffile,
-                    'data2',
-                    '__pycache__')))
+                    "data2",
+                    "__pycache__")))
 
         # Intentionally fail to test the assert that fired
         sample = burger.import_py_script(
-            os.path.join(selffile, 'doesntexist.py'))
+            os.path.join(selffile, "doesntexist.py"))
         # File not found is the correct error
         self.assertIsNone(sample)
 
@@ -214,32 +214,32 @@ class TestBuild(unittest.TestCase):
 
         selffile = os.path.dirname(os.path.abspath(__file__))
         self.assertEqual(burger.run_py_script(
-            os.path.join(selffile, 'data', 'sample.py'), 'test'), 'sample_a')
+            os.path.join(selffile, "data", "sample.py"), "test"), "sample_a")
         self.assertEqual(burger.run_py_script(
-            os.path.join(selffile, 'data', 'sample.py'), 'testa'), 'testa')
+            os.path.join(selffile, "data", "sample.py"), "testa"), "testa")
 
         self.assertEqual(burger.run_py_script(
-            os.path.join(selffile, 'data2', 'sample.py'), 'test'), 'sample_b')
+            os.path.join(selffile, "data2", "sample.py"), "test"), "sample_b")
         self.assertEqual(burger.run_py_script(
-            os.path.join(selffile, 'data2', 'sample.py'), 'testb'), 'testb')
+            os.path.join(selffile, "data2", "sample.py"), "testb"), "testb")
 
         self.assertEqual(burger.run_py_script(
             os.path.join(
                 selffile,
-                'data',
-                'sample.py'),
-            'main',
-            'gerbil'), 'gerbil')
+                "data",
+                "sample.py"),
+            "main",
+            "gerbil"), "gerbil")
         self.assertEqual(burger.run_py_script(
             os.path.join(
                 selffile,
-                'data2',
-                'sample.py'),
-            'main',
-            'cat'), 'cattest')
+                "data2",
+                "sample.py"),
+            "main",
+            "cat"), "cattest")
 
 ########################################
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

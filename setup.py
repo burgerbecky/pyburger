@@ -26,53 +26,54 @@ import setuptools
 CWD = os.path.dirname(os.path.abspath(__file__))
 
 # Project specific strings
-PROJECT_NAME = 'burger'
+PROJECT_NAME = "burger"
 PROJECT_KEYWORDS = [
-    'burger',
-    'perforce',
-    'burgerlib',
-    'development'
+    "burger",
+    "perforce",
+    "burgerlib",
+    "development"
 ]
 
 # Manually import the project
 PROJECT_MODULE = __import__(PROJECT_NAME)
 
 # Read me file is the long description
-with io.open(os.path.join(CWD, 'README.rst'), encoding='utf-8') as filep:
+with io.open(os.path.join(CWD, "README.rst"), encoding="utf-8") as filep:
     LONG_DESCRIPTION = filep.read()
 
 # Create the dependency list
 INSTALL_REQUIRES = [
-    'setuptools >= 0.7.0',
-    'wslwinreg >= 1.0.5'
+    "setuptools >= 0.7.0",
+    "wslwinreg >= 1.0.5"
 ]
 
 # Project classifiers
 CLASSIFIERS = [
-    'Development Status :: 5 - Production/Stable',
-    'Environment :: Console',
-    'Intended Audience :: Developers',
-    'Topic :: Software Development',
-    'Topic :: Software Development :: Build Tools',
-    'License :: OSI Approved :: MIT License',
-    'Operating System :: OS Independent',
-    'Natural Language :: English',
-    'Programming Language :: Python',
-    'Programming Language :: Python :: 2',
-    'Programming Language :: Python :: 2.7',
-    'Programming Language :: Python :: 3',
-    'Programming Language :: Python :: 3.4',
-    'Programming Language :: Python :: 3.5',
-    'Programming Language :: Python :: 3.6',
-    'Programming Language :: Python :: 3.7',
-    'Programming Language :: Python :: 3.8',
-    'Programming Language :: Python :: 3.9',
-    'Programming Language :: Python :: 3.10'
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development",
+    "Topic :: Software Development :: Build Tools",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Natural Language :: English",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 2",
+    "Programming Language :: Python :: 2.7",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.4",
+    "Programming Language :: Python :: 3.5",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11"
 ]
 
 # Extra files to include in the form of this tuple (directory,[files])
 DATA_FILES = [
-    # (PROJECT_NAME, ['LICENSE.txt'])
+    # (PROJECT_NAME, ["LICENSE.txt"])
 ]
 
 #
@@ -86,7 +87,7 @@ SETUP_ARGS = dict(
     # Use the readme as the long description
     description=PROJECT_MODULE.__summary__,
     long_description=LONG_DESCRIPTION,
-    # long_description_content_type='text/x-rst; charset=UTF-8',
+    # long_description_content_type="text/x-rst; charset=UTF-8",
     license=PROJECT_MODULE.__license__,
     url=PROJECT_MODULE.__uri__,
 
@@ -94,10 +95,10 @@ SETUP_ARGS = dict(
     author_email=PROJECT_MODULE.__email__,
 
     keywords=PROJECT_KEYWORDS,
-    platforms=['Any'],
+    platforms=["Any"],
     install_requires=INSTALL_REQUIRES,
     zip_safe=False,
-    python_requires='>=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*',
+    python_requires=">=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*",
 
     classifiers=CLASSIFIERS,
     packages=[PROJECT_NAME],
@@ -108,25 +109,25 @@ SETUP_ARGS = dict(
 ########################################
 
 CLEAN_DIR_LIST = [
-    PROJECT_NAME + '.egg-info',
-    PROJECT_NAME + '-' + PROJECT_MODULE.__version__,
-    'dist',
-    'build',
-    'temp',
-    '.pytest_cache',
-    '.tox',
-    '.vscode'
+    PROJECT_NAME + ".egg-info",
+    PROJECT_NAME + "-" + PROJECT_MODULE.__version__,
+    "dist",
+    "build",
+    "temp",
+    ".pytest_cache",
+    ".tox",
+    ".vscode"
 ]
 
 CLEAN_DIR_RECURSE_LIST = [
-    'temp',
-    '__pycache__',
-    '_build'
+    "temp",
+    "__pycache__",
+    "_build"
 ]
 
 CLEAN_EXTENSION_LIST = [
-    '*.pyc',
-    '*.pyo'
+    "*.pyc",
+    "*.pyo"
 ]
 
 
@@ -162,13 +163,13 @@ def clean(working_dir):
 #
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # Ensure the directory is the current one
     if CWD:
         os.chdir(CWD)
 
     # Perform a thorough cleaning job
-    if 'clean' in sys.argv:
+    if "clean" in sys.argv:
         clean(CWD)
 
     # Unlock the files to handle Perforce locking

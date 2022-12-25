@@ -137,15 +137,15 @@ def is_source_newer(source, destination):
     Return False if destination is newer, not False if not.
 
     Examples:
-        result = burger.fileutils.is_source_newer('file.c', 'file.obj')
+        result = burger.fileutils.is_source_newer("file.c", "file.obj")
 
         if result == 2:
             build_file_c()
 
         if result:
-            compile('file.c', 'file.obj')
+            compile("file.c", "file.obj")
         else:
-            print('Already built')
+            print("Already built")
 
     Note:
         If the source file does not exist, the function will return 2.
@@ -196,7 +196,7 @@ def copy_file_if_needed(source, destination, verbose=True, perforce=False):
         source: string pathname of the file to copy from
         destination: string pathname of the file to copy to
         verbose: True if print output is desired
-        perforce: True if Perforce 'p4 edit' should be done on the destination.
+        perforce: True if Perforce "p4 edit" should be done on the destination.
 
     Returns:
         Zero if no error otherwise IOError.errno
@@ -206,7 +206,7 @@ def copy_file_if_needed(source, destination, verbose=True, perforce=False):
     """
 
     # If there is a destination file, check the modification times
-    # and check with 'is True' to ensure source exists
+    # and check with "is True" to ensure source exists
 
     if is_source_newer(source, destination) is True:
 
@@ -218,7 +218,7 @@ def copy_file_if_needed(source, destination, verbose=True, perforce=False):
 
         # Copy the file
         if verbose:
-            print('Copying {0} -> {1}'.format(source, destination))
+            print("Copying {0} -> {1}".format(source, destination))
         try:
             shutil.copyfile(source, destination)
         except IOError as error:
@@ -365,8 +365,8 @@ def clean_directories(path, name_list, recursive=False):
    Examples:
         # Delete all temp and __pycache__ files recursively
         burger.fileutils.clean_directories(
-            '.',
-            ('*.temp', '__pycache__'),
+            ".",
+            ("*.temp", "__pycache__"),
             True)
 
     See Also:
@@ -401,7 +401,7 @@ def clean_files(path, name_list, recursive=False):
 
    Examples:
         # Delete all .obj and .lib files recursively
-        burger.fileutils.clean_files('temp', ('*.obj', '*.lib'), True)
+        burger.fileutils.clean_files("temp", ("*.obj", "*.lib"), True)
 
     See Also:
         delete_file, delete_directory
@@ -440,7 +440,7 @@ def get_tool_path(tool_folder, tool_name, encapsulate=False):
 
     Args:
         tool_folder: Pathname to the folder that contains the executables
-        tool_name: Bare name of the tool (Windows will append '.exe')
+        tool_name: Bare name of the tool (Windows will append ".exe")
         encapsulate: False if a path is requested, True if it's quoted to be
             used as a string to be sent to command line shell
 
@@ -450,19 +450,19 @@ def get_tool_path(tool_folder, tool_name, encapsulate=False):
 
     # Macosx uses fat binaries
     if IS_MACOSX:
-        exename = os.path.join(tool_folder, 'macosx', tool_name)
+        exename = os.path.join(tool_folder, "macosx", tool_name)
 
     # Windows supports 32 and 64 bit Intel
     elif IS_WINDOWS_HOST:
         exename = os.path.join(
             tool_folder,
-            'windows_' + get_windows_host_type(True),
-            tool_name + '.exe')
+            "windows_" + get_windows_host_type(True),
+            tool_name + ".exe")
 
     # Linux is currently just 64 bit Intel, will have to update
     # as more platforms are supported
     elif IS_LINUX:
-        exename = os.path.join(tool_folder, 'linux', tool_name)
+        exename = os.path.join(tool_folder, "linux", tool_name)
 
     else:
 
@@ -645,8 +645,8 @@ def load_text_file(file_name):
     # Open the file in a way that ensur
 
     try:
-        with open(file_name, 'rb') as filep:
-            result = filep.read().decode('utf-8-sig').splitlines()
+        with open(file_name, "rb") as filep:
+            result = filep.read().decode("utf-8-sig").splitlines()
     except IOError as error:
         # Only deal with file not found
         if error.errno != errno.ENOENT:
@@ -687,16 +687,16 @@ def save_text_file(file_name, text_lines, line_feed=None, bom=False):
     text_lines = convert_to_array(text_lines)
 
     # Write out the file
-    with open(file_name, 'wb') as filep:
+    with open(file_name, "wb") as filep:
 
         # Write the byte order mark
         if bom:
             filep.write(codecs.BOM_UTF8)
 
-        filep.write(line_feed.join(text_lines).encode('utf-8'))
+        filep.write(line_feed.join(text_lines).encode("utf-8"))
 
         # Make sure there's an ending line feed
-        filep.write(line_feed.encode('utf-8'))
+        filep.write(line_feed.encode("utf-8"))
 
 ########################################
 
@@ -774,7 +774,7 @@ def compare_file_to_string(file_name, text_lines):
             file_two_lines = []
 
         # Test if this is a StringIO object
-        elif hasattr(text_lines, 'getvalue'):
+        elif hasattr(text_lines, "getvalue"):
             file_two_lines = text_lines.getvalue().splitlines()
         # Test if a single string
         elif is_string(text_lines):
@@ -871,7 +871,7 @@ def save_text_file_if_newer(file_name, text_lines, line_feed=None,
 
     if compare_file_to_string(file_name, text_lines):
         if verbose:
-            print('{} was not changed.'.format(file_name))
+            print("{} was not changed.".format(file_name))
         return True
 
     # pylint: disable=import-outside-toplevel
@@ -889,7 +889,7 @@ def save_text_file_if_newer(file_name, text_lines, line_feed=None,
 
     # Save the file
     if verbose:
-        print('Saving {}.'.format(file_name))
+        print("Saving {}.".format(file_name))
     save_text_file(file_name, text_lines, line_feed=line_feed, bom=bom)
 
     # If needed, after the save, mark for add with Perforce

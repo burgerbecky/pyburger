@@ -63,37 +63,37 @@ from .strutils import make_version_tuple
 ########################################
 
 # List of Windows 5 SDK registry keys
-_WIN5_KEYS = (('7.1', '5.0'), ('8.0', '5.1'))
+_WIN5_KEYS = (("7.1", "5.0"), ("8.0", "5.1"))
 
 # List of Windows 6-7 SDK registry keys
-_WIN6_7_KEYS = ('v6.0A', 'v7.0A', 'v7.1A')
+_WIN6_7_KEYS = ("v6.0A", "v7.0A", "v7.1A")
 
 # List of supported CPUs for Windows 6-7 SDKs
-_WIN6_7SDK_CPUS = ('x86', 'x64')
+_WIN6_7SDK_CPUS = ("x86", "x64")
 
 # List of Windows 8 SDK registry keys
-_WIN8_KEYS = (('KitsRoot', '8.0'), ('KitsRoot81', '8.1'))
+_WIN8_KEYS = (("KitsRoot", "8.0"), ("KitsRoot81", "8.1"))
 
 # List of supported CPUs for Windows 8 SDKs
-_WIN8SDK_CPUS = ('x86', 'x64', 'arm')
+_WIN8SDK_CPUS = ("x86", "x64", "arm")
 
 # List of header folders
-_WIN8SDK_HEADER_FOLDERS = ('um', 'shared', 'winrt')
+_WIN8SDK_HEADER_FOLDERS = ("um", "shared", "winrt")
 
 # List of library folders
-_WIN8SDK_LIB_FOLDERS = (('win8', 'um'), ('winv6.3', 'um'))
+_WIN8SDK_LIB_FOLDERS = (("win8", "um"), ("winv6.3", "um"))
 
 # List of supported CPUs for Windows 10 SDKs
-_WIN10SDK_CPUS = ('x86', 'x64', 'arm', 'arm64')
+_WIN10SDK_CPUS = ("x86", "x64", "arm", "arm64")
 
 # List of header folders
-_WIN10SDK_HEADER_FOLDERS = ('ucrt', 'um', 'shared', 'winrt', 'cppwinrt')
+_WIN10SDK_HEADER_FOLDERS = ("ucrt", "um", "shared", "winrt", "cppwinrt")
 
 # List of library folders
-_WIN10SDK_LIB_FOLDERS = ('ucrt', 'um')
+_WIN10SDK_LIB_FOLDERS = ("ucrt", "um")
 
 # List of executables
-_WIN10_EXECS = ('rc.exe', 'signtool.exe', 'makecat.exe', 'midl.exe', 'mc.exe')
+_WIN10_EXECS = ("rc.exe", "signtool.exe", "makecat.exe", "midl.exe", "mc.exe")
 
 ########################################
 
@@ -108,7 +108,7 @@ def _find_windows5_sdks(installed_roots):
     Software\\Microsoft\\Microsoft SDKs\\Windows
 
     Args:
-        installed_roots: Open registry key 'Software\\Microsoft'
+        installed_roots: Open registry key "Software\\Microsoft"
 
     Returns:
         List of WindowsSDKInstance for every version of the Windows 6 and 7
@@ -123,7 +123,7 @@ def _find_windows5_sdks(installed_roots):
 
     try:
         key_vc7 = installed_roots.open_subkey(
-            'VisualStudio\\SxS\\VC7')
+            "VisualStudio\\SxS\\VC7")
     except OSError:
         return result_list
 
@@ -137,56 +137,56 @@ def _find_windows5_sdks(installed_roots):
         except OSError:
             continue
 
-        windows_5_path = windows_5_path.rstrip('\\/')
+        windows_5_path = windows_5_path.rstrip("\\/")
         # Initialize the path directory
         known_paths = {}
 
         # Find the header folder
-        test_dir = os.path.join(windows_5_path, 'PlatformSDK', 'Include')
+        test_dir = os.path.join(windows_5_path, "PlatformSDK", "Include")
         if os.path.exists(test_dir):
-            known_paths['WinSDK.um'] = test_dir
+            known_paths["WinSDK.um"] = test_dir
 
         # Find all the library folders
         # Note, x86 is assumes, x64 is a sub folder
         for cpu in _WIN6_7SDK_CPUS:
-            test_dir = os.path.join(windows_5_path, 'PlatformSDK',
-                'Lib', '' if cpu == 'x86' else 'AMD64')
+            test_dir = os.path.join(windows_5_path, "PlatformSDK",
+                "Lib", "" if cpu == "x86" else "AMD64")
             if os.path.exists(test_dir):
-                suffix = '_' + cpu
-                known_paths['WinSDK.lib' + suffix] = test_dir
+                suffix = "_" + cpu
+                known_paths["WinSDK.lib" + suffix] = test_dir
 
         # Find all executables
         for item in _WIN10_EXECS:
             for cpu in _WIN6_7SDK_CPUS:
                 # Try the AMD64 path only
                 test_dir = os.path.join(
-                    windows_5_path, 'PlatformSDK',
-                    'bin',
-                    '' if cpu == 'x86' else 'win64' +
+                    windows_5_path, "PlatformSDK",
+                    "bin",
+                    "" if cpu == "x86" else "win64" +
                     os.path.sep +
-                    'AMD64',
+                    "AMD64",
                     item)
                 if os.path.exists(test_dir):
-                    known_paths[item + '_' + cpu] = test_dir
+                    known_paths[item + "_" + cpu] = test_dir
 
                 # The x86 version has other paths for where the
                 # tools are located, because, of course they are.
-                elif cpu == 'x86':
+                elif cpu == "x86":
 
                     # Try without PlatformSDK
                     test_dir = os.path.join(
-                        windows_5_path, 'bin', item)
+                        windows_5_path, "bin", item)
                     if os.path.exists(test_dir):
-                        known_paths[item + '_' + cpu] = test_dir
+                        known_paths[item + "_" + cpu] = test_dir
                     else:
                         test_dir = os.path.join(
                             os.path.dirname(windows_5_path),
-                            'Common7', 'Tools', 'Bin', item)
+                            "Common7", "Tools", "Bin", item)
                         if os.path.exists(test_dir):
-                            known_paths[item + '_' + cpu] = test_dir
+                            known_paths[item + "_" + cpu] = test_dir
 
         result_list.append(WindowsSDKInstance(
-            'Windows {} SDK'.format(version_number[0]),
+            "Windows {} SDK".format(version_number[0]),
             version_number,
             windows_5_path,
             known_paths
@@ -207,7 +207,7 @@ def _find_windows6_7_sdks(installed_roots):
     Software\\Microsoft\\Microsoft SDKs\\Windows
 
     Args:
-        installed_roots: Open registry key 'Software\\Microsoft'
+        installed_roots: Open registry key "Software\\Microsoft"
 
     Returns:
         List of WindowsSDKInstance for every version of the Windows 6 and 7
@@ -221,7 +221,7 @@ def _find_windows6_7_sdks(installed_roots):
 
     try:
         key_sdks = installed_roots.open_subkey(
-            'Microsoft SDKs\\Windows')
+            "Microsoft SDKs\\Windows")
     except OSError:
         return result_list
 
@@ -232,31 +232,31 @@ def _find_windows6_7_sdks(installed_roots):
         try:
             sub_key = key_sdks.open_subkey(key)
             windows_6_7_path = convert_from_windows_path(
-                sub_key.get_value('InstallationFolder')[0])
+                sub_key.get_value("InstallationFolder")[0])
         except OSError:
             continue
 
         try:
-            version_number = sub_key.get_value('ProductVersion')[0]
+            version_number = sub_key.get_value("ProductVersion")[0]
         except OSError:
             continue
 
         # This hack is to get the version number of the Windows v6.0A
         # SDK because it hides it in one of two sub keys
 
-        # Check if the version starts with 'v' (Broken v6.0)
-        if version_number[0] == 'v':
+        # Check if the version starts with "v" (Broken v6.0)
+        if version_number[0] == "v":
             try:
                 # Try to extract it from the VistaClientWin32Tools subkey
                 version_number = sub_key.open_subkey(
-                    'VistaClientWin32Tools').get_value('ProductVersion')[0]
+                    "VistaClientWin32Tools").get_value("ProductVersion")[0]
             except OSError:
                 try:
                     # Try again
                     version_number = sub_key.open_subkey(
-                        'VistaClientSDKTools').get_value('ProductVersion')[0]
+                        "VistaClientSDKTools").get_value("ProductVersion")[0]
                 except OSError:
-                    # Give up and just remove the leading 'v'
+                    # Give up and just remove the leading "v"
                     version_number = version_number[1:]
                     continue
 
@@ -264,29 +264,29 @@ def _find_windows6_7_sdks(installed_roots):
         known_paths = {}
 
         # Find the header folder
-        test_dir = os.path.join(windows_6_7_path, 'Include')
+        test_dir = os.path.join(windows_6_7_path, "Include")
         if os.path.exists(test_dir):
-            known_paths['WinSDK.um'] = test_dir
+            known_paths["WinSDK.um"] = test_dir
 
         # Find all the library folders
         # Note, x86 is assumes, x64 is a sub folder
         for cpu in _WIN6_7SDK_CPUS:
             test_dir = os.path.join(windows_6_7_path,
-                'Lib', cpu if cpu != 'x86' else '')
+                "Lib", cpu if cpu != "x86" else "")
             if os.path.exists(test_dir):
-                suffix = '_' + cpu
-                known_paths['WinSDK.lib' + suffix] = test_dir
+                suffix = "_" + cpu
+                known_paths["WinSDK.lib" + suffix] = test_dir
 
         # Find all executables
         for item in _WIN10_EXECS:
             for cpu in _WIN6_7SDK_CPUS:
                 test_dir = os.path.join(windows_6_7_path,
-                        'bin', cpu if cpu != 'x86' else '', item)
+                        "bin", cpu if cpu != "x86" else "", item)
                 if os.path.exists(test_dir):
-                    known_paths[item + '_' + cpu] = test_dir
+                    known_paths[item + "_" + cpu] = test_dir
 
         result_list.append(WindowsSDKInstance(
-            'Windows {} SDK'.format(version_number[0]),
+            "Windows {} SDK".format(version_number[0]),
             version_number,
             windows_6_7_path,
             known_paths
@@ -306,7 +306,7 @@ def _find_windows8_sdks(installed_roots):
     and KitsRoot81
 
     Args:
-        installed_roots: Open registry key 'Software\\Microsoft'
+        installed_roots: Open registry key "Software\\Microsoft"
 
     Returns:
         List of WindowsSDKInstance for every version of the Windows 8
@@ -320,7 +320,7 @@ def _find_windows8_sdks(installed_roots):
 
     try:
         roots_key = installed_roots.open_subkey(
-            'Windows Kits\\Installed Roots')
+            "Windows Kits\\Installed Roots")
     except OSError:
         return result_list
 
@@ -337,9 +337,9 @@ def _find_windows8_sdks(installed_roots):
         # Try to get the full version number
         try:
             hkey = installed_roots.open_subkey(
-                'Microsoft SDKs\\Windows')
+                "Microsoft SDKs\\Windows")
             version_number = hkey.open_subkey(
-                'v{}A'.format(version_number)).get_value('ProductVersion')[0]
+                "v{}A".format(version_number)).get_value("ProductVersion")[0]
         except OSError:
             pass
 
@@ -349,30 +349,30 @@ def _find_windows8_sdks(installed_roots):
         # Find all the header folders
         for item in _WIN8SDK_HEADER_FOLDERS:
             test_dir = os.path.join(windows_8_path,
-                'Include', item)
+                "Include", item)
             if os.path.exists(test_dir):
-                known_paths['WinSDK.' + item] = test_dir
+                known_paths["WinSDK." + item] = test_dir
 
         # Find all the library folders
         for item, item2 in _WIN8SDK_LIB_FOLDERS:
             for cpu in _WIN8SDK_CPUS:
                 test_dir = os.path.join(windows_8_path,
-                    'Lib', item, item2, cpu)
+                    "Lib", item, item2, cpu)
                 if os.path.exists(test_dir):
-                    suffix = item2 if item2 != 'um' else ''
-                    suffix = suffix + '_' + cpu
-                    known_paths['WinSDK.lib' + suffix] = test_dir
+                    suffix = item2 if item2 != "um" else ""
+                    suffix = suffix + "_" + cpu
+                    known_paths["WinSDK.lib" + suffix] = test_dir
 
         # Find all executables
         for item in _WIN10_EXECS:
             for cpu in _WIN8SDK_CPUS:
                 test_dir = os.path.join(windows_8_path,
-                        'bin', cpu, item)
+                        "bin", cpu, item)
                 if os.path.exists(test_dir):
-                    known_paths[item + '_' + cpu] = test_dir
+                    known_paths[item + "_" + cpu] = test_dir
 
         result_list.append(WindowsSDKInstance(
-            'Windows 8 SDK',
+            "Windows 8 SDK",
             version_number,
             windows_8_path,
             known_paths
@@ -391,7 +391,7 @@ def _find_windows10_sdks(installed_roots):
     Software\\Microsoft\\Windows Kits\\Installed Roots\\KitsRoot10
 
     Args:
-        installed_roots: Open registry key 'Software\\Microsoft'
+        installed_roots: Open registry key "Software\\Microsoft"
 
     Returns:
         List of WindowsSDKInstance for every version of the Windows 10
@@ -406,20 +406,20 @@ def _find_windows10_sdks(installed_roots):
     # Get the master key, if present
     try:
         roots_key = installed_roots.open_subkey(
-            'Windows Kits\\Installed Roots')
+            "Windows Kits\\Installed Roots")
     except OSError:
         return result_list
 
     # Get the pathname to the Windows 10 kits, if present.
     try:
         windows_10_path = convert_from_windows_path(
-            roots_key.get_value('KitsRoot10')[0])
+            roots_key.get_value("KitsRoot10")[0])
     except OSError:
         return result_list
 
     # Iterate over the version numbers
     for version_number in os.listdir(
-            os.path.join(windows_10_path, 'Include')):
+            os.path.join(windows_10_path, "Include")):
         # Convert to version tuple
         version_info = make_version_tuple(version_number)
 
@@ -432,35 +432,35 @@ def _find_windows10_sdks(installed_roots):
             # Find all the header folders
             for item in _WIN10SDK_HEADER_FOLDERS:
                 test_dir = os.path.join(windows_10_path,
-                    'Include', version_number, item)
+                    "Include", version_number, item)
                 if os.path.exists(test_dir):
-                    known_paths['WinSDK.' + item] = test_dir
+                    known_paths["WinSDK." + item] = test_dir
 
             # Find all the library folders
             for item in _WIN10SDK_LIB_FOLDERS:
                 for cpu in _WIN10SDK_CPUS:
                     test_dir = os.path.join(windows_10_path,
-                        'Lib', version_number, item, cpu)
+                        "Lib", version_number, item, cpu)
                     if os.path.exists(test_dir):
-                        suffix = item if item != 'um' else ''
-                        suffix = suffix + '_' + cpu
-                        known_paths['WinSDK.lib' + suffix] = test_dir
+                        suffix = item if item != "um" else ""
+                        suffix = suffix + "_" + cpu
+                        known_paths["WinSDK.lib" + suffix] = test_dir
 
             # Find all executables
             for item in _WIN10_EXECS:
                 for cpu in _WIN10SDK_CPUS:
                     test_dir = os.path.join(windows_10_path,
-                        'bin', version_number, cpu, item)
+                        "bin", version_number, cpu, item)
                     if os.path.exists(test_dir):
-                        known_paths[item + '_' + cpu] = test_dir
+                        known_paths[item + "_" + cpu] = test_dir
                         continue
                     test_dir = os.path.join(windows_10_path,
-                            'bin', cpu, item)
+                            "bin", cpu, item)
                     if os.path.exists(test_dir):
-                        known_paths[item + '_' + cpu] = test_dir
+                        known_paths[item + "_" + cpu] = test_dir
 
             result_list.append(WindowsSDKInstance(
-                'Windows 10 SDK',
+                "Windows 10 SDK",
                 version_number,
                 windows_10_path,
                 known_paths

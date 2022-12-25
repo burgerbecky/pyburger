@@ -18,7 +18,7 @@ import re
 from .fileutils import delete_file, clean_files, clean_directories
 
 # Match *.cbp
-_CODEBLOCKS_MATCH = re.compile('(?ims).*\\.cbp\\Z')
+_CODEBLOCKS_MATCH = re.compile("(?ims).*\\.cbp\\Z")
 
 ########################################
 
@@ -42,12 +42,12 @@ def clean_xcode(path, recursive=False):
 
     for item in os.listdir(path):
         file_name = os.path.join(path, item)
-        if item.endswith('.xcodeproj'):
+        if item.endswith(".xcodeproj"):
             if os.path.isdir(file_name):
-                if os.path.isfile(os.path.join(file_name, 'project.pbxproj')):
+                if os.path.isfile(os.path.join(file_name, "project.pbxproj")):
                     clean_directories(
-                        file_name, ('xcuserdata', 'project.xcworkspace'))
-                    clean_files(file_name, ('*.mode1v3', '*.pbxuser'))
+                        file_name, ("xcuserdata", "project.xcworkspace"))
+                    clean_files(file_name, ("*.mode1v3", "*.pbxuser"))
                     continue
         if recursive:
             if os.path.isdir(file_name):
@@ -79,8 +79,8 @@ def clean_codeblocks(path, recursive=False):
             if os.path.isfile(file_name):
                 # Remove the codeblocks droppings
                 base_name = os.path.splitext(file_name)[0]
-                delete_file(base_name + '.depend')
-                delete_file(base_name + '.layout')
+                delete_file(base_name + ".depend")
+                delete_file(base_name + ".layout")
                 continue
         if recursive:
             file_name = os.path.join(path, item)
@@ -106,15 +106,15 @@ def clean_setup_py(path, recursive=False):
     """
 
     # Check for setup.py
-    if os.path.isfile(os.path.join(path, 'setup.py')):
+    if os.path.isfile(os.path.join(path, "setup.py")):
         # Purge all the build folders
-        clean_directories(path, ('dist', 'build', '_build',
-                                 '.tox', '.pytestcache', '*.egg-info'))
+        clean_directories(path, ("dist", "build", "_build",
+                                 ".tox", ".pytestcache", "*.egg-info"))
 
         # Get rid of python droppings from Python 3
-        clean_directories(path, ['__pycache__'], recursive=True)
+        clean_directories(path, ["__pycache__"], recursive=True)
         # Get rid of python dropping from Python 2
-        clean_files(path, ('*.pyc', '*.pyo'), recursive=True)
+        clean_files(path, ("*.pyc", "*.pyo"), recursive=True)
 
     # If recursive, process the sub folders
     if recursive:
