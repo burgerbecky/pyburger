@@ -9,23 +9,14 @@ Package that contains build helper functions
 @var burger.buildutils._BURGER_SDKS_FOLDER
 Cached location of the BURGER_SDKS folder
 
-@var burger.buildutils._DOXYGEN_PATH
-Cached location of doxygen
-
 @var burger.buildutils._GIT_PATH
 Cached location of git
 
 @var burger.buildutils._PERFORCE_PATH
 Cached location of p4 from Perforce
 
-@var burger.buildutils._WATCOM_PATH
-Cached location of Watcom
-
 @var burger.buildutils._WINDOWS_ENV_PATHS
 Environment variable locations of window applications
-
-@var burger.buildutils._VS_VARIANTS
-Visual Studio variants in the order of search
 """
 
 # pylint: disable=consider-using-f-string
@@ -51,30 +42,17 @@ from .strutils import is_string, encapsulate_path, get_windows_host_type, \
 # Cached location of the BURGER_SDKS folder
 _BURGER_SDKS_FOLDER = None
 
-# Cached location of doxygen
-_DOXYGEN_PATH = None
-
 # Cached location of git
 _GIT_PATH = None
 
 # Cached location of p4 from Perforce
 _PERFORCE_PATH = None
 
-# Cached location of Watcom
-_WATCOM_PATH = None
-
 # Environment variable locations of window applications
 _WINDOWS_ENV_PATHS = [
     "ProgramFiles",
     "ProgramFiles(x86)"
 ]
-
-# Visual Studio variants in the order of search
-_VS_VARIANTS = (
-    "Enterprise",
-    "Professional",
-    "Community"
-)
 
 # For some goofy reason, Cygwin converts ProgramFiles
 # into uppercase and preforms case sensitive comparisons
@@ -157,7 +135,8 @@ def get_sdks_folder(verbose=False, refresh=False, folder=None):
 
         # Test for None or empty string
         if _BURGER_SDKS_FOLDER:
-            _BURGER_SDKS_FOLDER = convert_from_windows_path(_BURGER_SDKS_FOLDER)
+            _BURGER_SDKS_FOLDER = convert_from_windows_path(
+                _BURGER_SDKS_FOLDER)
 
         else:
             # Warn about missing environment variable
@@ -451,114 +430,6 @@ def expand_and_verify(file_string):
         if not os.path.isfile(result_path):
             result_path = None
     return result_path
-
-########################################
-
-
-def where_is_doxygen(verbose=False, refresh=False, path=None):
-    """
-    Return the location of Doxygen's executable
-
-    Look for an environment variable DOXYGEN and
-    determine if the executable resides there, if
-    so, return the string to the path
-
-    If running on a MacOSX client, look in the Applications
-    folder for a copy of Doxygen.app and return the
-    pathname to the copy of doxygen that resides within
-
-    PATH is then searched for doxygen, and if it's not found,
-    None is returned.
-
-    Args:
-        verbose: If True, print a message if doxygen was not found
-        refresh: If True, reset the cache and force a reload.
-        path: Path to doxygen to place in the cache
-
-    Returns:
-        A path to the Doxygen command line executable or None if not found.
-
-    """
-
-    # pylint: disable=R0912
-    global _DOXYGEN_PATH                # pylint: disable=W0603
-
-    # Clear the cache if needed
-    if refresh:
-        _DOXYGEN_PATH = None
-
-    # Set the override, if found
-    if path:
-        _DOXYGEN_PATH = path
-
-    # Is cached?
-    if _DOXYGEN_PATH:
-        return _DOXYGEN_PATH
-
-    # Try the environment variable first
-    if os.getenv("DOXYGEN", None):
-        if get_windows_host_type(True):
-
-            # Windows points to the base path
-            doxygenpath = os.path.expandvars("${DOXYGEN}\\bin\\doxygen.exe")
-            doxygenpath = convert_from_windows_path(doxygenpath)
-        else:
-            # Just append the exec name
-            doxygenpath = os.path.expandvars("${DOXYGEN}/doxygen")
-
-        # Valid?
-        if is_exe(doxygenpath):
-            _DOXYGEN_PATH = doxygenpath
-            return doxygenpath
-
-    # Scan the PATH for the exec
-    doxygenpath = find_in_path("doxygen", executable=True)
-    if doxygenpath:
-        _DOXYGEN_PATH = doxygenpath
-        return doxygenpath
-
-    # List of the usual suspects
-    full_paths = []
-
-    # Check if it's installed but not in the path
-    if get_windows_host_type(True):
-
-        # Try the "ProgramFiles" folders
-        for item in _WINDOWS_ENV_PATHS:
-            if os.getenv(item, None):
-                doxygenpath = os.path.expandvars(
-                    "${" + item + "}\\doxygen\\bin\\doxygen.exe")
-                doxygenpath = convert_from_windows_path(doxygenpath)
-                full_paths.append(doxygenpath)
-
-    elif get_mac_host_type():
-
-        # MacOSX has it hidden in the application
-        full_paths.append(
-            "/Applications/Doxygen.app/Contents/Resources/doxygen")
-        full_paths.append("/opt/local/bin/doxygen")
-
-    if IS_LINUX:
-        # Posix / Linux
-        full_paths.append("/usr/bin/doxygen")
-
-    # Scan the list of known locations
-    for doxygenpath in full_paths:
-        if is_exe(doxygenpath):
-            # Finally found it!
-            _DOXYGEN_PATH = doxygenpath
-            return doxygenpath
-
-    # Oh, dear.
-    if verbose:
-        print("Doxygen not found!")
-        if get_mac_host_type():
-            print(
-                "Install the desktop application in the Applications folder "
-                "or use brew or macports for the command line version")
-
-    # Can't find it
-    return None
 
 ########################################
 
@@ -1121,120 +992,6 @@ def perforce_opened(files=None, verbose=False):
     # to the file version.
     return [x.split("#")[0] for x in result[1].splitlines()]
 
-########################################
-
-
-def where_is_watcom(command=None, verbose=False, refresh=False, path=None):
-    """
-    Return the location of Watcom's executables.
-
-    Look for an environment variable WATCOM and
-    determine if the executable resides there, if
-    so, return the string to the path
-
-    In Windows, the boot drive is checked for a WATCOM folder and if
-    found, that folder name is returned. If all checks failed,
-    None is returned.
-
-    Args:
-        command: Watcom program to find.
-        verbose: If True, print a message if watcom was not found
-        refresh: If True, reset the cache and force a reload.
-        path: Path to watcom to place in the cache
-
-    Returns:
-        A path to the Watcom folder or None if not found.
-    """
-
-    # Too many return statements
-    # Too many branches
-    # Global statement
-    # pylint: disable=R0911,R0912,W0603
-
-    global _WATCOM_PATH
-
-    # Clear the cache if needed
-    if refresh:
-        _WATCOM_PATH = None
-
-    # Set the override, if found
-    if path:
-        _WATCOM_PATH = path
-
-    # Windows .exe
-    if get_windows_host_type(True):
-        exe_folder = "binnt"
-        suffix = ".exe"
-
-    # Watcom is not available on macOS yet
-    elif get_mac_host_type():
-        return None
-
-    # Linux
-    else:
-        exe_folder = "binl"
-        suffix = ""
-
-    # Append the system specific suffix
-    if command:
-        fake_command = command + suffix
-    else:
-        fake_command = "wcc386" + suffix
-
-    # Is cached?
-    if _WATCOM_PATH:
-        if command:
-            return os.path.join(_WATCOM_PATH, exe_folder, fake_command)
-        return _WATCOM_PATH
-
-    # Try the environment variable first
-    watcom_path = os.getenv("WATCOM", None)
-    if watcom_path:
-        # Valid?
-        watcom_path = convert_from_windows_path(watcom_path)
-        full_path = os.path.join(watcom_path, exe_folder, fake_command)
-        if is_exe(full_path):
-            _WATCOM_PATH = watcom_path
-            if command:
-                return full_path
-            return watcom_path
-
-    # List of the usual suspects
-    full_paths = []
-    if get_windows_host_type(True):
-        # Watcom defaults to the root folder
-        home_drive = os.getenv("HOMEDRIVE", "C:")
-        watcom_path = convert_from_windows_path(home_drive + "\\WATCOM")
-        full_paths.append(watcom_path)
-
-        # Try the "ProgramFiles" folders
-        for item in _WINDOWS_ENV_PATHS:
-            if os.getenv(item, None):
-                watcom_path = os.path.expandvars("${" + item + "}\\watcom")
-                watcom_path = convert_from_windows_path(watcom_path)
-                full_paths.append(watcom_path)
-
-    if IS_LINUX:
-        # Posix / Linux
-        full_paths.append("/usr/bin/watcom")
-
-    # Scan the list of known locations
-    for watcom_path in full_paths:
-        # Valid?
-        full_path = os.path.join(watcom_path, exe_folder, fake_command)
-        if is_exe(os.path.join(watcom_path, full_path)):
-            # Finally found it!
-            _WATCOM_PATH = watcom_path
-            if command:
-                return full_path
-            return watcom_path
-
-    # Oh, dear.
-    if verbose:
-        print("Watcom was not found!")
-
-    # Can't find it
-    return None
 
 ########################################
 
@@ -1567,97 +1324,3 @@ def run_py_script(file_name, function_name=None, arg=None):
     if arg is None:
         return method()
     return method(arg)
-
-########################################
-
-
-def where_is_visual_studio(vs_version):
-    """
-    Locate devenv.com for a specific version of Visual Studio.
-
-    Given a specific version by year, check for the appropriate environment
-    variable that contains the path to the executable of the IDE
-
-    Note:
-        This function will always return None on non-windows hosts.
-
-    Examples:
-        # Normal use
-        vs_path = burger.buildutils.where_is_visual_studio(2010)
-        if not vs_path:
-            print("Visual Studio 2010 not found")
-            raise NameError("Visual Studio 2010 not found")
-
-    Args:
-        vs_version: Version year as number
-    Returns:
-        Path to devenv.com for the IDE or None.
-    """
-
-    # Test if running on a windows host
-    host_type = get_windows_host_type(True)
-    if not host_type:
-        return None
-
-    # For each version of Visual Studio, set the default environment variable
-    # and path that the specific version of Visual Studio resides
-
-    vs_table = {
-        2003: ("VS71COMNTOOLS", "Microsoft Visual Studio .NET 2003"),
-        2005: ("VS80COMNTOOLS", "Microsoft Visual Studio 8"),
-        2008: ("VS90COMNTOOLS", "Microsoft Visual Studio 9.0"),
-        2010: ("VS100COMNTOOLS", "Microsoft Visual Studio 10.0"),
-        2012: ("VS110COMNTOOLS", "Microsoft Visual Studio 11.0"),
-        2013: ("VS120COMNTOOLS", "Microsoft Visual Studio 12.0"),
-        2015: ("VS140COMNTOOLS", "Microsoft Visual Studio 14.0"),
-        2017: ("VS150COMNTOOLS", "Microsoft Visual Studio\\2017\\xxx"),
-        2019: ("VS160COMNTOOLS", "Microsoft Visual Studio\\2019\\xxx"),
-        2022: ("VS170COMNTOOLS", "Microsoft Visual Studio\\2022\\xxx")
-    }
-
-    # Check if it's even in the table
-    table_item = vs_table.get(vs_version, None)
-    if not table_item:
-        return None
-
-    # Try the environment variable first
-    vstudio_paths = []
-    vstudiopath = os.getenv(table_item[0], default=None)
-    if vstudiopath:
-        vstudio_paths.append(vstudiopath)
-
-    # Test if this is VS 2017 or higher
-    xxx = "xxx" in table_item[1]
-
-    # Try the pathname next
-    for program_files in _WINDOWS_ENV_PATHS:
-
-        # Generate the proper path to test
-        vstudiopath = os.getenv(program_files, None)
-        if vstudiopath:
-
-            # Has variants? Call the TVA.
-            if xxx:
-                for item in _VS_VARIANTS:
-                    vstudio_paths.append(
-                        vstudiopath +
-                        "\\" +
-                        table_item[1].replace("xxx", item) +
-                        "\\Common7\\Tools\\")
-            else:
-                vstudio_paths.append(
-                    vstudiopath +
-                    "\\" +
-                    table_item[1] +
-                    "\\Common7\\Tools\\")
-
-    for item in vstudio_paths:
-        vstudiopath = convert_from_windows_path(item)
-
-        # Locate the launcher
-        vstudiopath = os.path.dirname(os.path.abspath(vstudiopath))
-        vstudiopath = os.path.join(vstudiopath, "ide", "devenv.com")
-        if os.path.isfile(vstudiopath):
-            # Return the path if the file was found
-            return vstudiopath
-    return None

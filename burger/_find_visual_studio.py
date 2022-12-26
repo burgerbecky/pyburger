@@ -40,7 +40,7 @@ except ImportError:
 _VSTOOLS = ("cl.exe", "link.exe", "lib.exe")
 
 # List of IDE tools
-_IDETOOLS = ("devenv.exe", )
+_IDETOOLS = ("devenv.exe", "devenv.com")
 
 # Versions of Visual Studio from 2003 to 2015
 _VSVERSIONS = ("7.1", "8.0", "9.0", "10.0", "11.0", "12.0", "14.0")

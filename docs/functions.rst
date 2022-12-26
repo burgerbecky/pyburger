@@ -111,10 +111,6 @@ buildutils.find_in_path
 ^^^^^^^^^^^^^^^^^^^^^^^
 .. doxygenfunction:: burger::buildutils::find_in_path
 
-buildutils.where_is_doxygen
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
-.. doxygenfunction:: burger::buildutils::where_is_doxygen
-
 buildutils.where_is_git
 ^^^^^^^^^^^^^^^^^^^^^^^
 .. doxygenfunction:: burger::buildutils::where_is_git
@@ -131,14 +127,6 @@ buildutils.is_under_p4_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. doxygenfunction:: burger::buildutils::is_under_p4_control
 
-buildutils.where_is_watcom
-^^^^^^^^^^^^^^^^^^^^^^^^^^
-.. doxygenfunction:: burger::buildutils::where_is_watcom
-
-buildutils.where_is_visual_studio
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-.. doxygenfunction:: burger::buildutils::where_is_visual_studio
-
 Locator Functions
 -----------------
 
@@ -149,6 +137,18 @@ locators.where_is_xcode
 locators.where_is_codeblocks
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. doxygenfunction:: burger::locators::where_is_codeblocks
+
+locators.where_is_watcom
+^^^^^^^^^^^^^^^^^^^^^^^^
+.. doxygenfunction:: burger::locators::where_is_watcom
+
+locators.where_is_doxygen
+^^^^^^^^^^^^^^^^^^^^^^^^^
+.. doxygenfunction:: burger::locators::where_is_doxygen
+
+locators.where_is_visual_studio
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. doxygenfunction:: burger::locators::where_is_visual_studio
 
 File Functions
 --------------
