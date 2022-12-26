@@ -15,6 +15,7 @@ Please? It's not like I'm asking you for money!
 # pylint: disable=wrong-import-position
 
 from __future__ import absolute_import, print_function, unicode_literals
+
 import os
 import sys
 import unittest
@@ -25,6 +26,9 @@ import tempfile
 # to be processed
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import burger
+
+# Will be changed by an external script using buildutils.execfile()
+_TEST_EXECFILE = "Failure"
 
 ########################################
 
@@ -237,6 +241,26 @@ class TestBuild(unittest.TestCase):
                 "sample.py"),
             "main",
             "cat"), "cattest")
+
+########################################
+
+    def test_execfile(self):
+        """
+        Test burger.execfile()
+        """
+
+        # pylint: disable=global-statement
+        # Initialize the variable for the test
+        global _TEST_EXECFILE
+        _TEST_EXECFILE = "Failure"
+
+        selffile = os.path.dirname(os.path.abspath(__file__))
+        self.assertEqual(_TEST_EXECFILE, "Failure")
+
+        # The script modifies _TEXT_EXECFILE
+        burger.execfile(os.path.join(selffile, "data2",
+                        "sample_exec.py"), globals())
+        self.assertEqual(_TEST_EXECFILE, "Success")
 
 ########################################
 

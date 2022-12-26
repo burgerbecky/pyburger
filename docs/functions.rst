@@ -111,22 +111,6 @@ buildutils.find_in_path
 ^^^^^^^^^^^^^^^^^^^^^^^
 .. doxygenfunction:: burger::buildutils::find_in_path
 
-buildutils.where_is_git
-^^^^^^^^^^^^^^^^^^^^^^^
-.. doxygenfunction:: burger::buildutils::where_is_git
-
-buildutils.is_under_git_control
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-.. doxygenfunction:: burger::buildutils::is_under_git_control
-
-buildutils.where_is_p4
-^^^^^^^^^^^^^^^^^^^^^^
-.. doxygenfunction:: burger::buildutils::where_is_p4
-
-buildutils.is_under_p4_control
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-.. doxygenfunction:: burger::buildutils::is_under_p4_control
-
 Locator Functions
 -----------------
 
@@ -149,6 +133,52 @@ locators.where_is_doxygen
 locators.where_is_visual_studio
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. doxygenfunction:: burger::locators::where_is_visual_studio
+
+Perforce Functions
+------------------
+
+perforce.where_is_p4
+^^^^^^^^^^^^^^^^^^^^
+.. doxygenfunction:: burger::perforce::where_is_p4
+
+perforce.is_under_p4_control
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. doxygenfunction:: burger::perforce::is_under_p4_control
+
+perforce.perforce_command
+^^^^^^^^^^^^^^^^^^^^^^^^^
+.. doxygenfunction:: burger::perforce::perforce_command
+
+perforce.perforce_edit
+^^^^^^^^^^^^^^^^^^^^^^
+.. doxygenfunction:: burger::perforce::perforce_edit
+
+perforce.perforce_add
+^^^^^^^^^^^^^^^^^^^^^
+.. doxygenfunction:: burger::perforce::perforce_add
+
+perforce.perforce_opened
+^^^^^^^^^^^^^^^^^^^^^^^^
+.. doxygenfunction:: burger::perforce::perforce_opened
+
+perforce.make_version_header
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. doxygenfunction:: burger::perforce::make_version_header
+
+Git Functions
+-------------
+
+git.where_is_git
+^^^^^^^^^^^^^^^^
+.. doxygenfunction:: burger::git::where_is_git
+
+git.is_under_git_control
+^^^^^^^^^^^^^^^^^^^^^^^^
+.. doxygenfunction:: burger::git::is_under_git_control
+
+git.make_git_version_header
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. doxygenfunction:: burger::buildutgitils::make_git_version_header
 
 File Functions
 --------------
@@ -260,33 +290,9 @@ buildutils.expand_and_verify
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. doxygenfunction:: burger::buildutils::expand_and_verify
 
-buildutils.make_git_version_header
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-.. doxygenfunction:: burger::buildutils::make_git_version_header
-
-buildutils.perforce_command
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
-.. doxygenfunction:: burger::buildutils::perforce_command
-
-buildutils.perforce_edit
-^^^^^^^^^^^^^^^^^^^^^^^^
-.. doxygenfunction:: burger::buildutils::perforce_edit
-
-buildutils.perforce_add
-^^^^^^^^^^^^^^^^^^^^^^^
-.. doxygenfunction:: burger::buildutils::perforce_add
-
-buildutils.perforce_opened
-^^^^^^^^^^^^^^^^^^^^^^^^^^
-.. doxygenfunction:: burger::buildutils::perforce_opened
-
 buildutils.run_command
 ^^^^^^^^^^^^^^^^^^^^^^
 .. doxygenfunction:: burger::buildutils::run_command
-
-buildutils.make_version_header
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-.. doxygenfunction:: burger::buildutils::make_version_header
 
 buildutils.is_codewarrior_mac_allowed
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -300,6 +306,9 @@ buildutils.run_py_script
 ^^^^^^^^^^^^^^^^^^^^^^^^
 .. doxygenfunction:: burger::buildutils::run_py_script
 
+buildutils.execfile
+^^^^^^^^^^^^^^^^^^^
+.. doxygenfunction:: burger::buildutils::execfile
 
 Clean Helpers
 -------------
