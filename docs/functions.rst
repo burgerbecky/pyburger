@@ -139,16 +139,16 @@ buildutils.where_is_visual_studio
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. doxygenfunction:: burger::buildutils::where_is_visual_studio
 
-buildutils.where_is_codeblocks
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-.. doxygenfunction:: burger::buildutils::where_is_codeblocks
-
 Locator Functions
 -----------------
 
 locators.where_is_xcode
 ^^^^^^^^^^^^^^^^^^^^^^^
 .. doxygenfunction:: burger::locators::where_is_xcode
+
+locators.where_is_codeblocks
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. doxygenfunction:: burger::locators::where_is_codeblocks
 
 File Functions
 --------------

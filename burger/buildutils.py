@@ -21,9 +21,6 @@ Cached location of p4 from Perforce
 @var burger.buildutils._WATCOM_PATH
 Cached location of Watcom
 
-@var burger.buildutils._CODEBLOCKS_PATH
-Cached location of CodeBlocks
-
 @var burger.buildutils._WINDOWS_ENV_PATHS
 Environment variable locations of window applications
 
@@ -65,9 +62,6 @@ _PERFORCE_PATH = None
 
 # Cached location of Watcom
 _WATCOM_PATH = None
-
-# Cached location of CodeBlocks
-_CODEBLOCKS_PATH = None
 
 # Environment variable locations of window applications
 _WINDOWS_ENV_PATHS = [
@@ -1666,112 +1660,4 @@ def where_is_visual_studio(vs_version):
         if os.path.isfile(vstudiopath):
             # Return the path if the file was found
             return vstudiopath
-    return None
-
-
-########################################
-
-
-def where_is_codeblocks(verbose=False, refresh=False, path=None):
-    """
-    Return the location of CodeBlocks's executable.
-
-    Look for an environment variable CODEBLOCKS and
-    determine if the executable resides there, if
-    so, return the string to the path
-
-    If running on a MacOSX client, look in the Applications
-    folder for a copy of CodeBlocks.app and return the
-    pathname to the copy of CodeBlocks that resides within
-
-    PATH is then searched for CodeBlocks, and if it's not found,
-    None is returned.
-
-    Args:
-        verbose: If True, print a message if CodeBlocks was not found
-        refresh: If True, reset the cache and force a reload.
-        path: Path to CodeBlocks to place in the cache
-
-    Returns:
-        A path to the CodeBlocks command line executable or None if not found.
-
-    """
-
-    # pylint: disable=R0912
-    global _CODEBLOCKS_PATH                # pylint: disable=W0603
-
-    # Clear the cache if needed
-    if refresh:
-        _CODEBLOCKS_PATH = None
-
-    # Set the override, if found
-    if path:
-        _CODEBLOCKS_PATH = path
-
-    # Is cached?
-    if _CODEBLOCKS_PATH:
-        return _CODEBLOCKS_PATH
-
-    # Try the environment variable first
-    codeblocks_env = os.getenv("CODEBLOCKS", None)
-    if codeblocks_env:
-        if get_windows_host_type(True):
-
-            # Windows points to the base path
-            codeblocks_path = convert_from_windows_path(
-                codeblocks_env + "\\codeblocks.exe")
-        else:
-            # Just append the exec name
-            codeblocks_path = os.path.expandvars("${CODEBLOCKS}/CodeBlocks")
-
-        # Valid?
-        if is_exe(codeblocks_path):
-            _CODEBLOCKS_PATH = codeblocks_path
-            return codeblocks_path
-
-    # Scan the PATH for the exec
-    codeblocks_path = find_in_path("CodeBlocks", executable=True)
-    if codeblocks_path:
-        _CODEBLOCKS_PATH = codeblocks_path
-        return codeblocks_path
-
-    # List of the usual suspects
-    full_paths = []
-
-    # Check if it's installed but not in the path
-    if get_windows_host_type(True):
-
-        # Try the "ProgramFiles" folders
-        for item in _WINDOWS_ENV_PATHS:
-            if os.getenv(item, None):
-                codeblocks_path = item + "\\CodeBlocks\\codeblocks.exe"
-                codeblocks_path = convert_from_windows_path(codeblocks_path)
-                full_paths.append(codeblocks_path)
-
-    elif get_mac_host_type():
-
-        # MacOSX has it hidden in the application
-        full_paths.append(
-            "/Applications/CodeBlocks.app/Contents/MacOS/CodeBlocks")
-        full_paths.append("/opt/local/bin/CodeBlocks")
-
-    if IS_LINUX:
-        # Posix / Linux
-        full_paths.append("/usr/bin/codeblocks")
-        full_paths.append("/usr/bin/CodeBlocks")
-
-    # Scan the list of known locations
-    for codeblocks_path in full_paths:
-        if is_exe(codeblocks_path):
-            # Finally found it!
-            _CODEBLOCKS_PATH = codeblocks_path
-            return codeblocks_path
-
-    # Oh, dear.
-    if verbose:
-        print("CodeBlocks not found!")
-        if get_mac_host_type():
-            print("Install the desktop application in the Applications folder")
-
-    # Can't find it
     return None
