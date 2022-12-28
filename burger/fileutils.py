@@ -213,7 +213,7 @@ def copy_file_if_needed(source, destination, verbose=True, perforce=False):
         # Alert perforce that the file is to be modified
         if perforce and is_write_protected(destination):
             # pylint: disable=import-outside-toplevel
-            from .buildutils import perforce_edit
+            from .perforce import perforce_edit
             perforce_edit(destination, verbose=verbose)
 
         # Copy the file
@@ -884,7 +884,7 @@ def save_text_file_if_newer(file_name, text_lines, line_feed=None,
 
         # If write protected, check out the file
         elif is_write_protected(file_name):
-            from .buildutils import perforce_edit
+            from .perforce import perforce_edit
             perforce_edit(file_name, verbose=verbose)
 
     # Save the file
@@ -894,6 +894,6 @@ def save_text_file_if_newer(file_name, text_lines, line_feed=None,
 
     # If needed, after the save, mark for add with Perforce
     if do_perforce_add:
-        from .buildutils import perforce_add
+        from .perforce import perforce_add
         perforce_add(file_name, verbose=verbose)
     return False
