@@ -60,7 +60,7 @@ jobs:
           - "windows-2022-py310"
           - "windows-2022-py311"
           - "windows-2022-pypy2"
-          - "windows-2022-pypy3"
+          #- "windows-2022-pypy3"
         # Specific data for each version being built
         include:
           # Ubuntu 20
