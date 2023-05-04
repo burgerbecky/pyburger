@@ -457,7 +457,7 @@ def get_tool_path(tool_folder, tool_name, encapsulate=False):
         exename = os.path.join(
             tool_folder,
             "windows",
-			get_windows_host_type(True),
+           	get_windows_host_type(True),
             tool_name + ".exe")
 
     # Linux is currently just 64 bit Intel, will have to update
