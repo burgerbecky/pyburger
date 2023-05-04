@@ -83,7 +83,8 @@ def _find_vs2003_2015(installed_roots):
 
         # vcvarsall.bat is a special case
         if key == "7.1":
-            test_dir = os.path.join(vs_path, "Common7", "Tools", "vsvars32.bat")
+            test_dir = os.path.join(
+                vs_path, "Common7", "Tools", "vsvars32.bat")
             if os.path.exists(test_dir):
                 known_paths["vcvarsall.bat"] = test_dir
 
@@ -121,6 +122,9 @@ def _find_vs2003_2015(installed_roots):
             test_dir = os.path.join(vc7_path, "msbuild.exe")
             if os.path.exists(test_dir):
                 known_paths["msbuild.exe" + "_x86"] = test_dir
+            test_dir = os.path.join(vc7_path, "amd64", "msbuild.exe")
+            if os.path.exists(test_dir):
+                known_paths["msbuild.exe" + "_x64"] = test_dir
 
         version_number = get_file_info(
             known_paths["devenv.exe_x86"], "ProductVersion")
@@ -205,6 +209,10 @@ def _find_vs2017_higher(installed_roots):
             "MSBuild.exe")
         if os.path.exists(test_dir):
             known_paths["msbuild.exe" + "_x86"] = test_dir
+            test_dir = os.path.dirname(test_dir)
+            test_dir = os.path.join(test_dir, "amd64", "msbuild.exe")
+            if os.path.exists(test_dir):
+                known_paths["msbuild.exe" + "_x64"] = test_dir
         else:
             test_dir = os.path.join(
                 vs_path,
@@ -214,6 +222,12 @@ def _find_vs2017_higher(installed_roots):
                 "MSBuild.exe")
             if os.path.exists(test_dir):
                 known_paths["msbuild.exe" + "_x86"] = test_dir
+
+            test_dir = os.path.dirname(test_dir)
+            test_dir = os.path.join(test_dir, "amd64", "msbuild.exe")
+            if os.path.exists(test_dir):
+                known_paths["msbuild.exe" + "_x64"] = test_dir
+
         result_list.append(VisualStudioInstance(
             file_description,
             version_number,

@@ -22,6 +22,9 @@ Cached location of doxygen
 
 @var burger.locators._VS_VARIANTS
 Visual Studio variants in the order of search
+
+@var burger.locators._VS_TABLE
+Internal table of Visual Studio environment variables
 """
 
 # pylint: disable=consider-using-f-string
@@ -59,6 +62,21 @@ _VS_VARIANTS = (
     "Professional",
     "Community"
 )
+
+# For each version of Visual Studio, set the default environment variable
+# and path that the specific version of Visual Studio resides
+_VS_TABLE = {
+    2003: ("VS71COMNTOOLS", "Microsoft Visual Studio .NET 2003", 7),
+    2005: ("VS80COMNTOOLS", "Microsoft Visual Studio 8", 8),
+    2008: ("VS90COMNTOOLS", "Microsoft Visual Studio 9.0", 9),
+    2010: ("VS100COMNTOOLS", "Microsoft Visual Studio 10.0", 10),
+    2012: ("VS110COMNTOOLS", "Microsoft Visual Studio 11.0", 11),
+    2013: ("VS120COMNTOOLS", "Microsoft Visual Studio 12.0", 12),
+    2015: ("VS140COMNTOOLS", "Microsoft Visual Studio 14.0", 14),
+    2017: ("VS150COMNTOOLS", "Microsoft Visual Studio\\2017\\xxx", 15),
+    2019: ("VS160COMNTOOLS", "Microsoft Visual Studio\\2019\\xxx", 16),
+    2022: ("VS170COMNTOOLS", "Microsoft Visual Studio\\2022\\xxx", 17)
+}
 
 ########################################
 
@@ -584,7 +602,7 @@ def where_is_doxygen(verbose=False, refresh=False, path=None):
 ########################################
 
 
-def where_is_visual_studio(vs_version):
+def where_is_visual_studio(vs_version, tool_name=None, cpu=None):
     """
     Locate devenv.com for a specific version of Visual Studio.
 
@@ -600,6 +618,9 @@ def where_is_visual_studio(vs_version):
 
     Args:
         vs_version: Version year as number
+        tool_name: Return the path to this tool, None becomes ``devenv.com``
+        cpu: String of the cpu type of the tool requested, ``x86``, ``x64``
+
     Returns:
         Path to devenv.com for the IDE or None.
     """
@@ -611,35 +632,56 @@ def where_is_visual_studio(vs_version):
     if not host_type:
         return None
 
-    # For each version of Visual Studio, set the default environment variable
-    # and path that the specific version of Visual Studio resides
-
-    vs_table = {
-        2003: ("VS71COMNTOOLS", "Microsoft Visual Studio .NET 2003", 7),
-        2005: ("VS80COMNTOOLS", "Microsoft Visual Studio 8", 8),
-        2008: ("VS90COMNTOOLS", "Microsoft Visual Studio 9.0", 9),
-        2010: ("VS100COMNTOOLS", "Microsoft Visual Studio 10.0", 10),
-        2012: ("VS110COMNTOOLS", "Microsoft Visual Studio 11.0", 11),
-        2013: ("VS120COMNTOOLS", "Microsoft Visual Studio 12.0", 12),
-        2015: ("VS140COMNTOOLS", "Microsoft Visual Studio 14.0", 14),
-        2017: ("VS150COMNTOOLS", "Microsoft Visual Studio\\2017\\xxx", 15),
-        2019: ("VS160COMNTOOLS", "Microsoft Visual Studio\\2019\\xxx", 16),
-        2022: ("VS170COMNTOOLS", "Microsoft Visual Studio\\2022\\xxx", 17)
-    }
-
-    # Check if it's even in the table
-    table_item = vs_table.get(vs_version, None)
+    # Check if the version is even in the table
+    table_item = _VS_TABLE.get(vs_version, None)
     if not table_item:
         return None
 
-    # Try the environment variable first
+    # Tool to locate, use default if not supplied
+    if not tool_name:
+        tool_name = "devenv.com"
+
+    # Table of cputypes to check
+    cputable = []
+
+    # Only check this one
+    if cpu:
+        cputable.append(cpu)
+
+    else:
+        # If already x86, or .com skip extra cpus
+        if host_type != "x86" and not tool_name.endswith(".com"):
+
+            # Prioritize the native CPU
+            cputable.append(host_type)
+
+            # If ARM, allow x64 for the emulation layer
+            if host_type in ("arm", "arm64"):
+                cputable.append("x64")
+
+        # Always use x86
+        cputable.append("x86")
+
+    # Try the registry first
+    for item in find_visual_studios():
+
+        # Is this the version of Visual Studio requested?
+        if item.version_info[0] == table_item[2]:
+
+            # Check with CPUs and find a match
+            for i in cputable:
+                vstudiopath = item.known_paths.get(tool_name + "_" + i, None)
+                if vstudiopath:
+                    return vstudiopath
+
+    # Try the environment variable next
     vstudio_paths = []
     vstudiopath = os.getenv(table_item[0], default=None)
     if vstudiopath:
         vstudio_paths.append(vstudiopath)
 
     # Test if this is VS 2017 or higher
-    xxx = "xxx" in table_item[1]
+    xxx = table_item[1].endswith("xxx")
 
     # Try the pathname next
     for program_files in _WINDOWS_ENV_PATHS:
@@ -668,21 +710,10 @@ def where_is_visual_studio(vs_version):
 
         # Locate the launcher
         vstudiopath = os.path.dirname(os.path.abspath(vstudiopath))
-        vstudiopath = os.path.join(vstudiopath, "ide", "devenv.com")
+        vstudiopath = os.path.join(vstudiopath, "ide", tool_name)
         if os.path.isfile(vstudiopath):
             # Return the path if the file was found
             return vstudiopath
-
-    # Since it's not found, try using the registry
-    for item in find_visual_studios():
-
-        # Is this the version of Visual Studio requested?
-        if item.version_info[0] == table_item[2]:
-
-            # Is there an executable?
-            vstudiopath = item.known_paths.get("devenv.com_x86", None)
-            if vstudiopath:
-                return vstudiopath
 
     # Give up
     return None
