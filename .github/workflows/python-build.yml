@@ -249,7 +249,7 @@ jobs:
             os: "windows-2022"
             tox_env: "pypy2"
           - name: "windows-2022-pypy3"
-            python: "pypy3.7"
+            python: "pypy3.9"
             os: "windows-2022"
             tox_env: "pypy3"
 
