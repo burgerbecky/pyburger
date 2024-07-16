@@ -3,7 +3,7 @@
 
 """ Unit tests for burger class functions
 
-Copyright 2021-2022 by Rebecca Ann Heineman becky@burgerbecky.com
+Copyright 2021-2024 by Rebecca Ann Heineman becky@burgerbecky.com
 
 It is released under an MIT Open Source license. Please see LICENSE
 for license details. Yes, you can use it in a

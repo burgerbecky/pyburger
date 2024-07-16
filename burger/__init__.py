@@ -91,7 +91,8 @@ from .fileutils import is_write_protected, make_executable, \
     delete_directory, clean_directories, clean_files, get_tool_path, \
     traverse_directory, unlock_files, lock_files, load_text_file, \
     save_text_file, compare_files, compare_file_to_string, \
-    read_zero_terminated_string, save_text_file_if_newer
+    read_zero_terminated_string, save_text_file_if_newer, \
+    environment_root
 
 from .buildutils import get_sdks_folder, fix_csharp, is_exe, get_path_ext, \
     make_exe_path, find_in_path, expand_and_verify, run_command, \
@@ -122,7 +123,7 @@ else:
 
 
 # Numeric version
-__numversion__ = (1, 2, 9)
+__numversion__ = (1, 3, 0)
 
 # Current version of the library
 __version__ = ".".join([str(num) for num in __numversion__])
@@ -146,7 +147,7 @@ __email__ = "becky@burgerbecky.com"
 __license__ = "MIT License"
 
 # Copyright owner
-__copyright__ = "Copyright 2013-2022 Rebecca Ann Heineman"
+__copyright__ = "Copyright 2013-2024 Rebecca Ann Heineman"
 
 # Items to import on "from burger import *"
 __all__ = [
@@ -195,6 +196,7 @@ __all__ = [
     "compare_file_to_string",
     "read_zero_terminated_string",
     "save_text_file_if_newer",
+    "environment_root",
     "get_sdks_folder",
     "fix_csharp",
     "is_exe",

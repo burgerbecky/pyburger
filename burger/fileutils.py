@@ -898,3 +898,49 @@ def save_text_file_if_newer(file_name, text_lines, line_feed=None,
         from .perforce import perforce_add
         perforce_add(file_name, verbose=verbose)
     return False
+
+########################################
+
+
+def environment_root(test_directory, env_name, working_directory=None):
+    """
+    Check if a directory is relative to an environment variable
+
+    Given a directory, check if it's in the directory of an environment
+    variable and if so, return $(NAME)/foo/bar as a path. Otherwise,
+    return the path relative to the working_directory or an absolute
+    path if working_directory is not set or it's on another drive.
+
+    Args:
+        test_directory: Path to test
+        env_name: Environment variable to check
+        working_directory: Optional root directory
+    Returns:
+        Tuple with the first is the relative path, the second
+            is a boolean if the environment variable is matched
+    """
+
+    # Is this environment variable present?
+    env_dir = os.environ.get(env_name, None)
+    if env_dir:
+        try:
+            # Is the path relative to the environment variable?
+            rel_path = os.path.relpath(test_directory, env_dir)
+
+            # If it doesn't start with dots, it's a match
+            if not rel_path.startswith("."):
+                return "$(" + env_name + ")" + os.sep + rel_path, True
+        except ValueError:
+            pass
+
+    # Not a match, try relative or absolute
+    if working_directory is None:
+        root_path = os.path.abspath(test_directory)
+    else:
+        try:
+            root_path = os.path.relpath(test_directory, working_directory)
+        except ValueError:
+            # Wrong drive, use absolute path
+            root_path = os.path.abspath(test_directory)
+
+    return root_path, False

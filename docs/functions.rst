@@ -267,6 +267,10 @@ fileutils.save_text_file_if_newer
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. doxygenfunction:: burger::fileutils::save_text_file_if_newer
 
+fileutils.environment_root
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. doxygenfunction:: burger::fileutils::environment_root
+
 Build Helpers
 -------------
 
