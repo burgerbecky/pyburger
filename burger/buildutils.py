@@ -448,6 +448,11 @@ def run_command(args, working_dir=None, quiet=False, capture_stdout=False,
     stdout = subprocess.PIPE if capture_stdout else None
     stderr = subprocess.PIPE if capture_stderr else None
 
+    # Set the working directory if needed
+    old_directory = os.getcwd()
+    if working_dir:
+        os.chdir(working_dir)
+
     try:
         tempfp = subprocess.Popen(args, cwd=working_dir, stdout=stdout,
                                   stderr=stderr, universal_newlines=True)
@@ -458,7 +463,13 @@ def run_command(args, working_dir=None, quiet=False, capture_stdout=False,
             else:
                 msg = " ".join(args)
             print("Command line \"{}\" generated error {}".format(msg, error))
+
+        # Restore directory
+        os.chdir(old_directory)
         return (error.errno, "", "")
+
+    # Restore directory
+    os.chdir(old_directory)
 
     stdoutstr, stderrstr = tempfp.communicate()
     return (tempfp.returncode, stdoutstr, stderrstr)
