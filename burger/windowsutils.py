@@ -39,7 +39,7 @@ def find_visual_studios(refresh=False):
     Studio are installed on the machine. For speed, the results are
     cached and the cache is used on subsequent calls.
 
-    More info is here @ref md_find_visual_studio
+    More info is here @ref md_find__visual__studio
 
     Note:
         This function will return an empty list on macOS and pure Linux.

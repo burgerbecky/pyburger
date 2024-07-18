@@ -20,7 +20,7 @@ class VisualStudioInstance(object):
     """
     Instance of the location of Visual Studio.
 
-    More info is here @ref md_find_visual_studio
+    More info is here @ref md_find__visual__studio
 
     Attributes:
         name: Name of the Visual Studio instance or SDK
@@ -73,7 +73,7 @@ class WindowsSDKInstance(VisualStudioInstance):
     """
     Instance of paths for a Windows SDK.
 
-    More info is here @ref md_find_visual_studio
+    More info is here @ref md_find__visual__studio
 
     See Also:
         VisualStudioInstance

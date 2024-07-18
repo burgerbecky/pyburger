@@ -31,7 +31,9 @@ PROJECT_KEYWORDS = [
     "burger",
     "perforce",
     "burgerlib",
-    "development"
+    "development",
+    "python",
+    "windows"
 ]
 
 # Manually import the project
@@ -44,7 +46,7 @@ with io.open(os.path.join(CWD, "README.rst"), encoding="utf-8") as filep:
 # Create the dependency list
 INSTALL_REQUIRES = [
     "setuptools >= 0.7.0",
-    "wslwinreg >= 1.0.5"
+    "wslwinreg >= 1.0.7"
 ]
 
 # Project classifiers
@@ -68,7 +70,8 @@ CLASSIFIERS = [
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11"
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12"
 ]
 
 # Extra files to include in the form of this tuple (directory,[files])

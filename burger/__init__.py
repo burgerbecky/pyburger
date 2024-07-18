@@ -18,8 +18,8 @@ Chapter list
 ============
 
 - @subpage md_truefalse
-- @subpage md_wsl_cygwin
-- @subpage md_find_visual_studio
+- @subpage md_wsl__cygwin
+- @subpage md_find__visual__studio
 - @subpage md_validators
 
 Module list
