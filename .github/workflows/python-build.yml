@@ -40,7 +40,7 @@ jobs:
           - "macos14-py39"
           - "macos14-py310"
           - "macos14-py311"
-	  - "macos14-py312"
+          - "macos14-py312"
           - "macos14-pypy3"
           - "windows-2022-py36"
           - "windows-2022-py37"
