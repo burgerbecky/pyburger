@@ -7,7 +7,6 @@ on:
     branches:
       - "master"
 
-
 jobs:
   "Run_Pytest":
     runs-on: ${{ matrix.os }}
