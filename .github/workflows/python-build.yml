@@ -41,7 +41,6 @@ jobs:
           - "macos14-py310"
           - "macos14-py311"
           - "macos14-py312"
-          - "macos14-pypy3"
           - "windows-2022-py36"
           - "windows-2022-py37"
           - "windows-2022-py38"
@@ -159,10 +158,6 @@ jobs:
             python: "3.12"
             os: "macos-14"
             tox_env: "py312"
-          - name: "macos14-pypy3"
-            python: "pypy3"
-            os: "macos-14"
-            tox_env: "pypy3"
           # Windows 2022 Server
           - name: "windows-2022-py36"
             python: "3.6"
