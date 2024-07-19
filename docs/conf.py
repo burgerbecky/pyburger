@@ -243,7 +243,6 @@ def generate_doxygen_xml(app):
     # Doxygen can't create a nested folder. Help it by
     # creating the first folder
 
-    print("Foobar")
     try:
         os.makedirs(os.path.join(CWD, "temp"))
     except OSError as error:
@@ -278,10 +277,7 @@ def generate_doxygen_xml(app):
     # Call Doxygen to build the documentation
     try:
         # Log the Doxygen version number
-        print("{} -v".format(doxygen))
         subprocess.call(doxygen + " -v", cwd=CWD, shell=True)
-
-        print(doxygen)
         retcode = subprocess.call(doxygen, cwd=CWD, shell=True)
         if retcode < 0:
             sys.stderr.write("doxygen terminated by signal %s" % (-retcode))
@@ -291,12 +287,10 @@ def generate_doxygen_xml(app):
     # If on ReadTheDocs.org, copy doxygen to public folder
     if _ON_RTD:
         try:
-            print("ls")
-            subprocess.call("ls", cwd=".", shell=True)
-
-            print("cp -r temp/html ../_readthedocs/html/doxygen")
             retcode = subprocess.call(
-                "cp -r temp/html ../_readthedocs/html/doxygen", cwd=".", shell=True)
+                "cp -r temp/html ../_readthedocs/html/doxygen",
+                cwd=".",
+                shell=True)
             if retcode < 0:
                 sys.stderr.write("cp terminated by signal %s" % (-retcode))
         except OSError as error:
