@@ -223,7 +223,8 @@ breathe_default_project = project
 # -- Options for intersphinx extension ---------------------------------------
 
 # Example configuration for intersphinx: refer to the Python standard library.
-intersphinx_mapping = {"https://docs.python.org/": None}
+intersphinx_mapping = {"python":
+  ("https://docs.python.org/3", None)}
 
 # -- Options for todo extension ----------------------------------------------
 
@@ -264,10 +265,10 @@ def generate_doxygen_xml(app):
         if not os.path.isfile(doxygen):
             try:
                 subprocess.call(("curl -O "
-                    "http://logicware.com/downloads/linux/doxygen-1.11.0.tgz"),
+                    "http://logicware.com/downloads/linux/doxygen-1.12.0.tgz"),
                     cwd=CWD,
                     shell=True)
-                subprocess.call("tar -xvf doxygen-1.11.0.tgz", cwd=CWD,
+                subprocess.call("tar -xvf doxygen-1.12.0.tgz", cwd=CWD,
                     shell=True)
             except OSError as error:
                 sys.stderr.write("doxygen download error: %s" % error)

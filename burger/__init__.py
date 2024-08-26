@@ -99,7 +99,7 @@ from .buildutils import get_sdks_folder, fix_csharp, is_exe, get_path_ext, \
     is_codewarrior_mac_allowed, import_py_script, run_py_script, \
     execfile
 
-from .locators import where_is_xcode, where_is_codeblocks, where_is_watcom, \
+from .locators import where_is_codeblocks, where_is_watcom, \
     where_is_doxygen, where_is_visual_studio
 
 from .perforce import where_is_p4, is_under_p4_control, perforce_command, \
@@ -114,6 +114,8 @@ from .validators import BooleanProperty, StringProperty, IntegerProperty, \
 
 from .windowsutils import find_visual_studios
 
+from .xcode import where_is_xcode, find_rez_headers, build_rez
+
 if PY2:
     from cStringIO import StringIO
 else:
@@ -123,7 +125,7 @@ else:
 
 
 # Numeric version
-__numversion__ = (1, 3, 1)
+__numversion__ = (1, 4, 0)
 
 # Current version of the library
 __version__ = ".".join([str(num) for num in __numversion__])
@@ -209,7 +211,6 @@ __all__ = [
     "import_py_script",
     "run_py_script",
     "execfile",
-    "where_is_xcode",
     "where_is_codeblocks",
     "where_is_watcom",
     "where_is_doxygen",
@@ -235,7 +236,10 @@ __all__ = [
     "StringListProperty",
     "EnumProperty",
     "NoneProperty",
-    "find_visual_studios"
+    "find_visual_studios",
+    "where_is_xcode",
+    "find_rez_headers",
+    "build_rez"
 ]
 
 ########################################

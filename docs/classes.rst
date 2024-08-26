@@ -11,6 +11,11 @@ Interceptstdout
 .. doxygenclass:: burger::Interceptstdout
     :members:
 
+Property
+^^^^^^^^
+.. doxygenclass:: burger::validators::Property
+    :members:
+
 BooleanProperty
 ^^^^^^^^^^^^^^^
 .. doxygenclass:: burger::validators::BooleanProperty

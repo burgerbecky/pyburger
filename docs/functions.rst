@@ -114,10 +114,6 @@ buildutils.find_in_path
 Locator Functions
 -----------------
 
-locators.where_is_xcode
-^^^^^^^^^^^^^^^^^^^^^^^
-.. doxygenfunction:: burger::locators::where_is_xcode
-
 locators.where_is_codeblocks
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. doxygenfunction:: burger::locators::where_is_codeblocks
@@ -178,7 +174,7 @@ git.is_under_git_control
 
 git.make_git_version_header
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
-.. doxygenfunction:: burger::buildutgitils::make_git_version_header
+.. doxygenfunction:: burger::git::make_git_version_header
 
 File Functions
 --------------
@@ -336,3 +332,19 @@ Windows Functions
 windowsutils.find_visual_studios
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. doxygenfunction:: burger::windowsutils::find_visual_studios
+
+
+Xcode Functions
+---------------
+
+xcode.where_is_xcode
+^^^^^^^^^^^^^^^^^^^^
+.. doxygenfunction:: burger::xcode::where_is_xcode
+
+xcode.find_rez_headers
+^^^^^^^^^^^^^^^^^^^^^^
+.. doxygenfunction:: burger::xcode::find_rez_headers
+
+xcode.build_rez
+^^^^^^^^^^^^^^^
+.. doxygenfunction:: burger::xcode::build_rez
