@@ -20,6 +20,12 @@ Cached location of Watcom
 @var burger.locators._DOXYGEN_PATH
 Cached location of doxygen
 
+@var burger.locators._PDFLATEX_PATH
+Cached location of pdflatex
+
+@var burger.locators._MAKEINDEX_PATH
+Cached location of makeindex
+
 @var burger.locators._VS_VARIANTS
 Visual Studio variants in the order of search
 
@@ -55,6 +61,12 @@ _WATCOM_PATH = None
 
 # Cached location of doxygen
 _DOXYGEN_PATH = None
+
+# Cached location of pdflatex
+_PDFLATEX_PATH = None
+
+# Cached location of makeindex
+_MAKEINDEX_PATH = None
 
 # Visual Studio variants in the order of search
 _VS_VARIANTS = (
@@ -484,6 +496,157 @@ def where_is_doxygen(verbose=False, refresh=False, path=None):
 
     # Can't find it
     return None
+
+########################################
+
+
+def where_is_pdflatex(verbose=False, refresh=False, path=None):
+    """
+    Return the location of the pdflatex executable
+
+    Args:
+        verbose: If True, print a message if pdflatex was not found
+        refresh: If True, reset the cache and force a reload.
+        path: Path to pdflatex to place in the cache
+
+    Returns:
+        A path to the pdflatex command line executable or None if not found.
+
+    """
+
+    # pylint: disable=global-statement
+
+    global _PDFLATEX_PATH
+
+    # Clear the cache if needed
+    if refresh:
+        _PDFLATEX_PATH = None
+
+    # Set the override, if found
+    if path:
+        _PDFLATEX_PATH = path
+
+    # Is cached?
+    if _PDFLATEX_PATH:
+        return _PDFLATEX_PATH
+
+    # Scan the PATH for the exec
+    pdflatex_path = find_in_path("pdflatex", executable=True)
+    if pdflatex_path:
+        _PDFLATEX_PATH = pdflatex_path
+        return pdflatex_path
+
+    # List of the usual suspects
+    full_paths = []
+
+    # Check if it's installed but not in the path
+    if get_windows_host_type(True):
+
+        # Try the "ProgramFiles" folders
+        for item in _WINDOWS_ENV_PATHS:
+            if os.getenv(item, None):
+                pdflatex_path = os.path.expandvars(
+                    "${" + item + "}\\texlive\\2024\\bin\\pdflatex.exe")
+                pdflatex_path = convert_from_windows_path(pdflatex_path)
+                full_paths.append(pdflatex_path)
+
+    elif get_mac_host_type():
+
+        full_paths.append("/opt/local/bin/pdflatex")
+
+    if IS_LINUX:
+        # Posix / Linux
+        full_paths.append("/usr/bin/pdflatex")
+
+    # Scan the list of known locations
+    for pdflatex_path in full_paths:
+        if is_exe(pdflatex_path):
+            # Finally found it!
+            _PDFLATEX_PATH = pdflatex_path
+            return pdflatex_path
+
+    # Oh, dear.
+    if verbose:
+        print("pdflatex not found!")
+
+    # Can't find it
+    return None
+
+########################################
+
+
+def where_is_makeindex(verbose=False, refresh=False, path=None):
+    """
+    Return the location of the makeindex executable
+
+    Args:
+        verbose: If True, print a message if makeindex was not found
+        refresh: If True, reset the cache and force a reload.
+        path: Path to makeindex to place in the cache
+
+    Returns:
+        A path to the makeindex command line executable or None if not found.
+
+    """
+
+    # pylint: disable=global-statement
+
+    global _MAKEINDEX_PATH
+
+    # Clear the cache if needed
+    if refresh:
+        _MAKEINDEX_PATH = None
+
+    # Set the override, if found
+    if path:
+        _MAKEINDEX_PATH = path
+
+    # Is cached?
+    if _MAKEINDEX_PATH:
+        return _MAKEINDEX_PATH
+
+    # Scan the PATH for the exec
+    makeindex_path = find_in_path("makeindex", executable=True)
+    if makeindex_path:
+        _MAKEINDEX_PATH = makeindex_path
+        return makeindex_path
+
+    # List of the usual suspects
+    full_paths = []
+
+    # Check if it's installed but not in the path
+    if get_windows_host_type(True):
+
+        # Try the "ProgramFiles" folders
+        for item in _WINDOWS_ENV_PATHS:
+            if os.getenv(item, None):
+                makeindex_path = os.path.expandvars(
+                    "${" + item + "}\\texlive\\2024\\bin\\makeindex.exe")
+                makeindex_path = convert_from_windows_path(makeindex_path)
+                full_paths.append(makeindex_path)
+
+    elif get_mac_host_type():
+
+        full_paths.append("/opt/local/bin/makeindex")
+
+    if IS_LINUX:
+        # Posix / Linux
+        full_paths.append("/usr/bin/makeindex")
+
+    # Scan the list of known locations
+    for makeindex_path in full_paths:
+        if is_exe(makeindex_path):
+            # Finally found it!
+            _MAKEINDEX_PATH = makeindex_path
+            return makeindex_path
+
+    # Oh, dear.
+    if verbose:
+        print("makeindex not found!")
+
+    # Can't find it
+    return None
+
 
 ########################################
 

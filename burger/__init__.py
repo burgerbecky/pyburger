@@ -100,7 +100,8 @@ from .buildutils import get_sdks_folder, fix_csharp, is_exe, get_path_ext, \
     execfile
 
 from .locators import where_is_codeblocks, where_is_watcom, \
-    where_is_doxygen, where_is_visual_studio
+    where_is_doxygen, where_is_pdflatex, where_is_makeindex, \
+    where_is_visual_studio
 
 from .perforce import where_is_p4, is_under_p4_control, perforce_command, \
     perforce_edit, perforce_add, perforce_opened, make_version_header
@@ -125,7 +126,7 @@ else:
 
 
 # Numeric version
-__numversion__ = (1, 4, 0)
+__numversion__ = (1, 4, 1)
 
 # Current version of the library
 __version__ = ".".join([str(num) for num in __numversion__])
@@ -214,6 +215,8 @@ __all__ = [
     "where_is_codeblocks",
     "where_is_watcom",
     "where_is_doxygen",
+    "where_is_pdflatex",
+    "where_is_makeindex",
     "where_is_visual_studio",
     "where_is_p4",
     "is_under_p4_control",

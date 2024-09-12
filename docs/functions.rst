@@ -126,6 +126,14 @@ locators.where_is_doxygen
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 .. doxygenfunction:: burger::locators::where_is_doxygen
 
+locators.where_is_pdflatex
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. doxygenfunction:: burger::locators::where_is_pdflatex
+
+locators.where_is_makeindex
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. doxygenfunction:: burger::locators::where_is_makeindex
+
 locators.where_is_visual_studio
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. doxygenfunction:: burger::locators::where_is_visual_studio
