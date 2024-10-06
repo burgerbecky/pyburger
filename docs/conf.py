@@ -254,13 +254,10 @@ def generate_doxygen_xml(app):
     # file if needed using pandoc
     build_rules = tempmodule.import_py_script(
         os.path.join(CWD, "build_rules.py"))
-    try:
-        build_rules.build_readme(CWD)
-    except AttributeError:
-        build_rules.build(CWD, None)
+    build_rules.build(CWD, None)
 
     # Read the docs has an old version of doxygen, upgrade it.
-    if _ON_RTD:
+    if _ON_RTD and 0:
         doxygen = os.path.join(CWD, "doxygen")
         if not os.path.isfile(doxygen):
             try:
