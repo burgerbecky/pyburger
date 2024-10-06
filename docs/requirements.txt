@@ -2,4 +2,9 @@ breathe
 doxypypy
 sphinx_rtd_theme
 pypandoc
+setuptools
+distlib
+commonmark
 recommonmark
+burger
+makeprojects
