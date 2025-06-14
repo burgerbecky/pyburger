@@ -126,7 +126,7 @@ else:
 
 
 # Numeric version
-__numversion__ = (1, 4, 1)
+__numversion__ = (1, 4, 3)
 
 # Current version of the library
 __version__ = ".".join([str(num) for num in __numversion__])

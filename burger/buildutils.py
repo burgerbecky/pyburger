@@ -15,6 +15,8 @@ Environment variable locations of window applications
 
 # pylint: disable=consider-using-f-string
 # pylint: disable=consider-using-with
+# pylint: disable=import-error
+# pylint: disable=deprecated-module
 
 from __future__ import absolute_import, print_function, unicode_literals
 
@@ -105,7 +107,7 @@ def get_sdks_folder(verbose=False, refresh=False, folder=None):
         value of BURGER_SDKS.
     """
 
-    global _BURGER_SDKS_FOLDER                # pylint: disable=W0603
+    global _BURGER_SDKS_FOLDER  # pylint: disable=global-statement
 
     # Clear the cache if needed
     if refresh:
@@ -536,8 +538,9 @@ def import_py_script(file_name, module_name=None):
         run_py_script
     """
 
-    # pylint: disable=R0101, R0912
     # pylint: disable=import-outside-toplevel
+    # pylint: disable=too-many-branches
+
     # If there's no module name, glean one from the filename
     if not module_name:
         module_name = os.path.splitext(os.path.split(file_name)[-1])[0]
@@ -549,12 +552,17 @@ def import_py_script(file_name, module_name=None):
 
             # Python 3.5 and allows the loading of a module without
             # touching the cache
-            # pylint: disable=E0611, E0401, E1101
             import importlib.util
             spec = importlib.util.spec_from_file_location(
                 module_name, file_name)
-            result = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(result)
+
+            # File not found?
+            if not spec:
+                result = None
+            else:
+                # Import and then execute
+                result = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(result)
 
         else:
             # First step, if there's a module already loaded by this
@@ -570,14 +578,14 @@ def import_py_script(file_name, module_name=None):
                 if PY3_3_OR_HIGHER:
                     # Python 3.3 and 3.4 prefers using the SourceFileLoader
                     # class
-                    # pylint: disable=E0611, E0401, E1120, W1505
                     from importlib.machinery import SourceFileLoader
+                    # pylint: disable=deprecated-method
                     result = SourceFileLoader(
-                        module_name, file_name).load_module()
+                        module_name, file_name).load_module(None)
 
                 else:
                     # Use the imp library for Python 2.x to 3.2
-                    import imp  # pylint: disable=deprecated-module
+                    import imp  # type: ignore
                     result = imp.load_source(module_name, file_name)
 
             # Wrap up by restoring the cache the way it was found

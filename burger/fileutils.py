@@ -452,6 +452,11 @@ def get_tool_path(tool_folder, tool_name, encapsulate=False):
     if IS_MACOSX:
         exename = os.path.join(tool_folder, "macosx", tool_name)
 
+    # Linux is currently just 64 bit Intel, will have to update
+    # as more platforms are supported
+    elif IS_LINUX:
+        exename = os.path.join(tool_folder, "linux", tool_name)
+
     # Windows supports 32 and 64 bit Intel
     elif IS_WINDOWS_HOST:
         exename = os.path.join(
@@ -459,11 +464,6 @@ def get_tool_path(tool_folder, tool_name, encapsulate=False):
             "windows",
            	get_windows_host_type(True),
             tool_name + ".exe")
-
-    # Linux is currently just 64 bit Intel, will have to update
-    # as more platforms are supported
-    elif IS_LINUX:
-        exename = os.path.join(tool_folder, "linux", tool_name)
 
     else:
 
