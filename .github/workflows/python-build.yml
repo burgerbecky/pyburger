@@ -1,6 +1,7 @@
 # Here are lists of available runners
 # https://github.com/actions/runner-images/blob/main/images/ubuntu/Ubuntu2204-Readme.md
 # https://github.com/actions/runner-images/blob/main/images/ubuntu/Ubuntu2404-Readme.md
+# https://raw.githubusercontent.com/actions/python-versions/main/versions-manifest.json
 
 # Name of this workflow
 name: Burger for Python
@@ -26,14 +27,12 @@ jobs:
           - "ubuntu-22-py311"
           - "ubuntu-22-py312"
           - "ubuntu-22-py313"
-          - "ubuntu-24-py37"
           - "ubuntu-24-py38"
           - "ubuntu-24-py39"
           - "ubuntu-24-py310"
           - "ubuntu-24-py311"
           - "ubuntu-24-py312"
           - "ubuntu-24-py313"
-          - "ubuntu-24-pypy310"
           - "macos13-py36"
           - "macos13-py37"
           - "macos13-py38"
@@ -85,10 +84,6 @@ jobs:
             os: "ubuntu-22.04"
             tox_env: "py313"
           # Ubuntu 24
-          - name: "ubuntu-24-py37"
-            python: "3.7"
-            os: "ubuntu-24.04"
-            tox_env: "py37"
           - name: "ubuntu-24-py38"
             python: "3.8"
             os: "ubuntu-24.04"
@@ -113,10 +108,6 @@ jobs:
             python: "3.13"
             os: "ubuntu-24.04"
             tox_env: "py313"
-          - name: "ubuntu-24-pypy310"
-            python: "pypy3.10"
-            os: "ubuntu-24.04"
-            tox_env: "pypy3"
             # MacOS 13
           - name: "macos13-py36"
             python: "3.6"
