@@ -1,3 +1,5 @@
+# Docs
+# https://github.com/actions/setup-python
 # Here are lists of available runners
 # https://github.com/actions/runner-images/blob/main/images/ubuntu/Ubuntu2204-Readme.md
 # https://github.com/actions/runner-images/blob/main/images/ubuntu/Ubuntu2404-Readme.md
@@ -51,8 +53,9 @@ jobs:
           - "windows-2025-py39"
           - "windows-2025-py310"
           - "windows-2025-py311"
-          - "windows-2025-pypy2"
-        # Specific data for each version being built
+          - "windows-2025-pypy27"
+          - "windows-2025-pypy310"
+          # Specific data for each version being built
         include:
           # Ubuntu 22
           - name: "ubuntu-22-py37"
@@ -183,14 +186,14 @@ jobs:
             python: "3.11"
             os: "windows-2025"
             tox_env: "py311"
-          - name: "windows-2025-pypy2"
-            python: "pypy2"
+          - name: "windows-2025-pypy27"
+            python: "pypy2.7"
             os: "windows-2025"
-            tox_env: "pypy2"
-          #- name: "windows-2025-pypy3"
-          #  python: "pypy3"
-          #  os: "windows-2025"
-          #  tox_env: "pypy3"
+            tox_env: "pypy"
+          - name: "windows-2025-pypy310"
+            python: "pypy3.10"
+            os: "windows-2025"
+            tox_env: "pypy3"
 
     steps:
       - uses: actions/checkout@v4
