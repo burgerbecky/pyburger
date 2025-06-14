@@ -45,13 +45,13 @@ jobs:
           - "macos14-py310"
           - "macos14-py311"
           - "macos14-py312"
-          - "windows-2022-py36"
-          - "windows-2022-py37"
-          - "windows-2022-py38"
-          - "windows-2022-py39"
-          - "windows-2022-py310"
-          - "windows-2022-py311"
-          - "windows-2022-pypy2"
+          - "windows-2025-py36"
+          - "windows-2025-py37"
+          - "windows-2025-py38"
+          - "windows-2025-py39"
+          - "windows-2025-py310"
+          - "windows-2025-py311"
+          - "windows-2025-pypy2"
         # Specific data for each version being built
         include:
           # Ubuntu 22
@@ -158,44 +158,44 @@ jobs:
             python: "3.12"
             os: "macos-14"
             tox_env: "py312"
-          # Windows 2022 Server
-          - name: "windows-2022-py36"
+          # Windows 2025 Server
+          - name: "windows-2025-py36"
             python: "3.6"
-            os: "windows-2022"
+            os: "windows-2025"
             tox_env: "py36"
-          - name: "windows-2022-py37"
+          - name: "windows-2025-py37"
             python: "3.7"
-            os: "windows-2022"
+            os: "windows-2025"
             tox_env: "py37"
-          - name: "windows-2022-py38"
+          - name: "windows-2025-py38"
             python: "3.8"
-            os: "windows-2022"
+            os: "windows-2025"
             tox_env: "py38"
-          - name: "windows-2022-py39"
+          - name: "windows-2025-py39"
             python: "3.9"
-            os: "windows-2022"
+            os: "windows-2025"
             tox_env: "py39"
-          - name: "windows-2022-py310"
+          - name: "windows-2025-py310"
             python: "3.10"
-            os: "windows-2022"
+            os: "windows-2025"
             tox_env: "py310"
-          - name: "windows-2022-py311"
+          - name: "windows-2025-py311"
             python: "3.11"
-            os: "windows-2022"
+            os: "windows-2025"
             tox_env: "py311"
-          - name: "windows-2022-pypy2"
+          - name: "windows-2025-pypy2"
             python: "pypy2"
-            os: "windows-2022"
+            os: "windows-2025"
             tox_env: "pypy2"
-          #- name: "windows-2022-pypy3"
+          #- name: "windows-2025-pypy3"
           #  python: "pypy3"
-          #  os: "windows-2022"
+          #  os: "windows-2025"
           #  tox_env: "pypy3"
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Set up Python ${{ matrix.python }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
       - name: Install dependencies
