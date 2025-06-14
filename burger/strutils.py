@@ -21,6 +21,9 @@ True if the interpreter is Python 3.4 or higher
 @var burger.strutils.PY3_5_OR_HIGHER
 True if the interpreter is Python 3.5 or higher
 
+@var burger.strutils.PY3_12_OR_HIGHER
+True if the interpreter is Python 3.12 or higher
+
 @var burger.strutils.PYPY
 True if the interpreter is PyPy
 
@@ -105,6 +108,9 @@ PY3_4_OR_HIGHER = sys.version_info >= (3, 4, 0)
 
 # True if the interpreter is Python 3.5 or higher
 PY3_5_OR_HIGHER = sys.version_info >= (3, 5, 0)
+
+# True if the interpreter is Python 3.12 or higher
+PY3_12_OR_HIGHER = sys.version_info >= (3, 12, 0)
 
 # True if the interpreter is PyPy
 PYPY = platform.python_implementation() == "PyPy"

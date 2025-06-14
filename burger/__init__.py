@@ -126,7 +126,7 @@ else:
 
 
 # Numeric version
-__numversion__ = (1, 4, 3)
+__numversion__ = (1, 4, 5)
 
 # Current version of the library
 __version__ = ".".join([str(num) for num in __numversion__])
@@ -150,7 +150,7 @@ __email__ = "becky@burgerbecky.com"
 __license__ = "MIT License"
 
 # Copyright owner
-__copyright__ = "Copyright 2013-2024 Rebecca Ann Heineman"
+__copyright__ = "Copyright 2013-2025 Rebecca Ann Heineman"
 
 # Items to import on "from burger import *"
 __all__ = [

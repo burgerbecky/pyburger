@@ -67,6 +67,10 @@ strutils.PY3_5_OR_HIGHER
 ^^^^^^^^^^^^^^^^^^^^^^^^
 .. doxygenvariable:: burger::strutils::PY3_5_OR_HIGHER
 
+strutils.PY3_12_OR_HIGHER
+^^^^^^^^^^^^^^^^^^^^^^^^^
+.. doxygenvariable:: burger::strutils::PY3_12_OR_HIGHER
+
 strutils.PYPY
 ^^^^^^^^^^^^^
 .. doxygenvariable:: burger::strutils::PYPY

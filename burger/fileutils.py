@@ -9,6 +9,7 @@ Package that contains file manipulation functions
 
 # pylint: disable=consider-using-f-string
 # pylint: disable=redefined-builtin
+# pylint: disable=too-many-positional-arguments
 # pyright: reportMissingImports=false
 
 from __future__ import absolute_import, print_function, unicode_literals
@@ -21,7 +22,7 @@ import codecs
 
 from .strutils import is_string, convert_to_array, encapsulate_path, \
     get_windows_host_type, translate_to_regex_match, \
-    IS_MACOSX, IS_WINDOWS_HOST, IS_LINUX
+    IS_MACOSX, IS_WINDOWS_HOST, IS_LINUX, PY3_12_OR_HIGHER
 
 # Redefining built-in (Ignore redefinition of zip)
 try:
@@ -331,6 +332,39 @@ def shutil_readonly_cb(func, path, exception_info):
 ########################################
 
 
+def readonly312_cb(func, path, exception_info):
+    """
+    Subroutine for shutil.rmtree() to delete read only files
+
+    shutil.rmtree() raises an exception if there are read
+    only files in the directory being deleted. Use this
+    callback to allow read only files to be disposed of.
+
+    This is for Python 3.12 or later
+
+    [Example](https://docs.python.org/3.15/library/shutil.html#rmtree-example)
+
+    Note:
+        This is a callback function
+
+    Args:
+        func: Action function
+        path: pathname of the file that is read only
+        exception_info: Information about the exception
+
+    See Also:
+        delete_directory
+    """
+
+    # Remove the read-only bit
+    os.chmod(path, stat.S_IWRITE)
+
+    # Try the action again
+    func(path)
+
+########################################
+
+
 def delete_directory(path, delete_read_only=False):
     """
     Recursively delete a directory
@@ -345,15 +379,22 @@ def delete_directory(path, delete_read_only=False):
         shutil_readonly_cb, create_folder_if_needed
     """
 
+    # pylint: disable=deprecated-argument
+
     if delete_read_only:
-        shutil.rmtree(path, onerror=shutil_readonly_cb)
+        # onerror is deprecated in 3.12
+        if PY3_12_OR_HIGHER:
+            shutil.rmtree(path, onexc=readonly312_cb)
+        else:
+            # Used for Python 2.7 to 3.11
+            shutil.rmtree(path, onerror=shutil_readonly_cb)
     else:
         shutil.rmtree(path, ignore_errors=True)
 
 ########################################
 
 
-def clean_directories(path, name_list, recursive=False):
+def clean_directories(path, name_list, recursive=False, delete_read_only=False):
     """
     Recursively clean directories with a name list
 
@@ -361,6 +402,7 @@ def clean_directories(path, name_list, recursive=False):
         path: Pathname of the directory to scan
         name_list: Iterable of directory names
         recursive: Boolean if recursive clean is desired
+        delete_read_only: True if read only files are to be deleted as well
 
    Examples:
         # Delete all temp and __pycache__ files recursively
@@ -380,7 +422,8 @@ def clean_directories(path, name_list, recursive=False):
         if os.path.isdir(file_name):
             for item in match_list:
                 if item(base_name):
-                    delete_directory(file_name)
+                    delete_directory(
+                        file_name, delete_read_only=delete_read_only)
                     break
             else:
                 if recursive:
