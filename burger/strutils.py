@@ -707,7 +707,7 @@ def parse_csv(csv_string):
                     csv.reader(
                         [temp],
                         quotechar=str(delimiter),
-                        delimiter=",",
+                        delimiter=str(","),
                         quoting=csv.QUOTE_ALL))[0]
         result.append(temp)
     return result
