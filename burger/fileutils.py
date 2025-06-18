@@ -356,11 +356,18 @@ def readonly312_cb(func, path, exception_info):
         delete_directory
     """
 
-    # Remove the read-only bit
-    os.chmod(path, stat.S_IWRITE)
+    # File not found? Ignore
+    if isinstance(exception_info, FileNotFoundError):
+        return
 
-    # Try the action again
-    func(path)
+    # Read only?
+    if isinstance(exception_info, PermissionError):
+
+        # Remove the read-only bit
+        os.chmod(path, stat.S_IWRITE)
+
+        # Try the action again
+        func(path)
 
 ########################################
 
