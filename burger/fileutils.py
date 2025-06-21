@@ -323,7 +323,7 @@ def shutil_readonly_cb(func, path, exception_info):
     # Read only?
     # EACCESS for Linux/MacOSX, EIO for Windows
 
-    if value.args[0] == errno.EACCES or value.args[0] == errno.EIO:
+    if value.args[0] in (errno.EACCES, errno.EIO):
 
         # Mark as writable and try again to delete the file
         os.chmod(path, stat.S_IWRITE)
@@ -440,7 +440,7 @@ def clean_directories(path, name_list, recursive=False, delete_read_only=False):
 ########################################
 
 
-def clean_files(path, name_list, recursive=False):
+def clean_files(path, name_list, recursive=False, delete_read_only=False):
     """
     Recursively clean files with a filename list
 
@@ -448,6 +448,7 @@ def clean_files(path, name_list, recursive=False):
         path: Pathname of the directory to scan
         name_list: Iterable of file names
         recursive: Boolean if recursive clean is desired
+        delete_read_only: True if read only files are to be deleted as well
 
    Examples:
         # Delete all .obj and .lib files recursively
@@ -468,13 +469,23 @@ def clean_files(path, name_list, recursive=False):
                 if item(base_name):
                     try:
                         os.remove(file_name)
-                    except OSError:
-                        pass
+                    except OSError as value:
+                        if delete_read_only:
+                            # Read only?
+                            # EACCESS for Linux/MacOSX, EIO for Windows
+                            if value.errno in (errno.EACCES, errno.EIO):
+                                try:
+                                    # Mark as writable
+                                    os.chmod(file_name, stat.S_IWRITE)
+                                    # Try again to delete the file
+                                    os.remove(file_name)
+                                except OSError:
+                                    pass
                     break
 
         # Recurse if desired
         elif recursive and os.path.isdir(file_name):
-            clean_files(file_name, name_list, recursive)
+            clean_files(file_name, name_list, recursive, delete_read_only)
 
 ########################################
 
@@ -512,7 +523,7 @@ def get_tool_path(tool_folder, tool_name, encapsulate=False):
         exename = os.path.join(
             tool_folder,
             "windows",
-           	get_windows_host_type(True),
+            get_windows_host_type(True),
             tool_name + ".exe")
 
     else:

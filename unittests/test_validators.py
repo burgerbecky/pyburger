@@ -175,7 +175,6 @@ class TestValidators(unittest.TestCase):
         self.assertEqual(tester.test_a, 1)
         self.assertEqual(bester.test_a, 2)
 
-
 ########################################
 
     def test_stringproperty(self):
@@ -403,7 +402,7 @@ class TestValidators(unittest.TestCase):
         )
 
         for test in tests:
-           # This MUST throw an exception
+            # This MUST throw an exception
             with self.assertRaises(ValueError):
                 tester.test_b = test
 
@@ -416,7 +415,7 @@ class TestValidators(unittest.TestCase):
         )
 
         for test in bad_tests:
-           # This MUST throw an exception
+            # This MUST throw an exception
             with self.assertRaises(ValueError):
                 tester.test_b = test
 

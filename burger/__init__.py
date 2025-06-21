@@ -108,6 +108,8 @@ from .perforce import where_is_p4, is_under_p4_control, perforce_command, \
 
 from .git import where_is_git, is_under_git_control, make_git_version_header
 
+from .setuputils import create_setup_py
+
 from .cleanutils import clean_xcode, clean_codeblocks, clean_setup_py
 
 from .validators import BooleanProperty, StringProperty, IntegerProperty, \
@@ -126,7 +128,7 @@ else:
 
 
 # Numeric version
-__numversion__ = (1, 4, 6)
+__numversion__ = (1, 5, 0)
 
 # Current version of the library
 __version__ = ".".join([str(num) for num in __numversion__])
@@ -228,6 +230,7 @@ __all__ = [
     "where_is_git",
     "is_under_git_control",
     "make_git_version_header",
+    "create_setup_py",
     "Interceptstdout",
     "Node",
     "clean_xcode",

@@ -151,9 +151,7 @@ class TestFile(unittest.TestCase):
             dir5, {fooey1, fooey2}, False)
         self.assertEqual(temp_list, check_list)
 
-
 ########################################
-
 
     def test_load_text_file(self):
         """
@@ -195,13 +193,13 @@ class TestFile(unittest.TestCase):
         """
 
         burger.save_text_file(os.path.join(self.tmpdir, "lf.txt"),
-                            CRLF_TESTS, "\n")
+                              CRLF_TESTS, "\n")
         burger.save_text_file(os.path.join(self.tmpdir, "cr.txt"),
-                            CRLF_TESTS, "\r")
+                              CRLF_TESTS, "\r")
         burger.save_text_file(os.path.join(self.tmpdir, "crlf.txt"),
-                            CRLF_TESTS, "\r\n")
+                              CRLF_TESTS, "\r\n")
         burger.save_text_file(os.path.join(self.tmpdir, "senshi.txt"),
-                            SENSHI, bom=True)
+                              SENSHI, bom=True)
 
         selffile = os.path.join(
             os.path.dirname(os.path.abspath(__file__)), "data")
@@ -229,24 +227,30 @@ class TestFile(unittest.TestCase):
             os.path.dirname(os.path.abspath(__file__)), "data")
 
         # Test writing all the line feeds
-        self.assertTrue(burger.compare_files(os.path.join(selffile, "lf.txt"),
-                                    os.path.join(selffile, "cr.txt")))
-        self.assertTrue(burger.compare_files(os.path.join(selffile, "lf.txt"),
-                                    os.path.join(selffile, "crlf.txt")))
-        self.assertTrue(burger.compare_files(os.path.join(selffile, "cr.txt"),
-                                    os.path.join(selffile, "crlf.txt")))
+        self.assertTrue(
+            burger.compare_files(os.path.join(selffile, "lf.txt"),
+                                 os.path.join(selffile, "cr.txt")))
+        self.assertTrue(
+            burger.compare_files(os.path.join(selffile, "lf.txt"),
+                                 os.path.join(selffile, "crlf.txt")))
+        self.assertTrue(
+            burger.compare_files(os.path.join(selffile, "cr.txt"),
+                                 os.path.join(selffile, "crlf.txt")))
 
         # Intentional mismatch
-        self.assertFalse(burger.compare_files(
-            os.path.join(
-                selffile, "lf.txt"), os.path.join(
-                selffile, "senshi.txt")))
+        self.assertFalse(
+            burger.compare_files(
+                os.path.join(
+                    selffile, "lf.txt"), os.path.join(
+                    selffile, "senshi.txt")))
 
         # Test for missing files
-        self.assertFalse(burger.compare_files(os.path.join(selffile, "llf.txt"),
-                                    os.path.join(selffile, "cr.txt")))
-        self.assertFalse(burger.compare_files(os.path.join(selffile, "lf.txt"),
-                                    os.path.join(selffile, "lcr.txt")))
+        self.assertFalse(
+            burger.compare_files(os.path.join(selffile, "llf.txt"),
+                                 os.path.join(selffile, "cr.txt")))
+        self.assertFalse(
+            burger.compare_files(os.path.join(selffile, "lf.txt"),
+                                 os.path.join(selffile, "lcr.txt")))
 
 ########################################
 

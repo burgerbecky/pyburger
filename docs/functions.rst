@@ -184,6 +184,13 @@ git.make_git_version_header
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. doxygenfunction:: burger::git::make_git_version_header
 
+Setup.py Functions
+------------------
+
+setuputils.create_setup_py
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. doxygenfunction:: burger::setuputils::create_setup_py
+
 File Functions
 --------------
 

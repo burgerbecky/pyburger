@@ -23,8 +23,27 @@ from __future__ import absolute_import, print_function, unicode_literals
 
 import os
 import sys
-from burger import clean_directories, run_command, __version__, \
-    delete_directory, clean_files, lock_files, unlock_files
+
+# Buildme and Cleanme are invoked from another folder
+# so Python will pull in the version of burger that's
+# already installed. To force it to use the one in this
+# folder, manually purge it first, then insert the current
+# working directory into the search path, then reload
+# with the import call
+
+# Remove old copy of burger
+if "burger" in sys.modules:
+    del sys.modules["burger"]
+
+# Update the path
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
+# Import this copy of burger
+# pylint: disable=wrong-import-position
+
+from burger import clean_directories, clean_files, run_command,  \
+    lock_files, unlock_files, delete_directory, create_setup_py, \
+    delete_file, __version__
 
 # If set to True, ``buildme -r``` will not parse directories in this folder.
 BUILDME_NO_RECURSE = False
@@ -84,6 +103,11 @@ def build(working_directory, configuration):
         None if not implemented, otherwise an integer error code.
     """
 
+    # Create setup.py for Python 2.7 distribution
+    input_file = os.path.join(working_directory, "pyproject.toml")
+    output_file = os.path.join(working_directory, "setup.py")
+    create_setup_py(input_file, output_file)
+
     # Unlock the files to handle Perforce locking
     lock_list = unlock_files(working_directory) + \
         unlock_files(os.path.join(working_directory, "burger"))
@@ -123,6 +147,8 @@ def clean(working_directory):
     # Delete all folders, including read only files
     for item in CLEAN_DIR_LIST:
         delete_directory(os.path.join(working_directory, item))
+    # Get rid of extra binaries
+    delete_file(os.path.join(working_directory, "setup.py"))
 
     clean_directories(
         working_directory,
@@ -133,7 +159,8 @@ def clean(working_directory):
     clean_files(
         working_directory,
         name_list=CLEAN_EXTENSION_LIST,
-        recursive=True)
+        recursive=True,
+        delete_read_only=True)
 
     return 0
 

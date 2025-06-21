@@ -29,7 +29,12 @@ import errno
 try:
     from wslwinreg import convert_from_windows_path
 except ImportError:
-    pass
+    def convert_from_windows_path(x):
+        """
+        For platforms that don't have this function
+        don't remap
+        """
+        return x
 
 from .strutils import is_string, encapsulate_path, get_windows_host_type, \
     get_mac_host_type, PY3_3_OR_HIGHER, PY3_5_OR_HIGHER, IS_CYGWIN, \
