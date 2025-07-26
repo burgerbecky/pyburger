@@ -147,6 +147,7 @@ def clean(working_directory):
     # Delete all folders, including read only files
     for item in CLEAN_DIR_LIST:
         delete_directory(os.path.join(working_directory, item))
+
     # Get rid of extra binaries
     delete_file(os.path.join(working_directory, "setup.py"))
 

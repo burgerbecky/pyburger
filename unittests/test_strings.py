@@ -15,6 +15,7 @@ Please? It's not like I'm asking you for money!
 
 # pylint: disable=wrong-import-position
 # pylint: disable=redundant-u-string-prefix
+# pyright: reportUndefinedVariable=false
 
 import sys
 import unittest
@@ -45,7 +46,6 @@ class TestStrings(unittest.TestCase):
 
         # unicode not defines
         # flake8: noqa=F821
-        # pyright: reportUndefinedVariable=false
 
         # Must return False
         self.assertFalse(burger.is_string(0))
@@ -72,7 +72,7 @@ class TestStrings(unittest.TestCase):
 
         # Python 2.x tests (Not supported on 3.x or higher)
         if _PY2:
-            # pylint: disable=E0602
+            # pylint: disable=undefined-variable
             self.assertTrue(burger.is_string(unicode("")))
             self.assertTrue(burger.is_string(unicode("a")))
             self.assertTrue(burger.is_string(unicode(u"a")))
@@ -108,6 +108,81 @@ class TestStrings(unittest.TestCase):
         self.assertFalse(burger.is_string(["a", "b"]))
         self.assertFalse(burger.is_string({"a", "b"}))
 
+########################################
+
+    def test_isnumber(self):
+        """
+        Test burger.is_number()
+        """
+
+        # unicode not defines
+        # flake8: noqa=F821
+
+        # Must return False
+        self.assertFalse(burger.is_number(None))
+        self.assertFalse(burger.is_number(True))
+        self.assertFalse(burger.is_number(False))
+        self.assertFalse(burger.is_number(()))
+        self.assertFalse(burger.is_number({}))
+        self.assertFalse(burger.is_number([]))
+        self.assertFalse(burger.is_number(bytearray()))
+        self.assertFalse(burger.is_number(bytearray(b"abc")))
+        self.assertFalse(burger.is_number(""))
+        self.assertFalse(burger.is_number("1"))
+        self.assertFalse(burger.is_number(u"a"))
+        self.assertFalse(burger.is_number(b"a"))
+        self.assertFalse(burger.is_number(str(3)))
+        self.assertFalse(burger.is_number("abc"))
+        self.assertFalse(burger.is_number(u"abc"))
+        self.assertFalse(burger.is_number(b"abc"))
+        self.assertFalse(burger.is_number(str("abc")))
+
+        # Actual numbers
+        self.assertTrue(burger.is_number(0))
+        self.assertTrue(burger.is_number(1.0))
+        self.assertTrue(burger.is_number(1.03))
+        self.assertTrue(burger.is_number(6.0))
+        self.assertTrue(burger.is_number(int("45")))
+        self.assertTrue(burger.is_number(float("45.45")))
+
+        # Python 2.x tests (Not supported on 3.x or higher)
+        if _PY2:
+            # pylint: disable=undefined-variable
+            self.assertTrue(burger.is_number(long(22)))
+            self.assertFalse(burger.is_number(unicode("")))
+            self.assertFalse(burger.is_number(unicode("a")))
+            self.assertFalse(burger.is_number(unicode(u"a")))
+            self.assertFalse(burger.is_number(unicode(b"a")))
+            self.assertFalse(burger.is_number(unicode("abc")))
+            self.assertFalse(burger.is_number(unicode(u"abc")))
+            self.assertFalse(burger.is_number(unicode(b"abc")))
+
+        # Bytes need specific encoding passed in for Python 3.0 or higher
+        if _PY2:
+            self.assertFalse(burger.is_number(bytes("")))
+            self.assertFalse(burger.is_number(bytes("a")))
+            self.assertFalse(burger.is_number(bytes(u"a")))
+        else:
+            self.assertFalse(burger.is_number(bytes("", "ascii")))
+            self.assertFalse(burger.is_number(bytes("a", "ascii")))
+            self.assertFalse(burger.is_number(bytes(u"a", "utf-8")))
+        self.assertFalse(burger.is_number(bytes(b"a")))
+
+        if _PY2:
+            self.assertFalse(burger.is_number(bytes("abc")))
+            self.assertFalse(burger.is_number(bytes(u"abc")))
+        else:
+            self.assertFalse(burger.is_number(bytes("abc", "ascii")))
+            self.assertFalse(burger.is_number(bytes(u"abc", "utf-8")))
+        self.assertFalse(burger.is_number(bytes(b"abc")))
+
+        # False if it's a group of strings
+        self.assertFalse(burger.is_number((1,)))
+        self.assertFalse(burger.is_number([2]))
+        self.assertFalse(burger.is_number({2}))
+        self.assertFalse(burger.is_number((1, 2)))
+        self.assertFalse(burger.is_number([1, 2]))
+        self.assertFalse(burger.is_number({1, 2}))
 
 ########################################
 

@@ -232,6 +232,25 @@ def is_string(item):
 ########################################
 
 
+def is_number(item):
+    """
+    Return True if input is a numeric object
+
+    Test the input if it's either an instance of int, long, or
+    float in Python. Will return False if input is a bool or a
+    non numeric instance
+
+    Args:
+        item: Object to test
+    Returns:
+        True if the object is a numeric instance, False if not.
+    """
+
+    return isinstance(item, Number) and not isinstance(item, bool)
+
+########################################
+
+
 def convert_to_array(input_array):
     """
     Convert a string to a string array (list)

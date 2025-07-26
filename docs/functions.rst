@@ -12,6 +12,10 @@ strutils.is_string
 ^^^^^^^^^^^^^^^^^^
 .. doxygenfunction:: burger::strutils::is_string
 
+strutils.is_number
+^^^^^^^^^^^^^^^^^^
+.. doxygenfunction:: burger::strutils::is_number
+
 strutils.convert_to_array
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 .. doxygenfunction:: burger::strutils::convert_to_array

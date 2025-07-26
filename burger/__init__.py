@@ -75,8 +75,8 @@ from __future__ import absolute_import
 
 import sys
 
-from .strutils import PY2, unicode_print, is_string, convert_to_array, \
-    norm_paths, string_to_bool, \
+from .strutils import PY2, unicode_print, is_string, is_number, \
+    convert_to_array, norm_paths, string_to_bool, \
     TrueFalse, truefalse, TRUEFALSE, convert_to_windows_slashes, \
     convert_to_linux_slashes, encapsulate_path_windows, \
     encapsulate_path_linux, encapsulate_path, encapsulate_hosted_path, \
@@ -128,7 +128,7 @@ else:
 
 
 # Numeric version
-__numversion__ = (1, 5, 0)
+__numversion__ = (1, 5, 1)
 
 # Current version of the library
 __version__ = ".".join([str(num) for num in __numversion__])
@@ -158,6 +158,7 @@ __copyright__ = "Copyright 2013-2025 Rebecca Ann Heineman"
 __all__ = [
     "unicode_print",
     "is_string",
+    "is_number",
     "convert_to_array",
     "norm_paths",
     "string_to_bool",
